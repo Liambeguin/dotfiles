@@ -1,0 +1,72 @@
+# idle 300 lockscreen
+
+# layout new quad
+# split
+# split -v
+# focus
+# focus
+# split -v
+# focus
+# focus
+
+layout new main
+layout autosave on
+
+# the following two lines give a two-line status, with the current window highlighted
+hardstatus alwayslastline
+hardstatus string '%{= kG}[%{G}%H%? %1`%?%{g}][%= %{= kw}%-w%{+b yk} %n*%t%?(%u)%? %{-}%+w %=%{g}][%{B}%m/%d %{W}%C%A%{g}]'
+
+caption always "%?%F%{.R.}%?%3n %t%? [%h]%?"
+
+# huge scrollback buffer
+defscrollback 5000
+# 256 colors
+attrcolor b ".I"
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+defbce off
+
+# mouse tracking allows to switch region focus by clicking
+mousetrack on
+
+# navigating regions with Ctrl-arrows
+bindkey "^[[1;5D" focus left
+bindkey "^[[1;5C" focus right
+bindkey "^[[1;5A" focus up
+bindkey "^[[1;5B" focus down
+
+# F2 puts Screen into resize mode. Resize regions using hjkl keys.
+bindkey "^[OQ" eval "command -c rsz" # enter resize mode
+
+# use hjkl keys to resize regions
+bind -c rsz h eval "resize -h -2" "command -c rsz"
+bind -c rsz j eval "resize -v -2" "command -c rsz"
+bind -c rsz k eval "resize -v +2" "command -c rsz"
+bind -c rsz l eval "resize -h +2" "command -c rsz"
+
+# quickly switch between regions using tab and arrows
+bind -c rsz \t eval "focus" "command -c rsz" # Tab
+bind -c rsz -k kl eval "focus left" "command -c rsz" # Left
+bind -c rsz -k kr eval "focus right" "command -c rsz" # Right
+bind -c rsz -k ku eval "focus up" "command -c rsz" # Up
+bind -c rsz -k kd eval "focus down" "command -c rsz" # Down
+
+# Scroll up
+#bindkey -d "^[[5S" eval copy "stuff 5\025"
+#bindkey -m "^[[5S" stuff 5\025
+
+# Scroll down
+#bindkey -d "^[[5T" eval copy "stuff 5\004"
+#bindkey -m "^[[5T" stuff 5\004
+
+# Scroll up more
+#bindkey -d "^[[25S" eval copy "stuff \025"
+#bindkey -m "^[[25S" stuff \025
+
+# Scroll down more
+#bindkey -d "^[[25T" eval copy "stuff \004"
+#bindkey -m "^[[25T" stuff \004
+
+shelltitle "$ |bash"
+
+bindkey -m > eval "stuff ' '" writebuf "exec sh -c 'xsel < /tmp/screen-exchange'"
+vbell off
