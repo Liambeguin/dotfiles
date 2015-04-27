@@ -14,15 +14,16 @@ layout autosave on
 
 # the following two lines give a two-line status, with the current window highlighted
 hardstatus alwayslastline
-hardstatus string '%{= kG}[%{G}%H%? %1`%?%{g}][%= %{= kw}%-w%{+b yk} %n*%t%?(%u)%? %{-}%+w %=%{g}][%{B}%m/%d %{W}%C%A%{g}]'
+hardstatus string '%{= kb}[%{kb}%H%? %1`%?%{b}][%{kb}%S%? %1`%?%{b}][%= %{= kw}%-w%{+b bw} %n*%?(%u)%? %{-}%+w %=%{b}][%{B}%D %M %d %{W}%C%A%{b}]'
 
-caption always "%?%F%{.R.}%?%3n %t%? [%h]%?"
+caption splitonly "%?%F%{.b.}%?%3n %t%? [%h]%?"
 
 # huge scrollback buffer
 defscrollback 5000
 # 256 colors
 attrcolor b ".I"
 termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+term screen-256color
 defbce off
 
 # mouse tracking allows to switch region focus by clicking
@@ -70,3 +71,4 @@ shelltitle "$ |bash"
 
 bindkey -m > eval "stuff ' '" writebuf "exec sh -c 'xsel < /tmp/screen-exchange'"
 vbell off
+
