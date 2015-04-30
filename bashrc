@@ -1,5 +1,5 @@
 # .bashrc
-red="\[31m"
+red="\e[31m"
 normal="\e[0m"
 bold="\e[1;37m"
 
@@ -7,6 +7,9 @@ bold="\e[1;37m"
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
+
+# remapping CAPS LOCK to CTRL
+setxkbmap -option ctrl:nocaps
 
 # Uncomment the following line if you don't like systemctl's auto-paging feature:
 # export SYSTEMD_PAGER=
