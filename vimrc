@@ -40,7 +40,14 @@ syntax on
 command Nws execute "%s/\\s\\+$//g | nohl"
 " Close buffer without removing split
 command Bd bp\|bd \#
+
+" Mapping c in visual line  mode to comment
+autocmd FileType c  xmap c I// 
+autocmd FileType sh xmap c I# 
 " =============================================================================
+
+
+
 " == Vim-airline ==============================================================
 "
 " nice themes:
@@ -61,6 +68,10 @@ let g:airline#extensions#hunks#enabled=1
 " powerline sections
  let g:airline_section_y = ''
 " =============================================================================
+
+
+
+
 " == Vundle ===================================================================
 "
 set nocompatible " be iMproved
@@ -68,11 +79,12 @@ filetype off " required!
 
 " Vundle setup
 " required!
-set rtp+=~/.vim/bundle/vundle/
+set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#rc()
 
 " let Vundle manage Vundle
 " TODO: On first install this'll have TBD manually
+" git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 Bundle 'gmarik/vundle'
 
 " My Bundles here:
@@ -93,9 +105,9 @@ filetype plugin indent on " required!
 " == Vimdiff colors ===========================================================
 "
 highlight DiffAdd    cterm=bold ctermfg=46		ctermbg=17
-highlight DiffDelete cterm=bold ctermfg=Gray 	ctermbg=17
+highlight DiffDelete cterm=bold ctermfg=Gray	ctermbg=17
 highlight DiffChange cterm=bold ctermfg=Gray 	ctermbg=17
-highlight DiffText   cterm=bold ctermfg=White ctermbg=124
+highlight DiffText   cterm=bold ctermfg=White	ctermbg=124
 " =============================================================================
 
 
