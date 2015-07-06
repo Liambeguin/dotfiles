@@ -44,6 +44,9 @@ command Bd bp\|bd \#
 " Mapping c in visual line  mode to comment
 autocmd FileType c  xmap c I// 
 autocmd FileType sh xmap c I# 
+
+" Bitbake has a set of files that can be used goto bitbake/contrib/vim
+
 " =============================================================================
 
 
