@@ -18,9 +18,35 @@ HISTCONTROL=ignoreboth
 
 # User specific aliases and functions
 alias ls='ls --color=always -p'
+alias ll='ls -la --color=always -p'
 alias dmesg='dmesg --color=always -T'
 alias grep='grep --color=auto'
+alias du='du -h -d 1' 
 
+# screen related aliases
+alias scw='screen -X windowlist'
+alias scn='screen -X next'
+
+function __screen_quit () {
+
+	if [ -z "$(echo $TERM | grep screen)" ]; then
+		echo "This is not a screen session !"
+		return
+	fi
+
+	read -p "Sure you want to quit this screen session [y/n] ? " -t 5 quit
+	if [ -z "$quit" ]; then
+		__screen_quit
+	elif [ "$quit" == "y" ]; then
+		screen -X quit
+	else
+		echo too bad..
+	fi
+}
+alias scq=__screen_quit
+
+
+# picocom related aliases
 function __pcom {
 	if [ ! -z "$1" ]; then
 		picocom -b 115200 -l /dev/ttyUSB${1}
