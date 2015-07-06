@@ -1,9 +1,8 @@
 #!/bin/sh
 
 # installing a few bash functions I use often
-ln -sf ./bash/base_functions.conf ${HOME}/bin
+ln -sf $(pwd)/bash/base_functions.conf ${HOME}/bin
 source ./bash/base_functions.conf
-
 
 # this is because the packages istalled here
 # don't have the same name for other distros!
@@ -49,13 +48,13 @@ dnf install screen vim git
 #TODO add build essential and all the rest !
 
 # link custom files (base_functions, rcfiles, ...)
-ln -sf ./bashrc ${HOME}/.bashrc
+ln -sf $(pwd)/bashrc ${HOME}/.bashrc
 
 
-ln -sf ./screenrc ${HOME}/.screenrc
+ln -sf $(pwd)/screenrc ${HOME}/.screenrc
 
 # Setting up vim
-ln -sf ./vimrc ${HOME}/.vimrc
+ln -sf $(pwd)/vimrc ${HOME}/.vimrc
 git clone https://github.com/gmarik/Vundle.vim.git ${HOME}/.vim/bundle/Vundle.vim
 
 
@@ -63,4 +62,4 @@ git clone https://github.com/gmarik/Vundle.vim.git ${HOME}/.vim/bundle/Vundle.vi
 dnf install terminus-fonts-console
 setup_gnome_terminal
 
-# vim:set cc=80 ts=4 tw=4:
+# vim:set cc=80 :
