@@ -1,0 +1,9 @@
+
+# Install instructions
+  * clone Vundle repo see vimrc for more info
+  * install xsel : sudo dnf install xsel
+
+# ToDos
+  * screen copy mode to clipboard
+  * write install script
+
