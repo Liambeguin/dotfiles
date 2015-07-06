@@ -1,0 +1,66 @@
+#!/bin/sh
+
+# installing a few bash functions I use often
+ln -sf ./bash/base_functions.conf ${HOME}/bin
+source ./bash/base_functions.conf
+
+
+# this is because the packages istalled here
+# don't have the same name for other distros!
+DISTRO="$(cat /etc/system-release)"
+if [ -z "$(echo $DISTRO | grep -i fedora)" ]; then
+	exit_err "Distro not supported..."
+fi
+
+if [ $(whoami) != "root" ]; then
+	exit_err "This needs to be run as root !"
+fi
+
+# Warn the user this is dangerous
+read -p "This will delete all your old rcfiles and install packages Continue ? [y/n]" rc
+if [ $rc != "y" ]; then
+	exit_err "Exiting upon your request !"
+fi
+
+setup_gnome_terminal() {
+	echo_note "Editing gnome-terminal settings..."
+	gnome_profile="$(dconf read /org/gnome/terminal/legacy/profiles:/default | tr -d \')"
+	gnome_path="/org/gnome/terminal/legacy/profiles:/:${gnome_profile}"
+	gnome_palette="['rgb(0,0,0)', \
+		'rgb(204,0,0)', 'rgb(78,154,6)', \
+		'rgb(196,160,0)', 'rgb(52,101,164)', \
+		'rgb(117,80,123)', 'rgb(6,152,154)', \
+		'rgb(211,215,207)', 'rgb(85,87,83)', \
+		'rgb(239,41,41)', 'rgb(138,226,52)', \
+		'rgb(252,233,79)', 'rgb(114,159,207)', \
+		'rgb(173,127,168)', 'rgb(52,226,226)', \
+		'rgb(238,238,236)']"
+
+	dconf write ${gnome_path}/background-color "'rgb(0,0,0)'"
+	dconf write ${gnome_path}/use-theme-colors "false"
+	dconf write ${gnome_path}/palette "$gnome_palette"
+	dconf write ${gnome_path}/foreground-color "'rgb(255,255,255)'"
+	dconf write ${gnome_path}/use-system-font "false"
+	dconf write ${gnome_path}/font "'Terminus 9'"
+}
+
+# install needed packages
+dnf install screen vim git
+#TODO add build essential and all the rest !
+
+# link custom files (base_functions, rcfiles, ...)
+ln -sf ./bashrc ${HOME}/.bashrc
+
+
+ln -sf ./screenrc ${HOME}/.screenrc
+
+# Setting up vim
+ln -sf ./vimrc ${HOME}/.vimrc
+git clone https://github.com/gmarik/Vundle.vim.git ${HOME}/.vim/bundle/Vundle.vim
+
+
+# setup gnome-terminal
+dnf install terminus-fonts-console
+setup_gnome_terminal
+
+# vim:set cc=80 ts=4 tw=4:
