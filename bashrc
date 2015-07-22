@@ -8,6 +8,12 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
+# the following file includes machine specifics
+# or private variables/functions, ...
+if [ -f ~/.bashrc_local ]; then
+	. ~/.bashrc_local
+fi
+
 # remapping CAPS LOCK to CTRL
 setxkbmap -option ctrl:nocaps
 
@@ -21,7 +27,7 @@ alias ls='ls --color=always -p'
 alias ll='ls -la --color=always -p'
 alias dmesg='dmesg --color=always -T'
 alias grep='grep --color=auto'
-alias du='du -h -d 1' 
+alias du='du -h -d 1'
 
 # screen related aliases
 alias scw='screen -X windowlist'
@@ -49,18 +55,10 @@ alias scq=__screen_quit
 # picocom related aliases
 function __pcom {
 	if [ ! -z "$1" ]; then
-		picocom -b 115200 -l /dev/ttyUSB${1}
+		picocom -b 115200 -l ${1}
 	fi
 }
 alias pcom=__pcom
-
-function __dcom {
-	if [ -z "$1" ]; then
-		picocom -b 115200 -l --imap=lfcrlf /dev/serial/by-id/usb-Dronolab_Boreas_1_FTXUTWW3-if01-port0
-	else
-		picocom -b 115200 -l --imap=lfcrlf /dev/ttyUSB${$1}
-	fi
-}
 
 ##################################
 # adding Dynamic names to screen #
@@ -77,9 +75,9 @@ __screen_ssh() {
 	ssh "$@"
 	resettitle
 }
-__screen_dcom() {
-	settitle "dcom : $*"
-	dcom "$@"
+__screen_pcom() {
+	settitle "pcom : $*"
+	pcom "$@"
 	resettitle
 }
 
@@ -97,7 +95,7 @@ __screen_man() {
 
 case $TERM in
   screen*)
-	alias dcom=__screen_dcom "$@"
+	alias pcom=__screen_pcom "$@"
 	alias ssh=__screen_ssh "$@"
 	alias vim=__screen_vim "$@"
 	alias man=__screen_man "$@"
