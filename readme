@@ -1,9 +1,7 @@
 
 # Install instructions
-  * clone Vundle repo see vimrc for more info
-  * install xsel : sudo dnf install xsel
-
-# ToDos
-  * screen copy mode to clipboard
-  * write install script
-
+  * make sure you're sudo on the system !
+  * ```mkdir -p ~/dev/ && cd ~/dev/```
+  * ```git clone https://github.com/Liambeguin/dotfiles.git```
+  * ```cd dotfiles```
+  * ```./install ```
