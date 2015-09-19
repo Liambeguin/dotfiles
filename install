@@ -48,6 +48,8 @@ ln -sf $(pwd)/screenrc ${HOME}/.screenrc
 # Setting up vim
 ln -sf $(pwd)/vimrc ${HOME}/.vimrc
 git clone https://github.com/gmarik/Vundle.vim.git ${HOME}/.vim/bundle/Vundle.vim
+# Installing bundles...
+vim +PluginInstall +qall
 
 
 # setup gnome-terminal
