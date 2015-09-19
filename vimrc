@@ -1,8 +1,6 @@
 " ==  General Stuff  ==========================================================
 " Navigation
 "  for more go to : http://vim.wikia.com/wiki/All_the_right_moves
-nmap <Backspace> <PageUp>
-nmap <Space> <PageDown>
 nmap <silent> <C-k> :wincmd k<CR>
 nmap <silent> <C-j> :wincmd j<CR>
 nmap <silent> <C-h> :wincmd h<CR>
