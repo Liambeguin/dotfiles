@@ -1,19 +1,19 @@
 
 Editing Users
 ---------------
-**Add a new User**
+* Add a new User
 ```
 $ sudo adduser -c "Liam BEGUIN" foo
 ```
-**Set it's Password**
+* Set it's Password
 ```
 $ sudo passwd -f foo
 ```
-**Add to Sudoer**
+* Add to Sudoer
 ```
 $ sudo usermod -aG wheel foo
 ```
-**Remove user and it's home**
+* Remove user and it's home
 ```
 $ sudo userdel -r foo
 ```
@@ -34,13 +34,13 @@ $ ./install
 ```
 Other useful tools 
 ---------
-**[pw](https://github.com/Liambeguin/pw)**
+* [pw](https://github.com/Liambeguin/pw)
 ```
 $ cd ~/dev
 $ git clone https://github.com/Liambeguin/pw.git
 $ ln -sf $(pwd)/pw/pw ~/bin/pw 
 ```
-**[speedtest-cli](https://github.com/sivel/speedtest-cli)**
+* [speedtest-cli](https://github.com/sivel/speedtest-cli)
 ```
 $ sudo pip install speedtest-cli
 ```
