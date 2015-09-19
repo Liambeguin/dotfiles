@@ -1,33 +1,51 @@
 
-# Editing Users
-#### Add a new User
+Editing Users
+---------------
+**Add a new User**
 ```
 $ sudo adduser -c "Liam BEGUIN" foo
 ```
-#### Set it's Password
+**Set it's Password**
 ```
 $ sudo passwd -f foo
 ```
-#### Add to Sudoer
+**Add to Sudoer**
 ```
 $ sudo usermod -aG wheel foo
 ```
-#### Remove user and it's home 
+**Remove user and it's home**
 ```
 $ sudo userdel -r foo
 ```
 
-# Install instructions
-
-#### make sure you're sudo on the system !
+Install instructions
+---------------------
+**make sure you're sudo on the system !**
 ```
 $ sudo -v
 ```
 
-#### Set things up and install
+**Set things up and install**
 ```
 $ mkdir -p ~/dev/ && cd ~/dev/
 $ git clone https://github.com/Liambeguin/dotfiles.git
 $ cd dotfiles
 $ ./install
 ```
+Other useful tools 
+---------
+**[pw](https://github.com/Liambeguin/pw)**
+```
+$ cd ~/dev
+$ git clone https://github.com/Liambeguin/pw.git
+$ ln -sf $(pwd)/pw/pw ~/bin/pw 
+```
+**[speedtest-cli](https://github.com/sivel/speedtest-cli)**
+```
+$ sudo pip install speedtest-cli
+```
+
+TODOs
+-----
+* Hilight a specific set of words on the command line (eg :`$ bash | sed -e 's/foo/\x1b[7m&\x1b[0m/g'`)
+* Cmdline tool to manage a todolist. could be binded to [Wunderlist](https://www.wunderlist.com/)
