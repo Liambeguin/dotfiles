@@ -1,65 +1,60 @@
 #!/bin/sh
 
-# installing a few bash functions I use often
-ln -sf $(pwd)/bash/base_functions.conf ${HOME}/bin
+DISTRO="$(cat /etc/system-release)"
+PM_install="sudo dnf install -y -q"
+dotfiles_home="$(dirname $0)"
+dotfiles_home="$(realpath $dotfiles_home)"
+VERBOSE="no"
+
+verbose "Current system release is : $DISTRO"
+
+# installing a few bash functions I often use
+mkdir -p ${HOME}/bin
+ln -sf $(pwd)/bash/base_functions.conf ${HOME}/bin/
 source ./bash/base_functions.conf
 
-# this is because the packages istalled here
-# don't have the same name for other distros!
-DISTRO="$(cat /etc/system-release)"
+# this is because the package manager
 if [ -z "$(echo $DISTRO | grep -i fedora)" ]; then
-	exit_err "Distro not supported..."
+	exit_err "For now, the only Linux distro supported is Fedora... Sorry !"
+fi
+# If we are on an older Fedora release use YUM instead of DNF
+if [ -z "$(which dnf)" ]; then
+	PM="sudo yum install -y -q"
 fi
 
-if [ $(whoami) != "root" ]; then
-	exit_err "This needs to be run as root !"
+if [ $(whoami) = "root" ]; then
+	exit_err "This must NOT be run as root !"
+fi
+
+if [ -z "$(groups | grep wheel)" ]; then
+	exit_err "$(whoami) is not in wheel group try : 'sudo usermod -aG wheel $(whoami)'"
 fi
 
 # Warn the user this is dangerous
-read -p "This will delete all your old rcfiles and install packages Continue ? [y/n]" rc
+read -p "This will delete all your old rcfiles and install packages Continue ? [y/n] " rc
 if [ $rc != "y" ]; then
 	exit_err "Exiting upon your request !"
 fi
 
-setup_gnome_terminal() {
-	echo_note "Editing gnome-terminal settings..."
-	gnome_profile="$(dconf read /org/gnome/terminal/legacy/profiles:/default | tr -d \')"
-	gnome_path="/org/gnome/terminal/legacy/profiles:/:${gnome_profile}"
-	gnome_palette="['rgb(0,0,0)', \
-		'rgb(204,0,0)', 'rgb(78,154,6)', \
-		'rgb(196,160,0)', 'rgb(52,101,164)', \
-		'rgb(117,80,123)', 'rgb(6,152,154)', \
-		'rgb(211,215,207)', 'rgb(85,87,83)', \
-		'rgb(239,41,41)', 'rgb(138,226,52)', \
-		'rgb(252,233,79)', 'rgb(114,159,207)', \
-		'rgb(173,127,168)', 'rgb(52,226,226)', \
-		'rgb(238,238,236)']"
-
-	dconf write ${gnome_path}/background-color "'rgb(0,0,0)'"
-	dconf write ${gnome_path}/use-theme-colors "false"
-	dconf write ${gnome_path}/palette "$gnome_palette"
-	dconf write ${gnome_path}/foreground-color "'rgb(255,255,255)'"
-	dconf write ${gnome_path}/use-system-font "false"
-	dconf write ${gnome_path}/font "'Terminus 9'"
-}
-
 # install needed packages
-dnf install screen vim git
-#TODO add build essential and all the rest !
+#TODO add build essential
+verbose "installing screen, vim and git..."
+$PM_install screen vim git
+verbose "Done"
 
-# link custom files (base_functions, rcfiles, ...)
+# link custom dotfiles
 ln -sf $(pwd)/bashrc ${HOME}/.bashrc
-
-
 ln -sf $(pwd)/screenrc ${HOME}/.screenrc
-
 # Setting up vim
 ln -sf $(pwd)/vimrc ${HOME}/.vimrc
 git clone https://github.com/gmarik/Vundle.vim.git ${HOME}/.vim/bundle/Vundle.vim
 
 
 # setup gnome-terminal
-dnf install terminus-fonts-console
-setup_gnome_terminal
+verbose "Installing fonts ..."
+$PM_install terminus-fonts terminus-fonts-console
+verbose "Editing gnome-terminal settings..."
+dconf load /org/gnome/terminal/legacy/ < $dotfiles_home/terminal_settings
+verbose "Done"
 
 # vim:set cc=80 :
