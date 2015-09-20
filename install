@@ -5,7 +5,7 @@ PM_install="sudo dnf install -y -q "
 PIP_install="sudo pip install "
 dotfiles_home="$(dirname $0)"
 dotfiles_home="$(realpath $dotfiles_home)"
-VERBOSE="no"
+VERBOSE="${VERBOSE:-yes}"
 # List of RPMs to be installed
 #TODO add build essential ?
 BASE_RPM="byobu screen vim git python-pip python3-pip"
@@ -16,6 +16,11 @@ function cleanup {
 	exit
 }
 trap cleanup SIGHUP SIGINT SIGTERM
+
+
+verbose "First, lets make sure the system is up-to-date !"
+sudo dnf -y -q update
+verbose "\`Done"
 
 # installing a few bash functions I often use
 mkdir -p ${HOME}/bin
@@ -66,7 +71,7 @@ vim +PluginInstall +qall
 verbose "Installing competions..."
 for file in $dotfiles_home/autocompletion/*; do
 	verbose "Deploying $file"
-	cp $file /etc/bash_completion.d/
+	sudo cp $file /etc/bash_completion.d/
 done
 verbose "\`Done"
 
