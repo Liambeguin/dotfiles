@@ -20,6 +20,9 @@ $ git clone https://github.com/Liambeguin/dotfiles.git
 $ cd dotfiles
 $ ./install
 ```
+**Add Machine specific (or private) stuff to `~/.bashrc_local`** 
+
+
 Other useful tools 
 ---------
 * [pw](https://github.com/Liambeguin/pw)
