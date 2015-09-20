@@ -82,7 +82,7 @@ verbose "Installing Vimpager..."
 cd $dotfiles_home
 # Get dependencies
 $PM_install pandoc
-git clone git@github.com:rkitover/vimpager.git
+git clone https://github.com/rkitover/vimpager.git
 cd vimpager
 sudo make install
 # TODO Edit pager in bashrc
