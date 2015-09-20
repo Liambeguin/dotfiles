@@ -30,6 +30,7 @@ set shiftround " round indent to a multiple of 'shiftwidth'
 " Case Sensitivity
 set ignorecase
 set smartcase
+set bg=light
 
 filetype off
 syntax on
