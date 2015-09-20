@@ -27,6 +27,21 @@ fi
 # remapping CAPS LOCK to CTRL
 setxkbmap -option ctrl:nocaps
 
+# Make sure we are using the correct TERM (vim-airline)
+TERM=screen-256color
+
+# vimcat and cheat
+export EDITOR=/usr/bin/vim
+alias vimcat="vimcat -c 'set bg=light'"
+function __cheat() {
+	if [ $# == 1 ]; then
+		cheat $1 | vimcat -c 'set ft=sh'
+	else
+		cheat $@
+	fi
+}
+alias cheat=__cheat
+
 # Uncomment the following line if you don't like systemctl's auto-paging feature:
 # export SYSTEMD_PAGER=
 
@@ -73,6 +88,7 @@ alias pcom=__pcom
 ##################################
 # adding Dynamic names to screen #
 ##################################
+# Works also w/ byobu !
 
 settitle() {
     printf "\033k$1\033\\"

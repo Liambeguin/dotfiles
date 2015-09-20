@@ -1,10 +1,14 @@
 #!/bin/sh
 
 DISTRO="$(cat /etc/system-release)"
-PM_install="sudo dnf install -y -q"
+PM_install="sudo dnf install -y -q "
+PIP_install="sudo pip install "
 dotfiles_home="$(dirname $0)"
 dotfiles_home="$(realpath $dotfiles_home)"
 VERBOSE="no"
+# List of RPMs to be installed
+#TODO add build essential ?
+BASE_RPM="byobu screen vim git python-pip python3-pip"
 
 # installing a few bash functions I often use
 mkdir -p ${HOME}/bin
@@ -37,9 +41,8 @@ if [ $rc != "y" ]; then
 fi
 
 # install needed packages
-#TODO add build essential
-verbose "installing screen, vim and git..."
-$PM_install screen vim git
+verbose "Installing base packages ..."
+$PM_install $BASE_RPM
 verbose "Done"
 
 # link custom dotfiles
@@ -52,12 +55,44 @@ git clone https://github.com/gmarik/Vundle.vim.git ${HOME}/.vim/bundle/Vundle.vi
 # Installing bundles...
 vim +PluginInstall +qall
 
+# Installing bash-autocomplete scripts
+verbose "Installing competions..."
+for file in $dotfiles_home/autocompletion/*; do
+	verbose "Deploying $file"
+	cp $file /etc/bash_completion.d/
+done
+verbose "\`Done"
 
 # setup gnome-terminal
 verbose "Installing fonts ..."
 $PM_install terminus-fonts terminus-fonts-console
 verbose "Editing gnome-terminal settings..."
 dconf load /org/gnome/terminal/legacy/ < $dotfiles_home/terminal_settings
-verbose "Done"
+verbose "\`Done"
+
+#Install VIMPAGER
+verbose "Installing Vimpager..."
+cd $dotfiles_home
+# Get dependencies
+$PM_install pandoc
+git clone git@github.com:rkitover/vimpager.git
+cd vimpager
+sudo make install
+# TODO Edit pager in bashrc
+ #export PAGER=/usr/local/bin/vimpager
+ #alias less=$PAGER
+ #alias zless=$PAGER
+cd $dotfiles_home
+verbose "| Cleaning up..."
+rm -rf vimpager
+verbose " \`Done"
+
+
+# Installing Cheat tool
+verbose "Installing cheat tool"
+$PIP_install cheat
+rm -rf ${HOME}/.cheat
+ln -sf $(pwd)/cheat ${HOME}/.cheat
+verbose "\`Done"
 
 # vim:set cc=80 :
