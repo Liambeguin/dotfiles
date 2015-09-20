@@ -107,4 +107,10 @@ rm -rf ${HOME}/.cheat
 ln -sf $(pwd)/cheat ${HOME}/.cheat
 verbose "\`Done"
 
+# Installing Speedtest tool
+verbose "Installing Speedtest tool..."
+$PIP_install speedtest-cli
+verbose "\`Done"
+
+
 # vim:set cc=80 :
