@@ -14,10 +14,13 @@ layout autosave on
 
 # the following two lines give a two-line status, with the current window highlighted
 hardstatus alwayslastline
-hardstatus string '%{= kb}[%{kb}%H%? %1`%?%{b}][%{kb}%S%? %1`%?%{b}][%= %{= kw}%-w%{+b bw} %n*%?(%u)%? %{-}%+w %=%{b}][%{B}%D %M %d %{W}%C%A%{b}]'
+hardstatus string "$SCR_HARDSTAT"
 
-caption splitonly "%?%F%{.b.}%?%3n %t%? [%h]%?"
+caption always "$SCR_CAPTION"
 
+#hardstatus string '%{= kb}[%{kb}%H%? %1`%?%{b}][%{kb}%S%? %1`%?%{b}][%= %{= kw}%-w%{+b bw} %n*%?(%u)%? %{-}%+w %=%{b}][%{B}%D %M %d %{W}%C%A%{b}]'
+#
+#caption splitonly "%?%F%{.b.}%?%3n %t%? [%h]%?"
 # huge scrollback buffer
 defscrollback 5000
 # 256 colors

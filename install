@@ -6,12 +6,12 @@ dotfiles_home="$(dirname $0)"
 dotfiles_home="$(realpath $dotfiles_home)"
 VERBOSE="no"
 
-verbose "Current system release is : $DISTRO"
-
 # installing a few bash functions I often use
 mkdir -p ${HOME}/bin
 ln -sf $(pwd)/bash/base_functions.conf ${HOME}/bin/
 source ./bash/base_functions.conf
+
+verbose "Current system release is : $DISTRO"
 
 # this is because the package manager
 if [ -z "$(echo $DISTRO | grep -i fedora)" ]; then
@@ -45,6 +45,7 @@ verbose "Done"
 # link custom dotfiles
 ln -sf $(pwd)/bashrc ${HOME}/.bashrc
 ln -sf $(pwd)/screenrc ${HOME}/.screenrc
+ln -sf $(pwd)/screen/screen_skins ${HOME}/.screen_skins
 # Setting up vim
 ln -sf $(pwd)/vimrc ${HOME}/.vimrc
 git clone https://github.com/gmarik/Vundle.vim.git ${HOME}/.vim/bundle/Vundle.vim
