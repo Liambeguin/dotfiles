@@ -38,5 +38,10 @@ $ sudo pip install speedtest-cli
 
 TODOs
 -----
-* Hilight a specific set of words on the command line (eg :`$ bash | sed -e 's/foo/\x1b[7m&\x1b[0m/g'`)
-* Cmdline tool to manage a todolist. could be binded to [Wunderlist](https://www.wunderlist.com/)
+- [ ] Hilight a specific set of words on the command line (eg :`$ bash | sed -e 's/foo/\x1b[7m&\x1b[0m/g'`)
+- [ ] Cmdline tool to manage a todolist.
+- [ ] fork [cheat](https://github.com/chrisallenlane/cheat) and auto install 
+ - [ ] Enhance output using vimcat
+ - [ ] add vimcat to installer
+- [ ] Replace screen with **byobu** !
+ - [ ] Fix vim-airline in byobu... 
