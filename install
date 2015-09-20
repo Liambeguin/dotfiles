@@ -10,6 +10,13 @@ VERBOSE="no"
 #TODO add build essential ?
 BASE_RPM="byobu screen vim git python-pip python3-pip"
 
+function cleanup {
+	# Perform program exit housekeeping
+	echo "Exiting ..."
+	exit
+}
+trap cleanup SIGHUP SIGINT SIGTERM
+
 # installing a few bash functions I often use
 mkdir -p ${HOME}/bin
 ln -sf $(pwd)/bash/base_functions.conf ${HOME}/bin/
