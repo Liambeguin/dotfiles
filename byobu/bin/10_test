@@ -1,0 +1,3 @@
+#!/bin/sh
+echo "VMs:"
+# vi: syntax=sh ts=4 noexpandtab
