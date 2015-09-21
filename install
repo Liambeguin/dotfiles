@@ -6,6 +6,9 @@
 SUPPORTED_DISTROS="fedora"
 DISTRO=$(lsb_release -ir | cut -d':' -f2)
 
+GIT_username="Liam BEGUIN"
+GIT_email="liambeguin@gmail.com"
+
 PM_install="sudo dnf install -y -q "
 PIP_install="sudo pip install "
 
@@ -80,6 +83,9 @@ verbose "Linking dotfiles..."
 ln -sf $(pwd)/bashrc ${HOME}/.bashrc
 ln -sf $(pwd)/screenrc ${HOME}/.screenrc
 ln -sf $(pwd)/screen/screen_skins ${HOME}/.screen_skins
+# Setting up git user
+git config --global user.name  "$GIT_username"
+git config --global user.email "$GIT_email"
 # Setting up vim
 ln -sf $(pwd)/vimrc ${HOME}/.vimrc
 git clone https://github.com/gmarik/Vundle.vim.git ${HOME}/.vim/bundle/Vundle.vim
@@ -137,6 +143,6 @@ verbose "Installing Speedtest tool..."
 $PIP_install speedtest-cli || exit_err "Could not install speedtest-cli using pip"
 verbose "\`Done"
 
-echo "All good !!"
+echo -e ${txtgrn}All Good \!\!${txtrst}
 
 # vim:set cc=80 :
