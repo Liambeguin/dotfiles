@@ -6,6 +6,13 @@ Editing Users
 * Add to Sudoer : `sudo usermod -aG wheel foo`
 * Remove user and it's home : `sudo userdel -r foo`
 
+Generate __terminal_settings__
+-------------------------------
+```
+$ cd ~/dev/dotfiles
+$ dconf dump /org/gnome/terminal/legacy/ > terminal_settings
+```
+
 Install instructions
 ---------------------
 **make sure you're sudo on the system !**
@@ -40,6 +47,9 @@ TODOs
 -----
 - [ ] Hilight a specific set of words on the command line (eg :`$ bash | sed -e 's/foo/\x1b[7m&\x1b[0m/g'`)
 - [ ] Cmdline tool to manage a todolist.
+- [ ] add list of what install does to this file
+- [ ] add parameters to install script 
+- [ ] install byobu from my repo (make my own specfile) 
 - [x] ~~fork [cheat](https://github.com/chrisallenlane/cheat) and auto install~~
  - [x] ~~Enhance output using vimcat~~
  - [x] ~~add vimcat to installer~~
