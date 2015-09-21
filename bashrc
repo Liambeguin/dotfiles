@@ -33,7 +33,7 @@ fi
 setxkbmap -option ctrl:nocaps
 
 # Make sure we are using the correct TERM (vim-airline)
-TERM=screen-256color
+TERM=xterm-256color
 
 # VIMPAGER
 export PAGER=/usr/local/bin/vimpager
