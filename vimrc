@@ -9,6 +9,7 @@ nmap <silent> <C-l> :wincmd l<CR>
 " Abreviations
 abbr Wq wq
 abbr Q q
+abbr W w
 
 set hlsearch
 set incsearch " set incremental search, like modern browsers
@@ -81,8 +82,6 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#rc()
 
 " let Vundle manage Vundle
-" TODO: On first install this'll have TBD manually
-" git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 Bundle 'gmarik/vundle'
 
 " My Bundles here:
@@ -107,5 +106,3 @@ highlight DiffDelete cterm=bold ctermfg=Gray	ctermbg=17
 highlight DiffChange cterm=bold ctermfg=Gray 	ctermbg=17
 highlight DiffText   cterm=bold ctermfg=White	ctermbg=124
 " =============================================================================
-
-
