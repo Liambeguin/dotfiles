@@ -8,6 +8,11 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
+# Source personnal bash files
+[ -f ~/bin/bash_functions.conf ] && source ~/bin/bash_functions.conf
+[ -f ~/bin/bash_colors.conf ] && source ~/bin/bash_colors.conf
+
+
 # the following file includes machine specifics
 # or private variables/functions, ...
 if [ -f ~/.bashrc_local ]; then
@@ -30,9 +35,13 @@ setxkbmap -option ctrl:nocaps
 # Make sure we are using the correct TERM (vim-airline)
 TERM=screen-256color
 
-# vimcat and cheat
-export EDITOR=/usr/bin/vim
+# VIMPAGER
+export PAGER=/usr/local/bin/vimpager
+alias less=$PAGER
+alias zless=$PAGER
 alias vimcat="vimcat -c 'set bg=light'"
+# CHEAT
+export EDITOR=/usr/bin/vim
 function __cheat() {
 	if [ $# == 1 ]; then
 		cheat $1 | vimcat -c 'set ft=sh'

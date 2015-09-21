@@ -1,63 +1,82 @@
 #!/bin/sh
 
-DISTRO="$(cat /etc/system-release)"
+#####
+# Setting Global variables
+#
+SUPPORTED_DISTROS="fedora"
+DISTRO=$(lsb_release -ir | cut -d':' -f2)
+
 PM_install="sudo dnf install -y -q "
 PIP_install="sudo pip install "
+
 dotfiles_home="$(dirname $0)"
-dotfiles_home="$(realpath $dotfiles_home)"
+dotfiles_home="$(readlink -f $dotfiles_home)"
+start_dir="$(pwd)"
+start_dir="$(readlink -f $start_dir)"
+
 VERBOSE="${VERBOSE:-yes}"
 # List of RPMs to be installed
-#TODO add build essential ?
 BASE_RPM="byobu screen vim git python-pip python3-pip"
 
-function cleanup {
-	# Perform program exit housekeeping
+# Perform program exit housekeeping
+function cleanup() {
 	echo "Exiting ..."
 	exit
 }
 trap cleanup SIGHUP SIGINT SIGTERM
 
 
-verbose "First, lets make sure the system is up-to-date !"
-sudo dnf -y -q update
-verbose "\`Done"
+#####
+# There is no point doing anything if the host's distro is not supported
+for supported in $SUPPORTED_DISTROS; do
+	if [ -z "$(echo $DISTRO | grep -i $supported)" ]; then
+		echo $DISTRO is not listed in supported distros...
+		exit 1
+	fi
+done
 
-# installing a few bash functions I often use
+
+#####
+# Installing a few bash functions I often use
 mkdir -p ${HOME}/bin
-ln -sf $(pwd)/bash/base_functions.conf ${HOME}/bin/
-source ./bash/base_functions.conf
+ln -sf $(pwd)/bash/bash_colors.conf ${HOME}/bin/
+ln -sf $(pwd)/bash/bash_functions.conf ${HOME}/bin/
+source ./bash/bash_colors.conf
+source ./bash/bash_functions.conf
 
-verbose "Current system release is : $DISTRO"
 
-# this is because the package manager
-if [ -z "$(echo $DISTRO | grep -i fedora)" ]; then
-	exit_err "For now, the only Linux distro supported is Fedora... Sorry !"
-fi
+#####
+# Check a few things about the host before we start
 # If we are on an older Fedora release use YUM instead of DNF
-if [ -z "$(which dnf)" ]; then
-	PM="sudo yum install -y -q"
-fi
-
-if [ $(whoami) = "root" ]; then
-	exit_err "This must NOT be run as root !"
-fi
-
+[ -z "$(which dnf 2> /dev/null)" ] && PM="sudo yum install -y -q"
+# If the script is run as root, $HOME is going to be wrong
+[ $(whoami) = "root" ] && exit_err "This must NOT be run as root !"
+# We still need sudo to install stuff
 if [ -z "$(groups | grep wheel)" ]; then
 	exit_err "$(whoami) is not in wheel group try : 'sudo usermod -aG wheel $(whoami)'"
 fi
-
 # Warn the user this is dangerous
 read -p "This will delete all your old rcfiles and install packages Continue ? [y/n] " rc
-if [ $rc != "y" ]; then
-	exit_err "Exiting upon your request !"
-fi
+[ $rc != "y" ] && exit_err "Exiting upon your request !"
+
+
+#####
+# Initial system update
+verbose "Current system release is : " $DISTRO
+verbose "First, lets make sure the system is up-to-date !"
+sudo dnf -y -q update
+$PIP_install --upgrade pip
+verbose "\`Done"
 
 # install needed packages
-verbose "Installing base packages ..."
-$PM_install $BASE_RPM
-verbose "Done"
+verbose "Installing base packages..."
+$PM_install $BASE_RPM || exit_err "Base package list failed to install."
+verbose "\`Done"
 
-# link custom dotfiles
+
+#####
+# dotfiles
+verbose "Linking dotfiles..."
 ln -sf $(pwd)/bashrc ${HOME}/.bashrc
 ln -sf $(pwd)/screenrc ${HOME}/.screenrc
 ln -sf $(pwd)/screen/screen_skins ${HOME}/.screen_skins
@@ -66,51 +85,58 @@ ln -sf $(pwd)/vimrc ${HOME}/.vimrc
 git clone https://github.com/gmarik/Vundle.vim.git ${HOME}/.vim/bundle/Vundle.vim
 # Installing bundles...
 vim +PluginInstall +qall
+verbose "\`Done"
 
-# Installing bash-autocomplete scripts
-verbose "Installing competions..."
+
+#####
+# bash-autocomplete scripts
+verbose "Installing Bash completion scripts..."
 for file in $dotfiles_home/autocompletion/*; do
 	verbose "Deploying $file"
 	sudo cp $file /etc/bash_completion.d/
 done
 verbose "\`Done"
 
-# setup gnome-terminal
-verbose "Installing fonts ..."
-$PM_install terminus-fonts terminus-fonts-console
+
+#####
+# gnome-terminal
+verbose "Installing fonts..."
+$PM_install terminus-fonts terminus-fonts-console || exit_err "Could not install fonts."
 verbose "Editing gnome-terminal settings..."
 dconf load /org/gnome/terminal/legacy/ < $dotfiles_home/terminal_settings
 verbose "\`Done"
 
-#Install VIMPAGER
+
+#####
+# vimpager
 verbose "Installing Vimpager..."
 cd $dotfiles_home
 # Get dependencies
-$PM_install pandoc
+$PM_install pandoc || exit_err "Could not install pandoc."
 git clone https://github.com/rkitover/vimpager.git
 cd vimpager
 sudo make install
-# TODO Edit pager in bashrc
- #export PAGER=/usr/local/bin/vimpager
- #alias less=$PAGER
- #alias zless=$PAGER
 cd $dotfiles_home
 verbose "| Cleaning up..."
 rm -rf vimpager
 verbose " \`Done"
 
 
-# Installing Cheat tool
+#####
+# cheat
 verbose "Installing cheat tool"
-$PIP_install cheat
+$PIP_install cheat || exit_err "Could not install cheat using pip"
 rm -rf ${HOME}/.cheat
 ln -sf $(pwd)/cheat ${HOME}/.cheat
 verbose "\`Done"
 
-# Installing Speedtest tool
+
+#####
+# speedtest-cli
 verbose "Installing Speedtest tool..."
-$PIP_install speedtest-cli
+$PIP_install speedtest-cli || exit_err "Could not install speedtest-cli using pip"
 verbose "\`Done"
 
+echo "All good !!"
 
 # vim:set cc=80 :
