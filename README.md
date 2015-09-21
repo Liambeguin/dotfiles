@@ -40,8 +40,8 @@ TODOs
 -----
 - [ ] Hilight a specific set of words on the command line (eg :`$ bash | sed -e 's/foo/\x1b[7m&\x1b[0m/g'`)
 - [ ] Cmdline tool to manage a todolist.
-- [ ] fork [cheat](https://github.com/chrisallenlane/cheat) and auto install 
- - [ ] Enhance output using vimcat
- - [ ] add vimcat to installer
-- [ ] Replace screen with **byobu** !
- - [ ] Fix vim-airline in byobu... 
+- [x] fork [cheat](https://github.com/chrisallenlane/cheat) and auto install 
+ - [x] Enhance output using vimcat
+ - [x] add vimcat to installer
+- [x] Replace screen with **byobu** (keeping screen)
+ - [x] Fix vim-airline in byobu... 
