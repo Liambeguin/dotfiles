@@ -66,7 +66,7 @@
 
 # You can set this to 1 to report your external/public ip address
 # Default: 0
-#IP_EXTERNAL=0
+IP_EXTERNAL=1
 
 # The users notification normally counts ssh sessions; set this configuration to '1'
 # to instead count number of distinct users logged onto the system
@@ -75,4 +75,4 @@
 
 # Set this to zero to hide seconds int the time display
 # Default 1
-#TIME_SECONDS=0
+TIME_SECONDS=0
