@@ -83,6 +83,7 @@ verbose "Linking dotfiles..."
 ln -sf $(pwd)/bashrc ${HOME}/.bashrc
 ln -sf $(pwd)/screenrc ${HOME}/.screenrc
 ln -sf $(pwd)/screen/screen_skins ${HOME}/.screen_skins
+ln -sf $(pwd)/byobu ${HOME}/.byobu
 # Setting up git user
 git config --global user.name  "$GIT_username"
 git config --global user.email "$GIT_email"
