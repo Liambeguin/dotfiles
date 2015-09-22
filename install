@@ -9,8 +9,10 @@ dotfiles_home="$(dirname $0)"
 dotfiles_home="$(readlink -f $dotfiles_home)"
 start_dir="$(pwd)"
 start_dir="$(readlink -f $start_dir)"
+EXTRA_SCRIPTS="$(find $dotfiles_home/extra -executable -type f 2>/dev/null)"
 
 VERBOSE="no"
+ASSUMEYES="no"
 DO_RC="yes"
 DO_GNOME_TERM="yes"
 DO_BYOBU="yes"
@@ -48,30 +50,32 @@ NAME
 	install - Bootstrap a new user and keep track of your dotfiles.
 
 SYNOPSIS
-	$(basename $0) [options]
+	$(basename $0) [option]...
 
 DESCRIPTION
-	-h | --help ..................... Display this message
-	-v | --verbose .................. Enable verbose output
-	--disable-rc ....................* Do not attempt to link bashrc, vimrc and screenrc
-	--disable-gnome-term ............* Do not attempt to setup gnome-terminal
-	--disable-byobu .................* Do not attempt to install Byobu window manager
-	--disable-vundle ................* Do not attempt to install Vim Bundles
-	--disable-pager .................* Do not attempt to install vimpager
-	--disable-pip ...................* Do not attempt to install python and pip packages
+	-h | --help ................ Display this message
+	-v | --verbose ............. Enable verbose output
+	-y | --assumeyes ........... Answer yes for all questions
+	--disable-rc ..............* Do not attempt to link bashrc, vimrc and screenrc
+	--disable-gnome-term ......* Do not attempt to setup gnome-terminal
+	--gnome-profile [PRO] .....* Use PRO instead of default profile
+	--disable-byobu ...........* Do not attempt to install Byobu window manager
+	--disable-vundle ..........* Do not attempt to install Vim Bundles
+	--disable-pager ...........* Do not attempt to install vimpager
+	--disable-pip .............* Do not attempt to install python and pip packages
 
-	--disable-git ...................* Do not configure git
-	--git-username [username] .......* Use username as git user (void if --disable-git)
-	--git-email [email] .............* Use email as git email (void if --disable-git)
+	--disable-git .............* Do not configure git
+	--git-username [username] .* Use username as git user (void if --disable-git)
+	--git-email [email] .......* Use email as git email (void if --disable-git)
 
-	--append-packages [pkgs] ........* add pkgs to the list of packages to be installed
-	--append-pip [py-pkgs] ...,......* add py-pkgs to the list of packages to be installed
-	--enable-extra ..................* Install executable scripts in $dotfiles_home/extra
+	--append-packages [pkgs] ..* add pkgs to the list of packages to be installed
+	--append-pip [py-pkgs] ....* add py-pkgs to the list of packages to be installed
+	--enable-extra ............. Install executable scripts in $dotfiles_home/extra
 
-	--clean .........................* Undo changes
+	--clean ...................* Undo changes
 
 DEFAULT SETTINGS
-	$(print_settings)
+$(print_settings | tail -n+2)
 
 EOF
 	exit 0
@@ -88,6 +92,13 @@ is_pkg_available() {
 		fi
 	done
 }
+pm_chk_and_install(){
+	if [ -z "$PM_install" ]; then
+		exit_err "No Package Manager found..."
+	fi
+	is_pkg_available "$@"
+	$PM_install $@ || exit_err "Failed to install $@"
+}
 
 configure() {
 	DISTRO="$(get_distro)"
@@ -100,6 +111,8 @@ configure() {
 			# if we cannot find dnf, use yum...
 			PM="$(which dnf 2> /dev/null || which yum 2> /dev/null)"
 			PM_install="sudo $PM install -y -q "
+			TERMINAL_FONTS="terminus-fonts terminus-fonts-console"
+			edit_gnome_terminal="dconf load /org/gnome/terminal/legacy/ < $GNOME_profile"
 			;;
 		Ubuntu|Debian)
 			# We need sudo to install stuff
@@ -111,7 +124,10 @@ configure() {
 				exit_err "Could not find aptitude command!"
 			fi
 			PM="$(which aptitude 2>/dev/null)"
-			PM_install="sudo $PM install -y -qq "
+			PM_install="sudo $PM install -y -q "
+			TERMINAL_FONTS="xfonts-terminus console-terminus"
+			GNOME_profile="${GNOME_profile:-$dotfiles_home/gnome-terminal/profile.xml}"
+			edit_gnome_terminal="gconftool-2 --load $GNOME_profile"
 			;;
 		ukn)
 			exit_err "Could not figure out which distro you're running..."
@@ -123,34 +139,50 @@ configure() {
 
 	# Check if the packages are available for install
 	is_pkg_available "$BASE_PACKAGES"
+
+	verbose "Checking if gnome-terminal is available on the host..."
+	if [ -z "$(which gnome-terminal 2>/dev/null)" ]; then
+		verbose "gnome-terminal not found..."
+		DO_GNOME_TERM="no"
+	else
+		verbose "OK"
+	fi
 }
 
 print_settings(){
-	echo " == Settings == "
-	echo "  * verbose? $VERBOSE"
-	echo "  * link dotfiles? $DO_RC"
-	echo "  * setup gnome-terminal? $DO_GNOME_TERM"
-	echo "  * install Byobu window manager? $DO_BYOBU"
-	echo "  * install vim bundles? $DO_VUNDLE"
-	echo "  * install vimpager? $DO_PAGER" #vimcat &Co
-
-	echo "  * install Python and pip packages? $DO_PIP"   #cheat speedtest, ...
-	if [ "$DO_PIP" == "yes" ]; then
-		echo "    - pip packages to be installed : $BASE_PIP_PACKAGES"
-	fi
-
-	echo "  * configure git env? $DO_GIT"
-	if [ "$DO_GIT" == "yes" ]; then
-		echo "    - push.default : matching #hardcoded"
-		echo "    - user.name    : $GIT_username"
-		echo "    - user.email   : $GIT_email"
-	fi
-
-	echo "  * process scripts in $dotfiles_home/extra? $DO_EXTRA"
-	#TODO add list of executable scripts in extra
-
-	echo "  * packages to be installed : $BASE_PACKAGES"
 	echo
+	echo -e "  * verbose? ${txtblu}$VERBOSE${txtrst}"
+	echo -e "  * assume yes? ${txtblu}$ASSUMEYES${txtrst}"
+	echo -e "  * link dotfiles? ${txtblu}$DO_RC${txtrst}"
+	echo -e "  * setup gnome-terminal? ${txtblu}$DO_GNOME_TERM${txtrst}"
+	echo -e "  * install Byobu window manager? ${txtblu}$DO_BYOBU${txtrst}"
+	echo -e "  * install vim bundles? ${txtblu}$DO_VUNDLE${txtrst}"
+	echo -e "  * install vimpager? ${txtblu}$DO_PAGER${txtrst}" #vimcat &Co
+
+	echo -e "  * install Python and pip packages? ${txtblu}$DO_PIP${txtrst}"   #cheat speedtest, ...
+	if [ "$DO_PIP" == "yes" ]; then
+		echo -e "    - pip packages to be installed : ${txtblu}$BASE_PIP_PACKAGES${txtrst}"
+	fi
+
+	echo -e "  * configure git env? ${txtblu}$DO_GIT${txtrst}"
+	if [ "$DO_GIT" == "yes" ]; then
+		echo -e "    - push.default : ${txtblu}matching${txtrst} #hardcoded"
+		echo -e "    - user.name    : ${txtblu}$GIT_username${txtrst}"
+		echo -e "    - user.email   : ${txtblu}$GIT_email${txtrst}"
+	fi
+
+	echo -e "  * process scripts in $dotfiles_home/extra? ${txtblu}$DO_EXTRA${txtrst}"
+	if [ "$DO_EXTRA" == "yes" ]; then
+		if [ -n "$EXTRA_SCRIPTS" ]; then
+			echo -e "    - the following files will be processed :"
+			for file in $EXTRA_SCRIPTS; do
+				echo -e "         ${txtblu}$(basename $file)${txtrst}"
+			done
+		fi
+	fi
+
+	echo -e "  * packages to be installed : ${txtblu}$BASE_PACKAGES${txtrst}"
+	echo -e
 }
 
 
@@ -160,8 +192,8 @@ print_settings(){
 # If the script is run as root, $HOME is going to be wrong
 [ $(whoami) = "root" ] && exit_err "This must NOT be run as root !"
 
-OPTS=$(getopt -o h,v --long help,verbose,\
-disable-rc,disable-gnome-term,disable-byobu,disable-vundle,disable-pager,disable-pip,\
+OPTS=$(getopt -o h,v,y --long help,verbose,assumeyes\
+disable-rc,disable-gnome-term,gnome-profile:,disable-byobu,disable-vundle,disable-pager,disable-pip,\
 disable-git,git-username:,git-email:,\
 append-packages:,append-pip:,enable-extra,clean -- "$@")
 eval set -- "$OPTS"
@@ -175,6 +207,10 @@ while true; do
 			VERBOSE="yes"
 			shift
 			;;
+		-y|--assumeyes)
+			ASSUMEYES="yes"
+			shift
+			;;
 		--disable-rc)
 			DO_RC="no"
 			shift
@@ -182,6 +218,10 @@ while true; do
 		--disable-gnome-term)
 			DO_GNOME_TERM="no"
 			shift
+			;;
+		--gnome-profile)
+			GNOME_profile="$(readlink -f $2)"
+			shift 2
 			;;
 		--disable-byobu)
 			DO_BYOBU="no"
@@ -244,110 +284,122 @@ done
 [ "$DO_PIP" == "yes" ] && BASE_PACKAGES="$BASE_PACKAGES python python-pip"
 
 print_settings
-
-exit 0
+if [ "$ASSUMEYES" == "no" ]; then
+	read -p "Does this look ok ? [y/n] " rc
+	[ $rc != "y" ] && exit_err "Exiting upon your request !"
+else
+	verbose "assuming yes"
+fi
 configure
-# EVERYTHING AFTER THIS POINT SHOULD BE DISTRO INDEPENDANT !!
 
 #####
-# ALWAYS DO
 # Initial system update
-verbose "Current system release is : " $DISTRO
+verbose "Current system distribution is : " $DISTRO
 verbose "First, lets make sure the system is up-to-date !"
-sudo $PM -y -q update
-
-# Move to PIP section
-$PIP_install --upgrade pip
-
-#####
-## IF NOT --disable-rc :
-## Installing a few bash functions I often use
-mkdir -p ${HOME}/bin
-ln -sf $(pwd)/bash/bash_colors.conf ${HOME}/bin/
-ln -sf $(pwd)/bash/bash_functions.conf ${HOME}/bin/
-# dotfiles
-verbose "Linking dotfiles..."
-ln -sf $(pwd)/bashrc ${HOME}/.bashrc
-ln -sf $(pwd)/screenrc ${HOME}/.screenrc
-ln -sf $(pwd)/screen/screen_skins ${HOME}/.screen_skins
+sudo $PM -y -q update || exit_err "failed to update your system"
+verbose "Installing BASE_PACKAGES..."
+pm_chk_and_install "$BASE_PACKAGES"
+verbose "done"
 
 
-# Warn the user this is dangerous
-read -p "This will delete all your old rcfiles and install packages Continue ? [y/n] " rc
-[ $rc != "y" ] && exit_err "Exiting upon your request !"
+if [ "$DO_RC" == "yes" ]; then
 
+	# Warn the user this is dangerous
+	echo "This will delete all your current bashrc, vimrc and screenrc !"
+	if [ "$ASSUMEYES" == "no" ]; then
+		read -p "Continue ? [y/n] " rc
+		[ $rc != "y" ] && exit_err "Exiting upon your request !"
+	else
+		verbose "assuming yes"
+	fi
 
+	verbose "Linking dotfiles..."
+	mkdir -p ${HOME}/bin
+	# Installing a few bash functions I often use
+	ln -sf $(pwd)/bash/bash_colors.conf ${HOME}/bin/
+	ln -sf $(pwd)/bash/bash_functions.conf ${HOME}/bin/
+	ln -sf $(pwd)/bashrc ${HOME}/.bashrc
+	ln -sf $(pwd)/screenrc ${HOME}/.screenrc
+	ln -sf $(pwd)/vimrc ${HOME}/.vimrc
+	#TODO remove screen skins
+	ln -sf $(pwd)/screen/screen_skins ${HOME}/.screen_skins
 
-# install needed packages
-verbose "Installing base packages..."
-$PM_install $BASE_RPM || exit_err "Base package list failed to install."
-verbose "\`Done"
+	verbose "Installing Bash completion scripts..."
+	for file in $dotfiles_home/autocompletion/*; do
+		verbose "Deploying $file"
+		sudo cp $file /etc/bash_completion.d/
+	done
+	verbose "done"
+fi
 
+if [ "$DO_GNOME_TERM" == "yes" ]; then
+	verbose "Setting up gnome-terminal..."
+	verbose "Installing fonts..."
+	[ -z "$TERMINAL_FONTS" ] && exit_err "No Terminal fonts set..."
+	pm_chk_and_install "$TERMINAL_FONTS"
+	verbose "Editing gnome-terminal settings..."
+	$edit_gnome_terminal
+fi
 
-#####
-ln -sf $(pwd)/byobu ${HOME}/.byobu
-# Setting up git user
-git config --global user.name  "$GIT_username"
-git config --global user.email "$GIT_email"
-# When push.default is set to 'matching', git will push local branches
-# to the remote branches that already exist with the same name.
-git config --global push.default matching
-# Setting up vim
-ln -sf $(pwd)/vimrc ${HOME}/.vimrc
-git clone https://github.com/gmarik/Vundle.vim.git ${HOME}/.vim/bundle/Vundle.vim
-# Installing bundles...
-vim +PluginInstall +qall
-verbose "\`Done"
+if [ "$DO_BYOBU" == "yes" ]; then
+	pm_chk_and_install "byobu"
+	ln -sf $(pwd)/byobu ${HOME}/.byobu
 
+fi
 
-#####
-# bash-autocomplete scripts
-verbose "Installing Bash completion scripts..."
-for file in $dotfiles_home/autocompletion/*; do
-	verbose "Deploying $file"
-	sudo cp $file /etc/bash_completion.d/
-done
-verbose "\`Done"
+if [ "$DO_VUNDLE" == "yes" ]; then
+	# WARNING because we clone vundle inside ~/.vim if later we need to link
+	#         the whole .vim folder, we'll have to ignore vundle in .gitignore
+	#         or some place else...
+	# TODO bundles should be in a separate file included in vimrc
+	verbose "Installing Vundle and other bundles listed in vimrc..."
+	git clone https://github.com/gmarik/Vundle.vim.git ${HOME}/.vim/bundle/Vundle.vim
+	# Installing bundles...
+	vim +PluginInstall +qall
+	verbose "done"
+fi
 
+if [ "$DO_PAGER" == "yes" ]; then
+	verbose "Installing Vimpager..."
+	# Get dependencies
+	pm_chk_and_install "pandoc"
+	git clone https://github.com/rkitover/vimpager.git $dotfiles_home/vimpager
+	pushd $dotfiles_home/vimpager
+	sudo make install
+	verbose "Cleaning up..."
+	popd
+	rm -rf $dotfiles_home/vimpager
+	verbose "done"
+fi
 
-#####
-# gnome-terminal
-verbose "Installing fonts..."
-$PM_install terminus-fonts terminus-fonts-console || exit_err "Could not install fonts."
-verbose "Editing gnome-terminal settings..."
-dconf load /org/gnome/terminal/legacy/ < $dotfiles_home/terminal_settings
-verbose "\`Done"
+if [ "$DO_PIP" == "yes" ]; then
 
+	verbose "Installing pip packages..."
+	verbose " First upgrade pip to it's latest version..."
+	$PIP_install --upgrade pip
 
-#####
-# vimpager
-verbose "Installing Vimpager..."
-cd $dotfiles_home
-# Get dependencies
-$PM_install pandoc || exit_err "Could not install pandoc."
-git clone https://github.com/rkitover/vimpager.git
-cd vimpager
-sudo make install
-cd $dotfiles_home
-verbose "| Cleaning up..."
-rm -rf vimpager
-verbose " \`Done"
+	verbose " Installing : $BASE_PIP_PACKAGES"
+	$PIP_install $BASE_PIP_PACKAGES
+	verbose " linking personnal cheats..."
+	rm -rf ${HOME}/.cheat
+	ln -sf $(pwd)/cheat ${HOME}/.cheat
+	verbose "done"
+fi
 
+if [ "$DO_GIT" == "yes" ]; then
+	git config --global user.name  "$GIT_username"
+	git config --global user.email "$GIT_email"
+	# When push.default is set to 'matching', git will push local branches
+	# to the remote branches that already exist with the same name.
+	git config --global push.default matching
+fi
 
-#####
-# cheat
-verbose "Installing cheat tool"
-$PIP_install cheat || exit_err "Could not install cheat using pip"
-rm -rf ${HOME}/.cheat
-ln -sf $(pwd)/cheat ${HOME}/.cheat
-verbose "\`Done"
-
-
-#####
-# speedtest-cli
-verbose "Installing Speedtest tool..."
-$PIP_install speedtest-cli || exit_err "Could not install speedtest-cli using pip"
-verbose "\`Done"
+if [ "$DO_EXTRA" == "yes" ]; then
+	for file in $EXTRA_SCRIPTS; do
+		echo -e ${txtblu} Running : ${txtrst}$file
+		$file || exit_err "Something went wrong while running : $file"
+	done
+fi
 
 echo -e ${txtgrn}All Good \!\!${txtrst}
 

@@ -1,16 +1,25 @@
 
 Editing Users
 ---------------
-* Add a new User : `sudo adduser -c "Liam BEGUIN" foo`
+* Add a new User : `sudo adduser -m -s /bin/bash -c "Liam BEGUIN" foo`
 * Set it's Password : `sudo passwd -f foo`
-* Add to Sudoer : `sudo usermod -aG wheel foo`
+* Add to Sudoer (Fedora) : `sudo usermod -aG wheel foo`
+* Add to Sudoer (Ubuntu) : `sudo usermod -aG sudo foo`
 * Remove user and it's home : `sudo userdel -r foo`
 
-Generate __terminal_settings__
+Generate a gnome profile for Fedora
 -------------------------------
+Change all you want using the GUI
 ```
-$ cd ~/dev/dotfiles
+$ cd ~/dev/dotfiles/gnome-terminal
 $ dconf dump /org/gnome/terminal/legacy/ > terminal_settings
+```
+Generate a gnome profile for Ubuntu
+-------------------------------
+Change all you want using the GUI
+```
+$ cd ~/dev/dotfiles/gnome-terminal
+$ gconftool-2 --dump  /apps/gnome-terminal > profile.xml
 ```
 
 Install instructions
@@ -37,10 +46,6 @@ Other useful tools
 $ cd ~/dev
 $ git clone https://github.com/Liambeguin/pw.git
 $ ln -sf $(pwd)/pw/pw ~/bin/pw 
-```
-* [speedtest-cli](https://github.com/sivel/speedtest-cli)
-```
-$ sudo pip install speedtest-cli
 ```
 
 TODOs
