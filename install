@@ -3,9 +3,6 @@
 #####
 # Setting Global variables
 #
-GIT_username="Liam BEGUIN"
-GIT_email="liambeguin@gmail.com"
-
 PIP_install="sudo pip install "
 
 dotfiles_home="$(dirname $0)"
@@ -13,9 +10,26 @@ dotfiles_home="$(readlink -f $dotfiles_home)"
 start_dir="$(pwd)"
 start_dir="$(readlink -f $start_dir)"
 
-VERBOSE="${VERBOSE:-yes}"
+VERBOSE="no"
+DO_RC="yes"
+DO_GNOME_TERM="yes"
+DO_BYOBU="yes"
+DO_VUNDLE="yes"
+DO_PAGER="yes" #vimcat &Co
+DO_PIP="yes"   #cheat speedtest, ...
+BASE_PIP_PACKAGES="cheat speedtest-cli"
+APPEND_PIP=""
+
+DO_GIT="yes"
+GIT_username="Liam BEGUIN"
+GIT_email="liambeguin@gmail.com"
+
+DO_EXTRA="no"
+
 # List of RPMs to be installed
-BASE_RPM="byobu screen vim git python-pip python3-pip"
+BASE_PACKAGES="screen vim git"
+APPEND_PACKAGES=""
+
 
 # Perform program exit housekeeping
 cleanup() {
@@ -37,13 +51,13 @@ SYNOPSIS
 	$(basename $0) [options]
 
 DESCRIPTION
-	-h | --help .....................* Display this message
-	-v | --verbose ..................* Enable verbose output
+	-h | --help ..................... Display this message
+	-v | --verbose .................. Enable verbose output
 	--disable-rc ....................* Do not attempt to link bashrc, vimrc and screenrc
 	--disable-gnome-term ............* Do not attempt to setup gnome-terminal
 	--disable-byobu .................* Do not attempt to install Byobu window manager
 	--disable-vundle ................* Do not attempt to install Vim Bundles
-	--disable-cheat .................* Do not attempt to install cheat and vimpager
+	--disable-pager .................* Do not attempt to install vimpager
 	--disable-pip ...................* Do not attempt to install python and pip packages
 
 	--disable-git ...................* Do not configure git
@@ -52,10 +66,12 @@ DESCRIPTION
 
 	--append-packages [pkgs] ........* add pkgs to the list of packages to be installed
 	--append-pip [py-pkgs] ...,......* add py-pkgs to the list of packages to be installed
-	--enable-local ..................* Install executable scripts in local folfer
+	--enable-extra ..................* Install executable scripts in $dotfiles_home/extra
 
 	--clean .........................* Undo changes
 
+DEFAULT SETTINGS
+	$(print_settings)
 
 EOF
 	exit 0
@@ -84,7 +100,6 @@ configure() {
 			# if we cannot find dnf, use yum...
 			PM="$(which dnf 2> /dev/null || which yum 2> /dev/null)"
 			PM_install="sudo $PM install -y -q "
-			BASE_PACKAGES="screen vim git "
 			;;
 		Ubuntu|Debian)
 			# We need sudo to install stuff
@@ -97,7 +112,6 @@ configure() {
 			fi
 			PM="$(which aptitude 2>/dev/null)"
 			PM_install="sudo $PM install -y -qq "
-			BASE_PACKAGES="screen vim git "
 			;;
 		ukn)
 			exit_err "Could not figure out which distro you're running..."
@@ -107,8 +121,38 @@ configure() {
 			;;
 	esac
 
+	# Check if the packages are available for install
 	is_pkg_available "$BASE_PACKAGES"
 }
+
+print_settings(){
+	echo " == Settings == "
+	echo "  * verbose? $VERBOSE"
+	echo "  * link dotfiles? $DO_RC"
+	echo "  * setup gnome-terminal? $DO_GNOME_TERM"
+	echo "  * install Byobu window manager? $DO_BYOBU"
+	echo "  * install vim bundles? $DO_VUNDLE"
+	echo "  * install vimpager? $DO_PAGER" #vimcat &Co
+
+	echo "  * install Python and pip packages? $DO_PIP"   #cheat speedtest, ...
+	if [ "$DO_PIP" == "yes" ]; then
+		echo "    - pip packages to be installed : $BASE_PIP_PACKAGES"
+	fi
+
+	echo "  * configure git env? $DO_GIT"
+	if [ "$DO_GIT" == "yes" ]; then
+		echo "    - push.default : matching #hardcoded"
+		echo "    - user.name    : $GIT_username"
+		echo "    - user.email   : $GIT_email"
+	fi
+
+	echo "  * process scripts in $dotfiles_home/extra? $DO_EXTRA"
+	#TODO add list of executable scripts in extra
+
+	echo "  * packages to be installed : $BASE_PACKAGES"
+	echo
+}
+
 
 #####
 # Starts here !
@@ -117,9 +161,9 @@ configure() {
 [ $(whoami) = "root" ] && exit_err "This must NOT be run as root !"
 
 OPTS=$(getopt -o h,v --long help,verbose,\
-disable-rc,disable-gnome-term,disable-byobu,disable-vundle,disable-cheat,disable-pip,\
+disable-rc,disable-gnome-term,disable-byobu,disable-vundle,disable-pager,disable-pip,\
 disable-git,git-username:,git-email:,\
-append-packages:,append-pip:,enable-local,clean -- "$@")
+append-packages:,append-pip:,enable-extra,clean -- "$@")
 eval set -- "$OPTS"
 
 while true; do
@@ -128,59 +172,61 @@ while true; do
 			usage
 			;;
 		-v|--verbose)
-			echo "verbose is on"
+			VERBOSE="yes"
 			shift
 			;;
 		--disable-rc)
-			echo "disable-rc"
+			DO_RC="no"
 			shift
 			;;
 		--disable-gnome-term)
-			echo "disable-gnome-term"
+			DO_GNOME_TERM="no"
 			shift
 			;;
 		--disable-byobu)
-			echo "disable-byobu"
+			DO_BYOBU="no"
 			shift
 			;;
 		--disable-vundle)
-			echo "disable-vundle"
+			DO_VUNDLE="no"
 			shift
 			;;
-		--disable-cheat)
-			echo "disable-cheat"
+		--disable-pager)
+			DO_PAGER="no"
 			shift
 			;;
 		--disable-pip)
-			echo "disable-pip"
+			DO_PIP="no"
 			shift
 			;;
 		--disable-git)
-			echo "disable-git"
+			DO_GIT="no"
 			shift
 			;;
 		--git-username)
-			echo "git-username : $2"
+			GIT_username="$2"
 			shift 2
 			;;
 		--git-email)
-			echo "git-email : $2"
+			GIT_email="$2"
 			shift 2
 			;;
 		--append-packages)
-			echo "append pakcages : $2"
+			APPEND_PACKAGES="$2"
+			BASE_PACKAGES="$BASE_PACKAGES $APPEND_PACKAGES"
 			shift 2
 			;;
 		--append-pip)
-			echo "append pip pakcages : $2"
+			APPEND_PIP="$2"
+			BASE_PIP_PACKAGES="$BASE_PIP_PACKAGES $APPEND_PIP"
 			shift 2
 			;;
-		--enable-local)
-			echo "enable-local"
+		--enable-extra)
+			DO_EXTRA="yes"
 			shift
 			;;
 		--clean)
-			echo "clean"
+			exit_err "clean not yet implemented"
 			shift
 			;;
 		--)
@@ -194,9 +240,13 @@ while true; do
 	esac
 done
 
-configure
+# Add python stuff is needed
+[ "$DO_PIP" == "yes" ] && BASE_PACKAGES="$BASE_PACKAGES python python-pip"
+
+print_settings
 
 exit 0
+configure
 # EVERYTHING AFTER THIS POINT SHOULD BE DISTRO INDEPENDANT !!
 
 #####
