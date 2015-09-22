@@ -77,12 +77,20 @@ configure() {
 	DISTRO="$(get_distro)"
 	case "$DISTRO" in
 		Fedora|RHEL|CentOS)
+			# We need sudo to install stuff
+			if [ -z "$(groups | grep wheel)" ]; then
+				exit_err "$(whoami) is not in wheel group try : 'sudo usermod -aG wheel $(whoami)'"
+			fi
 			# if we cannot find dnf, use yum...
 			PM="$(which dnf 2> /dev/null || which yum 2> /dev/null)"
 			PM_install="sudo $PM install -y -q "
 			BASE_PACKAGES="screen vim git "
 			;;
 		Ubuntu|Debian)
+			# We need sudo to install stuff
+			if [ -z "$(groups | grep sudo)" ]; then
+				exit_err "$(whoami) is not in sudo group try : 'sudo usermod -aG sudo $(whoami)'"
+			fi
 			sudo apt-get install -y -qq aptitude
 			if [ -z "$(which aptitude 2>/dev/null)" ]; then
 				exit_err "Could not find aptitude command!"
@@ -101,6 +109,12 @@ configure() {
 
 	is_pkg_available "$BASE_PACKAGES"
 }
+
+#####
+# Starts here !
+
+# If the script is run as root, $HOME is going to be wrong
+[ $(whoami) = "root" ] && exit_err "This must NOT be run as root !"
 
 OPTS=$(getopt -o h,v --long help,verbose,\
 disable-rc,disable-gnome-term,disable-byobu,disable-vundle,disable-cheat,disable-pip,\
@@ -180,39 +194,39 @@ while true; do
 	esac
 done
 
-
+configure
 
 exit 0
+# EVERYTHING AFTER THIS POINT SHOULD BE DISTRO INDEPENDANT !!
 
 #####
-# Installing a few bash functions I often use
+# ALWAYS DO
+# Initial system update
+verbose "Current system release is : " $DISTRO
+verbose "First, lets make sure the system is up-to-date !"
+sudo $PM -y -q update
+
+# Move to PIP section
+$PIP_install --upgrade pip
+
+#####
+## IF NOT --disable-rc :
+## Installing a few bash functions I often use
 mkdir -p ${HOME}/bin
 ln -sf $(pwd)/bash/bash_colors.conf ${HOME}/bin/
 ln -sf $(pwd)/bash/bash_functions.conf ${HOME}/bin/
+# dotfiles
+verbose "Linking dotfiles..."
+ln -sf $(pwd)/bashrc ${HOME}/.bashrc
+ln -sf $(pwd)/screenrc ${HOME}/.screenrc
+ln -sf $(pwd)/screen/screen_skins ${HOME}/.screen_skins
 
 
-#####
-# Check a few things about the host before we start
-# If we are on an older Fedora release use YUM instead of DNF
-[ -z "$(which dnf 2> /dev/null)" ] && PM="sudo yum install -y -q"
-# If the script is run as root, $HOME is going to be wrong
-[ $(whoami) = "root" ] && exit_err "This must NOT be run as root !"
-# We still need sudo to install stuff
-if [ -z "$(groups | grep wheel)" ]; then
-	exit_err "$(whoami) is not in wheel group try : 'sudo usermod -aG wheel $(whoami)'"
-fi
 # Warn the user this is dangerous
 read -p "This will delete all your old rcfiles and install packages Continue ? [y/n] " rc
 [ $rc != "y" ] && exit_err "Exiting upon your request !"
 
 
-#####
-# Initial system update
-verbose "Current system release is : " $DISTRO
-verbose "First, lets make sure the system is up-to-date !"
-sudo dnf -y -q update
-$PIP_install --upgrade pip
-verbose "\`Done"
 
 # install needed packages
 verbose "Installing base packages..."
@@ -221,11 +235,6 @@ verbose "\`Done"
 
 
 #####
-# dotfiles
-verbose "Linking dotfiles..."
-ln -sf $(pwd)/bashrc ${HOME}/.bashrc
-ln -sf $(pwd)/screenrc ${HOME}/.screenrc
-ln -sf $(pwd)/screen/screen_skins ${HOME}/.screen_skins
 ln -sf $(pwd)/byobu ${HOME}/.byobu
 # Setting up git user
 git config --global user.name  "$GIT_username"
