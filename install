@@ -1,15 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 
 #####
 # Setting Global variables
 #
-SUPPORTED_DISTROS="fedora"
-DISTRO=$(lsb_release -ir | cut -d':' -f2)
-
 GIT_username="Liam BEGUIN"
 GIT_email="liambeguin@gmail.com"
 
-PM_install="sudo dnf install -y -q "
 PIP_install="sudo pip install "
 
 dotfiles_home="$(dirname $0)"
@@ -22,30 +18,177 @@ VERBOSE="${VERBOSE:-yes}"
 BASE_RPM="byobu screen vim git python-pip python3-pip"
 
 # Perform program exit housekeeping
-function cleanup() {
+cleanup() {
 	echo "Exiting ..."
 	exit
 }
 trap cleanup SIGHUP SIGINT SIGTERM
 
+# These will be install further
+source ./bash/bash_colors.conf
+source ./bash/bash_functions.conf
 
-#####
-# There is no point doing anything if the host's distro is not supported
-for supported in $SUPPORTED_DISTROS; do
-	if [ -z "$(echo $DISTRO | grep -i $supported)" ]; then
-		echo $DISTRO is not listed in supported distros...
-		exit 1
-	fi
+usage(){
+	cat <<EOF
+NAME
+	install - Bootstrap a new user and keep track of your dotfiles.
+
+SYNOPSIS
+	$(basename $0) [options]
+
+DESCRIPTION
+	-h | --help .....................* Display this message
+	-v | --verbose ..................* Enable verbose output
+	--disable-rc ....................* Do not attempt to link bashrc, vimrc and screenrc
+	--disable-gnome-term ............* Do not attempt to setup gnome-terminal
+	--disable-byobu .................* Do not attempt to install Byobu window manager
+	--disable-vundle ................* Do not attempt to install Vim Bundles
+	--disable-cheat .................* Do not attempt to install cheat and vimpager
+	--disable-pip ...................* Do not attempt to install python and pip packages
+
+	--disable-git ...................* Do not configure git
+	--git-username [username] .......* Use username as git user (void if --disable-git)
+	--git-email [email] .............* Use email as git email (void if --disable-git)
+
+	--append-packages [pkgs] ........* add pkgs to the list of packages to be installed
+	--append-pip [py-pkgs] ...,......* add py-pkgs to the list of packages to be installed
+	--enable-local ..................* Install executable scripts in local folfer
+
+	--clean .........................* Undo changes
+
+
+EOF
+	exit 0
+}
+
+# Usage: is_pkg_available "list of packages"
+# for this to work, PM needs to be defined !
+is_pkg_available() {
+	[ -z "$PM" ] && exit_err "No package manager defined !"
+
+	for package in $@; do
+		if [ -z "$($PM search -y -q $package 2>/dev/null)" ]; then
+			exit_err "$package is not available on your system."
+		fi
+	done
+}
+
+configure() {
+	DISTRO="$(get_distro)"
+	case "$DISTRO" in
+		Fedora|RHEL|CentOS)
+			# if we cannot find dnf, use yum...
+			PM="$(which dnf 2> /dev/null || which yum 2> /dev/null)"
+			PM_install="sudo $PM install -y -q "
+			BASE_PACKAGES="screen vim git "
+			;;
+		Ubuntu|Debian)
+			sudo apt-get install -y -qq aptitude
+			if [ -z "$(which aptitude 2>/dev/null)" ]; then
+				exit_err "Could not find aptitude command!"
+			fi
+			PM="$(which aptitude 2>/dev/null)"
+			PM_install="sudo $PM install -y -qq "
+			BASE_PACKAGES="screen vim git "
+			;;
+		ukn)
+			exit_err "Could not figure out which distro you're running..."
+			;;
+		*)
+			exit_err "It looks like you're running an unsupported distro. Sorry !"
+			;;
+	esac
+
+	is_pkg_available "$BASE_PACKAGES"
+}
+
+OPTS=$(getopt -o h,v --long help,verbose,\
+disable-rc,disable-gnome-term,disable-byobu,disable-vundle,disable-cheat,disable-pip,\
+disable-git,git-username:,git-email:,\
+append-packages:,append-pip:,enable-local,clean -- "$@")
+eval set -- "$OPTS"
+
+while true; do
+	case "$1" in
+		-h|--help)
+			usage
+			;;
+		-v|--verbose)
+			echo "verbose is on"
+			shift
+			;;
+		--disable-rc)
+			echo "disable-rc"
+			shift
+			;;
+		--disable-gnome-term)
+			echo "disable-gnome-term"
+			shift
+			;;
+		--disable-byobu)
+			echo "disable-byobu"
+			shift
+			;;
+		--disable-vundle)
+			echo "disable-vundle"
+			shift
+			;;
+		--disable-cheat)
+			echo "disable-cheat"
+			shift
+			;;
+		--disable-pip)
+			echo "disable-pip"
+			shift
+			;;
+		--disable-git)
+			echo "disable-git"
+			shift
+			;;
+		--git-username)
+			echo "git-username : $2"
+			shift 2
+			;;
+		--git-email)
+			echo "git-email : $2"
+			shift 2
+			;;
+		--append-packages)
+			echo "append pakcages : $2"
+			shift 2
+			;;
+		--append-pip)
+			echo "append pip pakcages : $2"
+			shift 2
+			;;
+		--enable-local)
+			echo "enable-local"
+			shift
+			;;
+		--clean)
+			echo "clean"
+			shift
+			;;
+		--)
+			shift
+			break
+			;;
+		*)
+			exit_err "Unknown argument."
+			break
+			;;
+	esac
 done
 
+
+
+exit 0
 
 #####
 # Installing a few bash functions I often use
 mkdir -p ${HOME}/bin
 ln -sf $(pwd)/bash/bash_colors.conf ${HOME}/bin/
 ln -sf $(pwd)/bash/bash_functions.conf ${HOME}/bin/
-source ./bash/bash_colors.conf
-source ./bash/bash_functions.conf
 
 
 #####
