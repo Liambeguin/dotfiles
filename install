@@ -239,6 +239,9 @@ ln -sf $(pwd)/byobu ${HOME}/.byobu
 # Setting up git user
 git config --global user.name  "$GIT_username"
 git config --global user.email "$GIT_email"
+# When push.default is set to 'matching', git will push local branches
+# to the remote branches that already exist with the same name.
+git config --global push.default matching
 # Setting up vim
 ln -sf $(pwd)/vimrc ${HOME}/.vimrc
 git clone https://github.com/gmarik/Vundle.vim.git ${HOME}/.vim/bundle/Vundle.vim
