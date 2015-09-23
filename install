@@ -316,11 +316,11 @@ if [ "$DO_RC" == "yes" ]; then
 	verbose "Linking dotfiles..."
 	mkdir -p ${HOME}/bin
 	# Installing a few bash functions I often use
-	ln -sf $(pwd)/bash/colorutils.conf ${HOME}/bin/
-	ln -sf $(pwd)/bash/shutils.conf ${HOME}/bin/
-	ln -sf $(pwd)/bashrc ${HOME}/.bashrc
-	ln -sf $(pwd)/screenrc ${HOME}/.screenrc
-	ln -sf $(pwd)/vimrc ${HOME}/.vimrc
+	ln -sf $dotfiles_home/bash ${HOME}/.bash
+
+	ln -sf $dotfiles_home/bashrc ${HOME}/.bashrc
+	ln -sf $dotfiles_home/screenrc ${HOME}/.screenrc
+	ln -sf $dotfiles_home/vimrc ${HOME}/.vimrc
 
 	verbose "Installing Bash completion scripts..."
 	for file in $dotfiles_home/autocompletion/*; do
