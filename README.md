@@ -53,10 +53,6 @@ TODOs
 - [ ] Hilight a specific set of words on the command line (eg :`$ bash | sed -e 's/foo/\x1b[7m&\x1b[0m/g'`)
 - [ ] Cmdline tool to manage a todolist.
 - [ ] add list of what install does to this file
-- [ ] add parameters to install script 
-- [ ] install byobu from my repo (make my own specfile) 
-- [x] ~~fork [cheat](https://github.com/chrisallenlane/cheat) and auto install~~
- - [x] ~~Enhance output using vimcat~~
- - [x] ~~add vimcat to installer~~
-- [x] ~~Replace screen with **byobu**~~ (keeping screen)
- - [x] ~~Fix vim-airline in byobu...~~ 
+- [ ] add dynamic window names in byobu
+- [ ] dynamic bashrc depending on install script (cp bashrc in bash and edit that one ...)
+

@@ -105,18 +105,21 @@ configure() {
 	case "$DISTRO" in
 		Fedora|RHEL|CentOS)
 			# We need sudo to install stuff
-			if [ -z "$(groups | grep wheel)" ]; then
+			if groups $(whoami) | grep wheel &>/dev/null ; then
 				exit_err "$(whoami) is not in wheel group try : 'sudo usermod -aG wheel $(whoami)'"
 			fi
 			# if we cannot find dnf, use yum...
 			PM="$(which dnf 2> /dev/null || which yum 2> /dev/null)"
 			PM_install="sudo $PM install -y -q "
 			TERMINAL_FONTS="terminus-fonts terminus-fonts-console"
+			if [ -z "$GNOME_profile" ]; then
+				GNOME_profile="$dotfiles_home/gnome-terminal/terminal_settings"
+			fi
 			edit_gnome_terminal="dconf load /org/gnome/terminal/legacy/ < $GNOME_profile"
 			;;
 		Ubuntu|Debian)
 			# We need sudo to install stuff
-			if [ -z "$(groups | grep sudo)" ]; then
+			if groups $(whoami) | grep sudo &>/dev/null ; then
 				exit_err "$(whoami) is not in sudo group try : 'sudo usermod -aG sudo $(whoami)'"
 			fi
 			sudo apt-get install -y -qq aptitude
@@ -126,7 +129,9 @@ configure() {
 			PM="$(which aptitude 2>/dev/null)"
 			PM_install="sudo $PM install -y -q "
 			TERMINAL_FONTS="xfonts-terminus console-terminus"
-			GNOME_profile="${GNOME_profile:-$dotfiles_home/gnome-terminal/profile.xml}"
+			if [ -z "$GNOME_profile" ]; then
+				GNOME_profile="$dotfiles_home/gnome-terminal/profile.xml"
+			fi
 			edit_gnome_terminal="gconftool-2 --load $GNOME_profile"
 			;;
 		ukn)
@@ -136,9 +141,6 @@ configure() {
 			exit_err "It looks like you're running an unsupported distro. Sorry !"
 			;;
 	esac
-
-	# Check if the packages are available for install
-	is_pkg_available "$BASE_PACKAGES"
 
 	verbose "Checking if gnome-terminal is available on the host..."
 	if [ -z "$(which gnome-terminal 2>/dev/null)" ]; then
@@ -316,7 +318,12 @@ if [ "$DO_RC" == "yes" ]; then
 	verbose "Linking dotfiles..."
 	mkdir -p ${HOME}/bin
 	# Installing a few bash functions I often use
-	ln -sf $dotfiles_home/bash ${HOME}/.bash
+	ln -sf $dotfiles_home/bash/colorutils.conf ${HOME}/.bash
+	ln -sf $dotfiles_home/bash/shutils.conf ${HOME}/.bash
+	# Add the rest of my basic files included in bashrc
+	ln -sf $dotfiles_home/bash/aliases.conf ${HOME}/.bash
+	ln -sf $dotfiles_home/bash/ps1.conf ${HOME}/.bash
+	ln -sf $dotfiles_home/bash/screen.conf ${HOME}/.bash
 
 	ln -sf $dotfiles_home/bashrc ${HOME}/.bashrc
 	ln -sf $dotfiles_home/screenrc ${HOME}/.screenrc
@@ -349,8 +356,9 @@ if [ "$DO_VUNDLE" == "yes" ]; then
 	# WARNING because we clone vundle inside ~/.vim if later we need to link
 	#         the whole .vim folder, we'll have to ignore vundle in .gitignore
 	#         or some place else...
-	# TODO bundles should be in a separate file included in vimrc
 	verbose "Installing Vundle and other bundles listed in vimrc..."
+	# XXX NOTE: vimrc doesn't fail even if the sourced file doe not exist.
+	ln -s $dotfiles_home/vim/vimrc-* ${HOME}/.vim/plugin/
 	git clone https://github.com/gmarik/Vundle.vim.git ${HOME}/.vim/bundle/Vundle.vim
 	# Installing bundles...
 	vim +PluginInstall +qall
@@ -359,6 +367,8 @@ fi
 
 if [ "$DO_PAGER" == "yes" ]; then
 	verbose "Installing Vimpager..."
+	# Adding aliases and stuff in bashrc
+	ln -sf $dotfiles_home/bash/pager.conf ${HOME}/.bash
 	# Get dependencies
 	pm_chk_and_install "pandoc"
 	git clone https://github.com/rkitover/vimpager.git $dotfiles_home/vimpager
@@ -399,6 +409,6 @@ if [ "$DO_EXTRA" == "yes" ]; then
 	done
 fi
 
-echo -e ${txtgrn}All Good \!\!${txtrst}
+echo -e "${txtgrn} ===> All Good \!\!${txtrst}"
 
 # vim:set cc=80 :

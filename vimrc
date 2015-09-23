@@ -1,3 +1,4 @@
+
 " ==  General Stuff  ==========================================================
 " Navigation
 "  for more go to : http://vim.wikia.com/wiki/All_the_right_moves
@@ -42,30 +43,14 @@ command Nws execute "%s/\\s\\+$//g | nohl"
 command Bd bp\|bd \#
 
 " Bitbake has a set of files that can be used goto bitbake/contrib/vim
-
 " =============================================================================
+
 
 
 
 " == Vim-airline ==============================================================
 "
-" nice themes:
-"    * ubaryd no replace theme
-"    * badwolf no replace theme
-"    * hybridline
-
-set laststatus=2 " Always show status line
-set noshowmode   " get rid of the second status line
-
-let g:airline_powerline_fonts = 1
-let g:airline_theme = 'dark'
-
-let g:airline#extensions#whitespace#checks = [ 'indent', 'trailing' ]
-let g:airline#extensions#whitespace#show_message = 1
-" Git section
-let g:airline#extensions#hunks#enabled=1
-" powerline sections
- let g:airline_section_y = ''
+execute 'runtime!' 'plugin/vimrc-airline'
 " =============================================================================
 
 
@@ -73,29 +58,9 @@ let g:airline#extensions#hunks#enabled=1
 
 " == Vundle ===================================================================
 "
-set nocompatible " be iMproved
-filetype off " required!
-
-" Vundle setup
-" required!
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#rc()
-
-" let Vundle manage Vundle
-Bundle 'gmarik/vundle'
-
-" My Bundles here:
-Bundle 'tpope/vim-fugitive'
-Bundle 'bling/vim-airline'
-Bundle 'junegunn/vim-easy-align'
-Bundle 'ntpeters/vim-better-whitespace'
-Bundle 'ervandew/supertab'
-Bundle 'vim-scripts/SearchComplete'
-" Bundle 'xuhdev/vim-latex-live-preview'
-Bundle 'scrooloose/syntastic'
-
-filetype plugin indent on " required!
+execute 'runtime!' 'plugin/vimrc-vundle'
 " =============================================================================
+
 
 
 

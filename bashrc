@@ -18,7 +18,7 @@
 [ -f ~/.bash/ps1.conf ] && source ~/.bash/ps1.conf
 [ -f ~/.bash/aliases.conf ] && source ~/.bash/aliases.conf
 [ -f ~/.bash/screen.conf ] && source ~/.bash/screen.conf
-#source pager.conf should be done by dotfiles/install
+[ -f ~/.bash/pager.conf ] && source ~/.bash/pager.conf
 
 
 # remapping CAPS LOCK to CTRL
