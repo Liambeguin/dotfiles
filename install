@@ -41,8 +41,8 @@ cleanup() {
 trap cleanup SIGHUP SIGINT SIGTERM
 
 # These will be install further
-source ./bash/bash_colors.conf
-source ./bash/bash_functions.conf
+source ./bash/colorutils.conf
+source ./bash/shutils.conf
 
 usage(){
 	cat <<EOF
@@ -316,8 +316,8 @@ if [ "$DO_RC" == "yes" ]; then
 	verbose "Linking dotfiles..."
 	mkdir -p ${HOME}/bin
 	# Installing a few bash functions I often use
-	ln -sf $(pwd)/bash/bash_colors.conf ${HOME}/bin/
-	ln -sf $(pwd)/bash/bash_functions.conf ${HOME}/bin/
+	ln -sf $(pwd)/bash/colorutils.conf ${HOME}/bin/
+	ln -sf $(pwd)/bash/shutils.conf ${HOME}/bin/
 	ln -sf $(pwd)/bashrc ${HOME}/.bashrc
 	ln -sf $(pwd)/screenrc ${HOME}/.screenrc
 	ln -sf $(pwd)/vimrc ${HOME}/.vimrc

@@ -9,8 +9,8 @@ if [ -f /etc/bashrc ]; then
 fi
 
 # Source personnal bash files
-[ -f ~/bin/bash_functions.conf ] && source ~/bin/bash_functions.conf
-[ -f ~/bin/bash_colors.conf ] && source ~/bin/bash_colors.conf
+[ -f ~/bin/shutils.conf ] && source ~/bin/shutils.conf
+[ -f ~/bin/colorutils.conf ] && source ~/bin/colorutils.conf
 
 
 # the following file includes machine specifics
