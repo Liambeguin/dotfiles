@@ -14,13 +14,34 @@ layout autosave on
 
 # the following two lines give a two-line status, with the current window highlighted
 hardstatus alwayslastline
-hardstatus string "$SCR_HARDSTAT"
 
-caption always "$SCR_CAPTION"
+# Set of skins: uncomment one to use it !
+#RED
+#hardstatus string '%{-}%{b KW} %H%{-b} %{R}%S   %{= Kw} %=%{-} %-Lw%{= rW}%n%f %t%{-}%+Lw %=    %{R}%D %M %d %{W}%C%a '
+#caption splitonly '%?%F%{.r.}%?%3n %t%? [%h]%?'
+#GREEN
+#hardstatus string '%{-}%{b KW} %H%{-b} %{G}%S   %{= Kw} %=%{-} %-Lw%{= gW}%n%f %t%{-}%+Lw %=    %{G}%D %M %d %{W}%C%a '
+#caption splitonly '%?%F%{.g.}%?%3n %t%? [%h]%?'
+#LIGHTGREEN
+#hardstatus string '%{-}%{b KW} %H%{-b} %{G}%S   %{= Kw} %=%{-} %-Lw%{= GW}%n%f %t%{-}%+Lw %=    %{G}%D %M %d %{W}%C%a '
+#caption splitonly '%?%F%{.G.}%?%3n %t%? [%h]%?'
+#YELLOW
+#hardstatus string '%{-}%{b KW} %H%{-b} %{Y}%S   %{= Kw} %=%{-} %-Lw%{= yW}%n%f %t%{-}%+Lw %=    %{Y}%D %M %d %{W}%C%a '
+#caption splitonly '%?%F%{.y.}%?%3n %t%? [%h]%?'
+#BLUE
+hardstatus string '%{-}%{b KW} %H%{-b} %{B}%S   %{= Kw} %=%{-} %-Lw%{= bW}%n%f %t%{-}%+Lw %=    %{B}%D %M %d %{W}%C%a '
+caption splitonly '%?%F%{.b.}%?%3n %t%? [%h]%?'
+#LIGHTBLUE
+#hardstatus string '%{-}%{b KW} %H%{-b} %{B}%S   %{= Kw} %=%{-} %-Lw%{= BW}%n%f %t%{-}%+Lw %=    %{B}%D %M %d %{W}%C%a '
+#caption splitonly '%?%F%{.B.}%?%3n %t%? [%h]%?'
+#MAGENTA
+#hardstatus string '%{-}%{b KW} %H%{-b} %{M}%S   %{= Kw} %=%{-} %-Lw%{= mW}%n%f %t%{-}%+Lw %=    %{M}%D %M %d %{W}%C%a '
+#caption splitonly '%?%F%{.m.}%?%3n %t%? [%h]%?'
+#CYAN
+#hardstatus string '%{-}%{b KW} %H%{-b} %{C}%S   %{= Kw} %=%{-} %-Lw%{= cW}%n%f %t%{-}%+Lw %=    %{C}%D %M %d %{W}%C%a '
+#caption splitonly '%?%F%{.c.}%?%3n %t%? [%h]%?'
 
-#hardstatus string '%{= kb}[%{kb}%H%? %1`%?%{b}][%{kb}%S%? %1`%?%{b}][%= %{= kw}%-w%{+b bw} %n*%?(%u)%? %{-}%+w %=%{b}][%{B}%D %M %d %{W}%C%A%{b}]'
-#
-#caption splitonly "%?%F%{.b.}%?%3n %t%? [%h]%?"
+
 # huge scrollback buffer
 defscrollback 5000
 # 256 colors
@@ -29,7 +50,7 @@ termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
 term screen-256color
 defbce off
 
-# adding command to copy to clipboard
+# addin gcommand to copy to clipboard
 bind > eval writebuf "exec sh -c 'xsel -nbi </tmp/screen-exchange'"
 
 # mouse tracking allows to switch region focus by clicking

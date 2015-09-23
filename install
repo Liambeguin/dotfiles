@@ -321,8 +321,6 @@ if [ "$DO_RC" == "yes" ]; then
 	ln -sf $(pwd)/bashrc ${HOME}/.bashrc
 	ln -sf $(pwd)/screenrc ${HOME}/.screenrc
 	ln -sf $(pwd)/vimrc ${HOME}/.vimrc
-	#TODO remove screen skins
-	ln -sf $(pwd)/screen/screen_skins ${HOME}/.screen_skins
 
 	verbose "Installing Bash completion scripts..."
 	for file in $dotfiles_home/autocompletion/*; do
