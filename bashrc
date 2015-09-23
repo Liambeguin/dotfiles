@@ -19,16 +19,6 @@ if [ -f ~/.bashrc_local ]; then
 	. ~/.bashrc_local
 fi
 
-# Source the different gnu-screen skins
-if [ -f ~/.screen_skins ]; then
-	. ~/.screen_skins
-
-# If there are no skins, use a default so screenrc does not break
-else
-	export SCR_HARDSTAT='%{= kb}[%{kb}%H%? %1`%?%{b}][%{kb}%S%? %1`%?%{b}][%= %{= kw}%-w%{+b bw} %n*%?(%u)%? %{-}%+w %=%{b}][%{B}%D %M %d %{W}%C%A%{b}]'
-	export SCR_CAPTION='%?%F%{.b.}%?%3n %t%? [%h]%?'
-fi
-
 # remapping CAPS LOCK to CTRL
 setxkbmap -option ctrl:nocaps
 
