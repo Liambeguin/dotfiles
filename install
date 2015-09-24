@@ -103,7 +103,7 @@ pm_chk_and_install(){
 configure() {
 	DISTRO="$(get_distro)"
 	case "$DISTRO" in
-		Fedora|RHEL|CentOS)
+		Fedora|RHEL|CentOS*)
 			# We need sudo to install stuff
 			if [ -z "$(groups | grep wheel)" ]; then
 				exit_err "$(whoami) is not in wheel group try : 'sudo usermod -aG wheel $(whoami)'"
