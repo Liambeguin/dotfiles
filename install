@@ -169,6 +169,7 @@ print_settings(){
 	echo -e "  * configure git env? ${txtblu}$DO_GIT${txtrst}"
 	if [ "$DO_GIT" == "yes" ]; then
 		echo -e "    - push.default : ${txtblu}matching${txtrst} #hardcoded"
+		echo -e "    - color.ui     : ${txtblu}true${txtrst} #hardcoded"
 		echo -e "    - user.name    : ${txtblu}$GIT_username${txtrst}"
 		echo -e "    - user.email   : ${txtblu}$GIT_email${txtrst}"
 	fi
@@ -400,6 +401,8 @@ if [ "$DO_GIT" == "yes" ]; then
 	# When push.default is set to 'matching', git will push local branches
 	# to the remote branches that already exist with the same name.
 	git config --global push.default matching
+	# Enable coloring
+	git config --global color.ui true
 fi
 
 if [ "$DO_EXTRA" == "yes" ]; then
