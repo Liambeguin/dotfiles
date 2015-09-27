@@ -194,6 +194,12 @@ print_settings(){
 
 # If the script is run as root, $HOME is going to be wrong
 [ $(whoami) = "root" ] && exit_err "This must NOT be run as root !"
+# Check if we are connected to the internet...
+ping -c2 google.com > /dev/null
+if [ $? != 0 ]; then
+	read -p "Are you really connected to the internet ?"
+	[ $rc != "y" ] && exit_err "Exiting upon your request !"
+fi
 
 OPTS=$(getopt -o h,v,y --long help,verbose,assumeyes\
 disable-rc,disable-gnome-term,gnome-profile:,disable-byobu,disable-vundle,disable-pager,disable-pip,\
