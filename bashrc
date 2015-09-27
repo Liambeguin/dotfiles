@@ -21,8 +21,12 @@
 [ -f ~/.bash/pager.conf ] && source ~/.bash/pager.conf
 
 
-# remapping CAPS LOCK to CTRL
-setxkbmap -option ctrl:nocaps
+## remapping CAPS LOCK to CTRL
+#setxkbmap -option ctrl:nocaps
+
+#this will make Caps Lock to act as Esc
+xmodmap -e "keycode 66 = Escape NoSymbol Escape"
+
 
 # Make sure we are using the correct TERM (vim-airline)
 TERM=xterm-256color
