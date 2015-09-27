@@ -58,7 +58,7 @@ execute 'runtime!' 'plugin/vimrc-airline'
 
 " == Vundle ===================================================================
 "
-execute 'runtime!' 'plugin/vimrc-vundle'
+execute 'runtime!' 'plugin/vim.plugins'
 " =============================================================================
 
 

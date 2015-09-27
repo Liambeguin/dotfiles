@@ -1,0 +1,30 @@
+
+" == Vundle ===================================================================
+"
+set nocompatible " be iMproved
+filetype off " required!
+
+" Vundle setup
+" required!
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#rc()
+
+" let Vundle manage Vundle
+Plugin 'gmarik/vundle'
+
+Plugin 'tpope/vim-fugitive'
+Plugin 'bling/vim-airline'
+Plugin 'junegunn/vim-easy-align'
+Plugin 'ntpeters/vim-better-whitespace'
+Plugin 'ervandew/supertab'
+Plugin 'vim-scripts/SearchComplete'
+" Plugin 'xuhdev/vim-latex-live-preview'
+Plugin 'scrooloose/syntastic'
+
+Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'tpope/vim-surround'
+Plugin 'vimwiki/vimwiki'
+
+
+filetype plugin indent on " required!
+" =============================================================================
