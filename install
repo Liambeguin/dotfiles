@@ -29,7 +29,7 @@ GIT_email="liambeguin@gmail.com"
 DO_EXTRA="no"
 
 # List of RPMs to be installed
-BASE_PACKAGES="screen vim git"
+BASE_PACKAGES="screen vim"
 APPEND_PACKAGES=""
 
 
