@@ -22,5 +22,7 @@ Bundle 'vim-scripts/SearchComplete'
 " Bundle 'xuhdev/vim-latex-live-preview'
 Bundle 'scrooloose/syntastic'
 
+Bundle 'christoomey/vim-tmux-navigator'
+
 filetype plugin indent on " required!
 " =============================================================================

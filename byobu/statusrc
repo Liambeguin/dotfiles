@@ -44,7 +44,7 @@
 #DISK_IO_THRESHOLD=50
 
 # Default: eth0
-#MONITORED_NETWORK=eth0
+MONITORED_NETWORK=enp3s0
 
 # Unit used for network throughput (either bits per second or bytes per second)
 # Default: bits
