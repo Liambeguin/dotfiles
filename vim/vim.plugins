@@ -17,14 +17,23 @@ Plugin 'bling/vim-airline'
 Plugin 'junegunn/vim-easy-align'
 Plugin 'ntpeters/vim-better-whitespace'
 Plugin 'ervandew/supertab'
+Plugin 'vim-scripts/tComment'
 Plugin 'vim-scripts/SearchComplete'
 " Plugin 'xuhdev/vim-latex-live-preview'
 Plugin 'scrooloose/syntastic'
 
 Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'tpope/vim-surround'
+
 Plugin 'vimwiki/vimwiki'
+
+"" Vim snippets
+"Plugin 'MarcWeber/vim-addon-mw-utils'
+"Plugin 'tomtom/tlib_vim'
+"Plugin 'garbas/vim-snipmate'
+"Plugin 'honza/vim-snippets'
 
 
 filetype plugin indent on " required!
 " =============================================================================
+" vim:set ft=vim cc=80:
