@@ -27,6 +27,8 @@
 #this will make Caps Lock to act as Esc
 xmodmap -e "keycode 66 = Escape NoSymbol Escape"
 
+# Fix vim blocked when typing <ctrl>-S
+stty -ixon
 
 # Make sure we are using the correct TERM (vim-airline)
 TERM=xterm-256color
