@@ -11,28 +11,28 @@ call vundle#rc()
 
 " let Vundle manage Vundle
 Plugin 'gmarik/vundle'
-
 Plugin 'tpope/vim-fugitive'
+" Make vim fancy
 Plugin 'bling/vim-airline'
 Plugin 'junegunn/vim-easy-align'
-Plugin 'ntpeters/vim-better-whitespace'
-Plugin 'ervandew/supertab'
-Plugin 'vim-scripts/tComment'
 Plugin 'vim-scripts/SearchComplete'
 " Plugin 'xuhdev/vim-latex-live-preview'
 Plugin 'scrooloose/syntastic'
 
 Plugin 'christoomey/vim-tmux-navigator'
+" Make it even better
+Plugin 'ervandew/supertab'
+Plugin 'ntpeters/vim-better-whitespace'
+Plugin 'vim-scripts/tComment'
 Plugin 'tpope/vim-surround'
 
+" Awesome notes !
 Plugin 'vimwiki/vimwiki'
-
-"" Vim snippets
-"Plugin 'MarcWeber/vim-addon-mw-utils'
-"Plugin 'tomtom/tlib_vim'
-"Plugin 'garbas/vim-snipmate'
-"Plugin 'honza/vim-snippets'
-
+Plugin 'mrtazz/simplenote.vim'
+" add :Todo command
+nmap <silent> <leader>td :Simplenote -o 43292697f15ce825204ce88696762aac<cr>
+" Markdown foldings
+Plugin 'nelstrom/vim-markdown-folding'
 
 filetype plugin indent on " required!
 " =============================================================================
