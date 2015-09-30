@@ -56,23 +56,23 @@ DESCRIPTION
 	-h | --help ................ Display this message
 	-v | --verbose ............. Enable verbose output
 	-y | --assumeyes ........... Answer yes for all questions
-	--disable-rc ..............* Do not attempt to link bashrc, vimrc and screenrc
-	--disable-gnome-term ......* Do not attempt to setup gnome-terminal
-	--gnome-profile [PRO] .....* Use PRO instead of default profile
-	--disable-byobu ...........* Do not attempt to install Byobu window manager
-	--disable-vundle ..........* Do not attempt to install Vim Bundles
-	--disable-pager ...........* Do not attempt to install vimpager
-	--disable-pip .............* Do not attempt to install python and pip packages
+	--disable-rc ............... Do not attempt to link bashrc, vimrc and screenrc
+	--disable-gnome-term ....... Do not attempt to setup gnome-terminal
+	--gnome-profile [PRO] ...... Use PRO instead of default profile
+	--disable-byobu ............ Do not attempt to install Byobu window manager
+	--disable-vundle ........... Do not attempt to install Vim Bundles
+	--disable-pager ............ Do not attempt to install vimpager
+	--disable-pip .............. Do not attempt to install python and pip packages
 
-	--disable-git .............* Do not configure git
-	--git-username [username] .* Use username as git user (void if --disable-git)
-	--git-email [email] .......* Use email as git email (void if --disable-git)
+	--disable-git .............. Do not configure git
+	--git-username [username] .. Use username as git user (void if --disable-git)
+	--git-email [email] ........ Use email as git email (void if --disable-git)
 
-	--append-packages [pkgs] ..* add pkgs to the list of packages to be installed
-	--append-pip [py-pkgs] ....* add py-pkgs to the list of packages to be installed
+	--append-packages [pkgs] ... add pkgs to the list of packages to be installed
+	--append-pip [py-pkgs] ..... add py-pkgs to the list of packages to be installed
 	--enable-extra ............. Install executable scripts in $dotfiles_home/extra
 
-	--clean ...................* Undo changes
+	--clean .................... Undo changes
 
 DEFAULT SETTINGS
 $(print_settings | tail -n+2)
@@ -106,6 +106,8 @@ configure() {
 		Fedora|RHEL|CentOS*)
 			# We need sudo to install stuff
 			if groups $(whoami) | grep wheel &>/dev/null ; then
+				verbose "good! you're sudo"
+			else
 				exit_err "$(whoami) is not in wheel group try : 'sudo usermod -aG wheel $(whoami)'"
 			fi
 			# if we cannot find dnf, use yum...
@@ -120,6 +122,8 @@ configure() {
 		Ubuntu|Debian)
 			# We need sudo to install stuff
 			if groups $(whoami) | grep sudo &>/dev/null ; then
+				verbose "good! you're sudo"
+			else
 				exit_err "$(whoami) is not in sudo group try : 'sudo usermod -aG sudo $(whoami)'"
 			fi
 			sudo apt-get install -y -qq aptitude
@@ -350,7 +354,7 @@ if [ "$DO_GNOME_TERM" == "yes" ]; then
 	[ -z "$TERMINAL_FONTS" ] && exit_err "No Terminal fonts set..."
 	pm_chk_and_install "$TERMINAL_FONTS"
 	verbose "Editing gnome-terminal settings..."
-	$edit_gnome_terminal
+	eval $edit_gnome_terminal
 fi
 
 if [ "$DO_BYOBU" == "yes" ]; then
