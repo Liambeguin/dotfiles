@@ -353,7 +353,7 @@ if [ "$DO_GNOME_TERM" == "yes" ]; then
 	verbose "Installing fonts..."
 	[ -z "$TERMINAL_FONTS" ] && exit_err "No Terminal fonts set..."
 	# TODO make the following step automatic
-	$(pm_chk_and_install "$TERMINAL_FONTS") \
+	(pm_chk_and_install "$TERMINAL_FONTS") \
 		|| verbose "Not installing terminus fonts. Use FIXED instead."
 	verbose "Editing gnome-terminal settings..."
 	eval $edit_gnome_terminal
@@ -371,8 +371,12 @@ if [ "$DO_VUNDLE" == "yes" ]; then
 	#         or some place else...
 	verbose "Installing Vundle and other bundles listed in vimrc..."
 	# XXX NOTE: vimrc doesn't fail even if the sourced file doe not exist.
-	ln -s $dotfiles_home/vim/vimrc-* ${HOME}/.vim/plugin/
-	git clone https://github.com/gmarik/Vundle.vim.git ${HOME}/.vim/bundle/Vundle.vim
+	ln -sf $dotfiles_home/vim/vimrc-* ${HOME}/.vim/plugin/
+	if [ ! -d ${HOME}/.vim/bundle/Vundle.vim ]; then
+		git clone https://github.com/gmarik/Vundle.vim.git ${HOME}/.vim/bundle/Vundle.vim
+	else
+		verbose "Looks like vundle is already installed..."
+	fi
 	# Installing bundles...
 	vim +PluginInstall +qall
 	verbose "done"
