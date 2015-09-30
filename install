@@ -372,7 +372,9 @@ if [ "$DO_VUNDLE" == "yes" ]; then
 	verbose "Installing Vundle and other bundles listed in vimrc..."
 	# XXX NOTE: vimrc doesn't fail even if the sourced file doe not exist.
 	mkdir -p ${HOME}/.vim/plugin/
-	ln -sf $dotfiles_home/vim/* ${HOME}/.vim/plugin/
+	ln -sf $dotfiles_home/vim/airline.vim ${HOME}/.vim/plugin/
+	ln -sf $dotfiles_home/vim/plugins.vim ${HOME}/.vim/plugin/
+	ln -sf $dotfiles_home/vim/local.vim ${HOME}/.vim/
 	if [ ! -d ${HOME}/.vim/bundle/Vundle.vim ]; then
 		git clone https://github.com/gmarik/Vundle.vim.git ${HOME}/.vim/bundle/Vundle.vim
 	else

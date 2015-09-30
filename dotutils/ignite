@@ -1,0 +1,20 @@
+#!/bin/bash
+# This file is all you need to setup dotfiles from scratch
+# it's useful if you carry it arround on a USB key...
+
+# Check if we are connected to the internet...
+ping -c2 google.com > /dev/null
+if [ $? != 0 ]; then
+	read -p "Are you really connected to the internet ?"
+	[ $rc != "y" ] && exit
+fi
+
+# TODO:
+# check if ~/dev/dotfiles exists if not continue
+# mkdir -p ~/dev
+# cd ~/dev
+# check if git is installed otherwise warn user
+# git clone dotfiles
+# run install
+
+# vim: set cc=80:

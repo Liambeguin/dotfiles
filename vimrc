@@ -50,7 +50,7 @@ command Bd bp\|bd \#
 
 " == Vim-airline ==============================================================
 "
-execute 'runtime!' 'plugin/vimrc-airline'
+execute 'runtime!' 'plugin/airline.vim'
 " =============================================================================
 
 
@@ -58,7 +58,7 @@ execute 'runtime!' 'plugin/vimrc-airline'
 
 " == Vundle ===================================================================
 "
-execute 'runtime!' 'plugin/vim.plugins'
+execute 'runtime!' 'plugin/plugins.vim'
 " =============================================================================
 
 
@@ -66,7 +66,7 @@ execute 'runtime!' 'plugin/vim.plugins'
 
 " == local stuff ==============================================================
 "
-execute 'runtime!' 'vim.local'
+execute 'runtime!' 'local.vim'
 " =============================================================================
 
 
