@@ -64,6 +64,14 @@ execute 'runtime!' 'plugin/vim.plugins'
 
 
 
+" == local stuff ==============================================================
+"
+execute 'runtime!' 'vim.local'
+" =============================================================================
+
+
+
+
 " == Vimdiff colors ===========================================================
 "
 highlight DiffAdd    cterm=bold ctermfg=46		ctermbg=17

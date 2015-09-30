@@ -1,2 +1,4 @@
 vimpager
 *.swp
+bash/local
+vim/vim.local
