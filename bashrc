@@ -20,6 +20,10 @@
 [ -f ~/.bash/screen.conf ] && source ~/.bash/screen.conf
 [ -f ~/.bash/pager.conf ] && source ~/.bash/pager.conf
 
+for local_file in ~/.bash/local/* ; do
+	[ -f $local_file ] && source $local_file
+done
+
 
 ## remapping CAPS LOCK to CTRL
 #setxkbmap -option ctrl:nocaps
