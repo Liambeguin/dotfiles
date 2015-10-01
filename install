@@ -205,7 +205,7 @@ if [ $? != 0 ]; then
 	[ $rc != "y" ] && exit_err "Exiting upon your request !"
 fi
 
-OPTS=$(getopt -o h,v,y --long help,verbose,assumeyes\
+OPTS=$(getopt -o h,v,y --long help,verbose,assumeyes,\
 disable-rc,disable-gnome-term,gnome-profile:,disable-byobu,disable-vundle,disable-pager,disable-pip,\
 disable-git,git-username:,git-email:,\
 append-packages:,append-pip:,enable-extra,clean -- "$@")
