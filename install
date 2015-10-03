@@ -328,6 +328,7 @@ if [ "$DO_RC" == "yes" ]; then
 
 	verbose "Linking dotfiles..."
 	mkdir -p ${HOME}/bin
+	mkdir -p ${HOME}/.bash
 	# Installing a few bash functions I often use
 	ln -sf $dotfiles_home/bash/colorutils.conf ${HOME}/.bash
 	ln -sf $dotfiles_home/bash/shutils.conf ${HOME}/.bash
@@ -353,9 +354,12 @@ if [ "$DO_GNOME_TERM" == "yes" ]; then
 	verbose "Installing fonts..."
 	[ -z "$TERMINAL_FONTS" ] && exit_err "No Terminal fonts set..."
 	# TODO make the following step automatic
+	# something along :
+	#	sed 's/Terminus/Fixed/g' gnome-terminal/terminal_settings > gnome-terminal/terminal_settings
 	(pm_chk_and_install "$TERMINAL_FONTS") \
 		|| verbose "${txtylw}Not installing terminus fonts. Use FIXED instead.${txtrst}"
 	verbose "Editing gnome-terminal settings..."
+	#XXX WHAT DOES THIS DO WHEN CALLED FROM SSH ?
 	eval $edit_gnome_terminal
 fi
 
@@ -388,7 +392,8 @@ fi
 if [ "$DO_PAGER" == "yes" ]; then
 	verbose "Installing Vimpager..."
 	# Adding aliases and stuff in bashrc
-	ln -sf $dotfiles_home/bash/pager.conf ${HOME}/.bash
+	mkdir -p ${HOME}/.bash
+	ln -sf $dotfiles_home/bash/pager.conf ${HOME}/.bash/pager.conf
 	# Get dependencies
 	pm_chk_and_install "pandoc"
 	git clone https://github.com/rkitover/vimpager.git $dotfiles_home/vimpager
@@ -396,7 +401,8 @@ if [ "$DO_PAGER" == "yes" ]; then
 	sudo make install
 	verbose "Cleaning up..."
 	popd
-	rm -rf $dotfiles_home/vimpager
+	# FIXME we sould NOT need sudo here !
+	sudo rm -rf $dotfiles_home/vimpager
 	verbose "done"
 fi
 
@@ -409,6 +415,14 @@ if [ "$DO_PIP" == "yes" ]; then
 	verbose " Installing : $BASE_PIP_PACKAGES"
 	$PIP_install $BASE_PIP_PACKAGES
 	verbose " linking personnal cheats..."
+	# Warn the user this is dangerous
+	echo "This will delete all your current cheatsheets..."
+	if [ "$ASSUMEYES" == "no" ]; then
+		read -p "Continue ? [y/n] " rc
+		[ $rc != "y" ] && exit_err "Exiting upon your request !"
+	else
+		verbose "assuming yes"
+	fi
 	rm -rf ${HOME}/.cheat
 	ln -sf $(pwd)/cheat ${HOME}/.cheat
 	verbose "done"
@@ -431,6 +445,6 @@ if [ "$DO_EXTRA" == "yes" ]; then
 	done
 fi
 
-echo -e "${txtgrn} ===> All Good \!\!${txtrst}"
+echo -e "${txtgrn} ===> All Good !!${txtrst}"
 
 # vim:set cc=80 :
