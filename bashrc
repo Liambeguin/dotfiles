@@ -26,10 +26,7 @@ done
 
 
 ## remapping CAPS LOCK to CTRL
-#setxkbmap -option ctrl:nocaps
-
-#this will make Caps Lock to act as Esc
-xmodmap -e "keycode 66 = Escape NoSymbol Escape"
+setxkbmap -option ctrl:nocaps
 
 # Fix vim blocked when typing <ctrl>-S
 stty -ixon
