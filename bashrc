@@ -19,6 +19,7 @@
 [ -f ~/.bash/aliases.conf ] && source ~/.bash/aliases.conf
 [ -f ~/.bash/screen.conf ] && source ~/.bash/screen.conf
 [ -f ~/.bash/pager.conf ] && source ~/.bash/pager.conf
+[ -f ~/.bash/xcd.conf ] && source ~/.bash/xcd.conf
 
 for local_file in ~/.bash/local/* ; do
 	[ -f $local_file ] && source $local_file
