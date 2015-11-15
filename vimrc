@@ -12,6 +12,9 @@ abbr Wq wq
 abbr Q q
 abbr W w
 
+"Enabling mouse..
+set mouse=a
+
 set hlsearch
 set incsearch " set incremental search, like modern browsers
 
