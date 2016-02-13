@@ -29,7 +29,7 @@ GIT_email="liambeguin@gmail.com"
 DO_EXTRA="no"
 
 # List of RPMs to be installed
-BASE_PACKAGES="screen vim"
+BASE_PACKAGES="screen vim vlc"
 APPEND_PACKAGES=""
 
 
@@ -444,6 +444,9 @@ if [ "$DO_EXTRA" == "yes" ]; then
 		$file || exit_err "Something went wrong while running : $file"
 	done
 fi
+
+echo " NOTE: to install google chrome, visit : https://www.google.com/chrome/ "
+echo "       and click the download button."
 
 echo -e "${txtgrn} ===> All Good !!${txtrst}"
 
