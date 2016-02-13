@@ -19,6 +19,7 @@ DO_BYOBU="yes"
 DO_VUNDLE="yes"
 DO_PAGER="yes" #vimcat &Co
 DO_PIP="yes"   #cheat speedtest, ...
+DO_CHROME="yes"   # add google repo and install google chrome
 BASE_PIP_PACKAGES="cheat speedtest-cli"
 APPEND_PIP=""
 
@@ -63,6 +64,7 @@ DESCRIPTION
 	--disable-vundle ........... Do not attempt to install Vim Bundles
 	--disable-pager ............ Do not attempt to install vimpager
 	--disable-pip .............. Do not attempt to install python and pip packages
+	--disable-chrome ........... Do not attempt to install google chrome
 
 	--disable-git .............. Do not configure git
 	--git-username [username] .. Use username as git user (void if --disable-git)
@@ -164,6 +166,7 @@ print_settings(){
 	echo -e "  * install Byobu window manager? ${txtblu}$DO_BYOBU${txtrst}"
 	echo -e "  * install vim bundles? ${txtblu}$DO_VUNDLE${txtrst}"
 	echo -e "  * install vimpager? ${txtblu}$DO_PAGER${txtrst}" #vimcat &Co
+	echo -e "  * install google chrome? ${txtblu}$DO_CHROME${txtrst}"
 
 	echo -e "  * install Python and pip packages? ${txtblu}$DO_PIP${txtrst}"   #cheat speedtest, ...
 	if [ "$DO_PIP" == "yes" ]; then
@@ -208,6 +211,7 @@ fi
 OPTS=$(getopt -o h,v,y --long help,verbose,assumeyes,\
 disable-rc,disable-gnome-term,gnome-profile:,disable-byobu,disable-vundle,disable-pager,disable-pip,\
 disable-git,git-username:,git-email:,\
+disable-chrome,\
 append-packages:,append-pip:,enable-extra,clean -- "$@")
 eval set -- "$OPTS"
 
@@ -263,6 +267,10 @@ while true; do
 		--git-email)
 			GIT_email="$2"
 			shift 2
+			;;
+		--disable-chrome)
+			DO_CHROME="no"
+			shift
 			;;
 		--append-packages)
 			APPEND_PACKAGES="$2"
@@ -438,15 +446,30 @@ if [ "$DO_GIT" == "yes" ]; then
 	git config --global color.ui true
 fi
 
+if [ "$DO_CHROME" == "yes" ]; then
+	verbose "Enabling Google yum repository..."
+	cat << EOF > /tmp/google-chrome.repo
+[google-chrome]
+name=google-chrome - \$basearch
+baseurl=http://dl.google.com/linux/chrome/rpm/stable/\$basearch
+enabled=1
+gpgcheck=1
+gpgkey=https://dl-ssl.google.com/linux/linux_signing_key.pub
+EOF
+	sudo mv /tmp/google-chrome.repo /etc/yum.repos.d/google-chrome.repo
+	verbose "Installing google chrome stable"
+	sudo dnf install -y google-chrome-stable
+	verbose "done"
+fi
+
+
+
 if [ "$DO_EXTRA" == "yes" ]; then
 	for file in $EXTRA_SCRIPTS; do
 		echo -e ${txtblu} Running : ${txtrst}$file
 		$file || exit_err "Something went wrong while running : $file"
 	done
 fi
-
-echo " NOTE: to install google chrome, visit : https://www.google.com/chrome/ "
-echo "       and click the download button."
 
 echo -e "${txtgrn} ===> All Good !!${txtrst}"
 
