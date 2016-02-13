@@ -30,7 +30,7 @@ GIT_email="liambeguin@gmail.com"
 DO_EXTRA="no"
 
 # List of RPMs to be installed
-BASE_PACKAGES="screen vim vlc"
+BASE_PACKAGES="screen vim vlc thunderbird"
 APPEND_PACKAGES=""
 
 
