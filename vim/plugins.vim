@@ -16,7 +16,7 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'bling/vim-airline'
 Plugin 'junegunn/vim-easy-align'
 Plugin 'vim-scripts/SearchComplete'
-" Plugin 'xuhdev/vim-latex-live-preview'
+Plugin 'xuhdev/vim-latex-live-preview'
 Plugin 'scrooloose/syntastic'
 
 Plugin 'christoomey/vim-tmux-navigator'
