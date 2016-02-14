@@ -1,0 +1,118 @@
+#!/bin/sh
+#
+# Author lvb
+#
+# TODO :
+#	* add option to set video size
+# added gstreamer-tools gstreamer-plugins-base,good,bad,ugly
+
+TOOL="gst"
+REMOTE=""
+VIDEO_DEV="/dev/video0"
+PORT="5000"
+# First active IP
+IP="$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')"
+
+print_usage(){
+	cat << EOF
+
+USAGE:
+$(basename $0) [OPTIONS] [<start|stop> | <read> remote]
+
+OPTIONS:
+	-h | --help ............ Display this message
+	-v | --video ........... Select a different video device [$VIDEO_DEV]
+
+EOF
+	exit 1
+}
+failure(){
+	echo "$(basename $0)_error: $@"
+	exit 1
+}
+
+
+##########################
+start_vlc(){
+	cvlc v4l2://${VIDEO_DEV} :v4l2-standard= :live-caching=300 \
+	:sout="#transcode{vcodec=WMV2,vb=800,scale=1,acodec=wma2,ab=128,
+	channels=2,samplerate=44100}:http{dst=:${PORT}/stream.wmv}" > /dev/null 2>&1 &
+}
+read_vlc(){
+	cvlc http://${REMOTE}:${PORT}/stream.wmv > /dev/null 2>&1 &
+}
+start_gst(){
+	gst-launch v4l2src device=${VIDEO_DEV} ! videoscale! video/x-raw-yuv,width=320,height=240 ! \
+	ffmpegcolorspace ! jpegenc ! tcpserversink host=${IP} port=${PORT} > /dev/null 2>&1 &
+}
+read_gst(){
+	gst-launch tcpclientsrc host=${REMOTE} port=${PORT}  ! jpegdec ! \
+	autovideosink > /dev/null 2>&1 &
+}
+##########################
+OPTS=$(getopt -o hr:v:t: \
+	--long help,remote:video:samplerate:livecaching:tool: \
+	--name "$0" -- "$@")
+eval set -- "$OPTS"
+while true; do
+	case "$1" in
+	-h|--help)
+		print_usage
+		shift
+		;;
+	-r|--remote)
+		REMOTE="$2"
+		shift 2
+		;;
+	-v|--video)
+		VIDEO_DEV="$2"
+		shift 2
+		;;
+	-t|--tool)
+		[ "$2" == "vlc" ] && TOOL="vlc" || TOOL="gst"
+		shift 2
+		;;
+	--)
+		shift
+		break
+		;;
+	*)
+		break
+		;;
+	esac
+done
+
+# First lets check the state of the system
+process="$(ps aux | grep $TOOL | grep video0 | awk '{print $2}')"
+case "$1" in
+	start)
+		if [ -z "$process" ]; then
+			echo "Starting stream..."
+			start_${TOOL}
+			echo "done"
+		else
+			failure "Looks like the stream is already live !"
+		fi
+
+		;;
+	stop)
+		if [ -n "$process" ]; then
+			echo "Killing server..."
+			kill -HUP $process
+		else
+			failure "Looks like nothing is running!"
+		fi
+		;;
+	read)
+		if [ -n "$2" ]; then
+			REMOTE="$2"
+			read_${TOOL}
+		else
+			print_usage
+		fi
+		;;
+	*)
+		print_usage
+esac
+
+# vim: cc=80 tw=100 sw=4 ts=4:

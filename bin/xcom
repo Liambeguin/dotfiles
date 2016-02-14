@@ -1,0 +1,71 @@
+#!/bin/sh
+# TODO : add option to find on which remote is connected serial
+
+REMOTE=""
+LIST="no"
+
+print_usage(){
+	cat << EOF
+
+USAGE:
+$(basename $0) [OPTIONS] <pim-serial|ttyUSB-number>
+
+OPTIONS:
+	-h | --help ............ Display this message
+	-r | --remote REMOTE ... remote machine on which the PIM is connected
+
+EOF
+exit 1
+}
+
+
+OPTS=$(getopt -o hr:l --long help,remote:list --name "$0" -- "$@")
+eval set -- "$OPTS"
+while true; do
+	case "$1" in
+	-h|--help)
+		print_usage
+		shift
+		;;
+	-r|--remote)
+		REMOTE="$2"
+		shift 2
+		;;
+	-l|--list)
+		LIST="yes"
+		shift
+		;;
+	--)
+		shift
+		break
+		;;
+	*)
+		break
+		;;
+	esac
+done
+
+
+if [ "$LIST" == "yes" ]; then
+	CMD="lq"
+elif [ -n "$(echo $1 | grep -Eo "^[0-9]{4}?")" ]; then
+	CMD="picocom -b 115200 -l /dev/serial/by-id/usb-Xiphos_Systems_Corp._Q7-PIM_${1}-if00-port0"
+elif [ -n "$1" ] && [ -c /dev/ttyUSB${1} ]; then
+	CMD="picocom -b 115200 -l /dev/ttyUSB${1}"
+else
+	print_usage
+fi
+
+case "$REMOTE" in
+	kk)
+		ssh -t kingkong-ubuntu "$CMD"
+		;;
+	"")
+		"$CMD"
+		;;
+	*)
+		ssh -t "$REMOTE" "$CMD"
+		;;
+esac
+
+# vim: cc=80 tw=100 sw=4 ts=4:

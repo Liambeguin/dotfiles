@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Util to list all serial devices
+# Misc Constants
+red="\e[31m"
+org="\e[33m"
+normal="\e[0m"
+bold="\e[1;30m"
+
+failure(){
+	echo "$(basename $0)_error: $@"
+	exit 1
+}
+
+if [ ! -d /dev/serial/by-id/ ];then
+	failure "No serial device found..."
+fi
+
+output="DEVICE:ALIAS:PID:USER\n------:-----:---:----\n"
+for link in /dev/serial/by-id/* ; do
+	if [ $(echo $link | grep -i xiphos) ]; then
+		alias="Q7-$(echo $link | sed 's/.*usb-\(.*\)-if00.*/\1/'|\
+			sed 's/_/ /g'| awk '{print $5}')"
+	else
+		alias="$(basename $link)"
+		if [ "$(echo $alias | grep FTDI_FT232R_USB_UART_AHXYXTK4 )" ]; then
+			alias="CableFTDI"
+		fi
+		if [ "$(echo $alias | grep FTDI_US232R_FTG6RB5E )" ]; then
+			alias="BlueFTDI"
+		fi
+	fi
+
+	device=$(basename $(readlink -f $link))
+	proc="$(ps aux | grep picocom | grep -E "$device|$link" | awk '{print $1}')"
+	user="$(ps aux | grep picocom | grep -E "$device|$link" | awk '{print $2}')"
+	output="$output\n$device:$alias:$user:$proc"
+done
+
+echo
+echo -e "${org}$(cat /etc/hostname)${normal}"
+echo -e "$output" | column -t -s ':'
+echo
