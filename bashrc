@@ -27,7 +27,9 @@ done
 
 
 ## remapping CAPS LOCK to CTRL
-setxkbmap -option ctrl:nocaps
+if [ -n "$DISPLAY" ]; then
+	setxkbmap -option ctrl:nocaps
+fi
 
 # Fix vim blocked when typing <ctrl>-S
 stty -ixon
