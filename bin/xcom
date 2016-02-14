@@ -50,7 +50,7 @@ if [ "$LIST" == "yes" ]; then
 	CMD="lq"
 elif [ -n "$(echo $1 | grep -Eo "^[0-9]{4}?")" ]; then
 	CMD="picocom -b 115200 -l /dev/serial/by-id/usb-Xiphos_Systems_Corp._Q7-PIM_${1}-if00-port0"
-elif [ -n "$1" ] && [ -c /dev/ttyUSB${1} ]; then
+elif [ -n "$1" ]; then
 	CMD="picocom -b 115200 -l /dev/ttyUSB${1}"
 else
 	print_usage
