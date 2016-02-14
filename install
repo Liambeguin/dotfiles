@@ -205,7 +205,7 @@ print_settings(){
 		fi
 	fi
 
-	echo -e "  * packages to be installed : ${txtblu}$BASE_PACKAGES${txtrst}"
+	echo -e "  * packages to be installed : ${txtblu}$(echo $BASE_PACKAGES | tr -s ' ')${txtrst}"
 	echo -e
 }
 
@@ -482,7 +482,7 @@ EOF
 	verbose "done"
 fi
 
-if [ "$DO_BIN" =="yes" ]; then
+if [ "$DO_BIN" == "yes" ]; then
 	for file in $dotfiles_home/bin/*; do
 		verbose "Adding $file"
 		chmod +x $file
