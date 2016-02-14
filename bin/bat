@@ -1,0 +1,54 @@
+#!/bin/sh
+#
+# Author lvb
+#
+
+BATTERY="$(upower -e | grep BAT)"
+
+print_usage(){
+	cat << EOF
+
+USAGE:
+$(basename $0) [OPTIONS]
+
+OPTIONS:
+	-h | --help ............ Display this message
+	-s | --short ........... Display only percentage
+
+EOF
+	exit 1
+}
+failure(){
+	echo "$(basename $0)_error: $@"
+	exit 1
+}
+
+
+OPTS=$(getopt -o hs \
+	--long help,short \
+	--name "$0" -- "$@")
+eval set -- "$OPTS"
+while true; do
+	case "$1" in
+	-h|--help)
+		print_usage
+		shift
+		;;
+	-s|--short)
+		upower -i $BATTERY | \
+			grep --color=never -E "percentage" | awk '{print $2}'
+		exit 0
+		;;
+	--)
+		shift
+		break
+		;;
+	*)
+		break
+		;;
+	esac
+done
+
+upower -i $BATTERY | grep --color=never -E "state|to\ full|to\ empty|percentage"
+
+# vim: cc=80 tw=100 sw=4 ts=4:
