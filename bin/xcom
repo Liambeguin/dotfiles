@@ -61,7 +61,7 @@ case "$REMOTE" in
 		ssh -t kingkong-ubuntu "$CMD"
 		;;
 	"")
-		"$CMD"
+		$CMD
 		;;
 	*)
 		ssh -t "$REMOTE" "$CMD"
