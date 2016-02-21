@@ -99,20 +99,20 @@ EOF
 # Usage: is_pkg_available "list of packages"
 # for this to work, PM needs to be defined !
 is_pkg_available() {
-	[ -z "$PM" ] && exit_err "No package manager defined !"
+	[ -z "$PM" ] && failure "No package manager defined !"
 
 	for package in $@; do
 		if [ -z "$($PM search -y -q $package 2>/dev/null)" ]; then
-			exit_err "$package is not available on your system."
+			failure "$package is not available on your system."
 		fi
 	done
 }
 pm_chk_and_install(){
 	if [ -z "$PM_install" ]; then
-		exit_err "No Package Manager found..."
+		failure "No Package Manager found..."
 	fi
 	is_pkg_available "$@"
-	$PM_install $@ || exit_err "Failed to install $@"
+	$PM_install $@ || failure "Failed to install $@"
 }
 
 configure() {
@@ -123,7 +123,7 @@ configure() {
 			if groups $(whoami) | grep wheel &>/dev/null ; then
 				verbose "good! you're sudo"
 			else
-				exit_err "$(whoami) is not in wheel group try : 'sudo usermod -aG wheel $(whoami)'"
+				failure "$(whoami) is not in wheel group try : 'sudo usermod -aG wheel $(whoami)'"
 			fi
 			# if we cannot find dnf, use yum...
 			PM="$(which dnf 2> /dev/null || which yum 2> /dev/null)"
@@ -139,11 +139,11 @@ configure() {
 			if groups $(whoami) | grep sudo &>/dev/null ; then
 				verbose "good! you're sudo"
 			else
-				exit_err "$(whoami) is not in sudo group try : 'sudo usermod -aG sudo $(whoami)'"
+				failure "$(whoami) is not in sudo group try : 'sudo usermod -aG sudo $(whoami)'"
 			fi
 			sudo apt-get install -y -qq aptitude
 			if [ -z "$(which aptitude 2>/dev/null)" ]; then
-				exit_err "Could not find aptitude command!"
+				failure "Could not find aptitude command!"
 			fi
 			PM="$(which aptitude 2>/dev/null)"
 			PM_install="sudo $PM install -y -q "
@@ -154,10 +154,10 @@ configure() {
 			edit_gnome_terminal="gconftool-2 --load $GNOME_profile"
 			;;
 		ukn)
-			exit_err "Could not figure out which distro you're running..."
+			failure "Could not figure out which distro you're running..."
 			;;
 		*)
-			exit_err "It looks like you're running an unsupported distro. Sorry !"
+			failure "It looks like you're running an unsupported distro. Sorry !"
 			;;
 	esac
 
@@ -205,7 +205,8 @@ print_settings(){
 		fi
 	fi
 
-	echo -e "  * packages to be installed : ${txtblu}$(echo $BASE_PACKAGES | tr -s ' ')${txtrst}"
+	echo -e "  * packages to be installed :"
+	echo -e "${txtblu}$(echo $BASE_PACKAGES | tr -s ' '| tr ' ' '\n' | sed 's/\(^.\)/      \* \1/g')${txtrst}"
 	echo -e
 }
 
@@ -214,12 +215,12 @@ print_settings(){
 # Starts here !
 
 # If the script is run as root, $HOME is going to be wrong
-[ $(whoami) = "root" ] && exit_err "This must NOT be run as root !"
+[ $(whoami) = "root" ] && failure "This must NOT be run as root !"
 # Check if we are connected to the internet...
 ping -c2 google.com > /dev/null
 if [ $? != 0 ]; then
 	read -p "Are you really connected to the internet ?"
-	[ $rc != "y" ] && exit_err "Exiting upon your request !"
+	[ $rc != "y" ] && failure "Exiting upon your request !"
 fi
 
 OPTS=$(getopt -o h,v,y --long help,verbose,assumeyes,\
@@ -306,7 +307,7 @@ while true; do
 			shift
 			;;
 		--clean)
-			exit_err "clean not yet implemented"
+			failure "clean not yet implemented"
 			shift
 			;;
 		--)
@@ -314,7 +315,7 @@ while true; do
 			break
 			;;
 		*)
-			exit_err "Unknown argument."
+			failure "Unknown argument."
 			break
 			;;
 	esac
@@ -326,7 +327,7 @@ done
 print_settings
 if [ "$ASSUMEYES" == "no" ]; then
 	read -p "Does this look ok ? [y/n] " rc
-	[ $rc != "y" ] && exit_err "Exiting upon your request !"
+	[ $rc != "y" ] && failure "Exiting upon your request !"
 else
 	verbose "assuming yes"
 fi
@@ -336,11 +337,19 @@ configure
 # Initial system update
 verbose "Current system distribution is : " $DISTRO
 verbose "First, lets make sure the system is up-to-date !"
-sudo $PM -y -q update || exit_err "failed to update your system"
+sudo $PM -y -q update || failure "failed to update your system"
 verbose "Installing BASE_PACKAGES..."
 pm_chk_and_install "$BASE_PACKAGES"
 verbose "done"
 
+# Editing Window focus mode
+if [ -n $DISPLAY ]; then
+	verbose "Setting focus-mode to mouse..."
+	gsettings set org.gnome.desktop.wm.preferences focus-mode mouse
+	verbose "done"
+else
+	warning "Not setting focus mode"
+fi
 
 if [ "$DO_RC" == "yes" ]; then
 
@@ -348,7 +357,7 @@ if [ "$DO_RC" == "yes" ]; then
 	echo "This will delete all your current bashrc, vimrc and screenrc !"
 	if [ "$ASSUMEYES" == "no" ]; then
 		read -p "Continue ? [y/n] " rc
-		[ $rc != "y" ] && exit_err "Exiting upon your request !"
+		[ $rc != "y" ] && failure "Exiting upon your request !"
 	else
 		verbose "assuming yes"
 	fi
@@ -379,15 +388,16 @@ fi
 if [ "$DO_GNOME_TERM" == "yes" ]; then
 	verbose "Setting up gnome-terminal..."
 	verbose "Installing fonts..."
-	[ -z "$TERMINAL_FONTS" ] && exit_err "No Terminal fonts set..."
-	# TODO make the following step automatic
-	# something along :
-	#	sed 's/Terminus/Fixed/g' gnome-terminal/terminal_settings > gnome-terminal/terminal_settings
-	(pm_chk_and_install "$TERMINAL_FONTS") \
-		|| verbose "${txtylw}Not installing terminus fonts. Use FIXED instead.${txtrst}"
-	verbose "Editing gnome-terminal settings..."
-	#XXX WHAT DOES THIS DO WHEN CALLED FROM SSH ?
-	eval $edit_gnome_terminal
+	TMP_FONT_DIR="/tmp/fonts.$$"
+	git clone https://github.com/powerline/fonts.git $TMP_FONT_DIR
+	$TMP_FONT_DIR/install.sh
+	if [ -n $DISPLAY ]; then
+		verbose "Editing gnome-terminal settings..."
+		eval $edit_gnome_terminal
+	else
+		warning "Called within ssh session, not editing gnome-terminal config"
+	fi
+	rm -rf $TMP_FONT_DIR
 fi
 
 if [ "$DO_BYOBU" == "yes" ]; then
@@ -447,7 +457,7 @@ if [ "$DO_PIP" == "yes" ]; then
 	echo "This will delete all your current cheatsheets..."
 	if [ "$ASSUMEYES" == "no" ]; then
 		read -p "Continue ? [y/n] " rc
-		[ $rc != "y" ] && exit_err "Exiting upon your request !"
+		[ $rc != "y" ] && failure "Exiting upon your request !"
 	else
 		verbose "assuming yes"
 	fi
@@ -493,7 +503,7 @@ fi
 if [ "$DO_EXTRA" == "yes" ]; then
 	for file in $EXTRA_SCRIPTS; do
 		echo -e ${txtblu} Running : ${txtrst}$file
-		$file || exit_err "Something went wrong while running : $file"
+		$file || failure "Something went wrong while running : $file"
 	done
 fi
 
