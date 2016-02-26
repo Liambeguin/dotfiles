@@ -345,7 +345,7 @@ verbose "done"
 # Editing Window focus mode
 if [ -n $DISPLAY ]; then
 	verbose "Setting focus-mode to mouse..."
-	gsettings set org.gnome.desktop.wm.preferences focus-mode mouse
+	dconf write /org/gnome/desktop/wm/preferences/focus-mode "string 'mouse'"
 	verbose "done"
 else
 	warning "Not setting focus mode"
