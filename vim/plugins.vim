@@ -32,7 +32,7 @@ Plugin 'mrtazz/simplenote.vim'
 " add :Todo command
 nmap <silent> <leader>td :Simplenote -o 43292697f15ce825204ce88696762aac<cr>
 " Markdown foldings
-Plugin 'nelstrom/vim-markdown-folding'
+"Plugin 'nelstrom/vim-markdown-folding'
 
 filetype plugin indent on " required!
 " =============================================================================
