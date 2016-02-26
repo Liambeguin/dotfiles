@@ -55,7 +55,7 @@ MONITORED_NETWORK=wlp2s0
 #NETWORK_THRESHOLD=20
 
 # You can add an additional source of temperature here
-#MONITORED_TEMP=/proc/acpi/thermal_zone/THM0/temperature
+MONITORED_TEMP=/sys/class/hwmon/hwmon1/temp1_input
 
 # Default: C
 #TEMP=F
@@ -75,4 +75,4 @@ IP_EXTERNAL=0
 
 # Set this to zero to hide seconds int the time display
 # Default 1
-TIME_SECONDS=0
+#TIME_SECONDS=0
