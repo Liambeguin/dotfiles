@@ -1,8 +1,0 @@
-#!/bin/bash
-
-[ -z "$1" ] && exit
-[ -n "$(echo $1 | grep ' ')" ] && exit
-
-username=$1
-sudo useradd -s /bin/bash -m -c "dotuser.$1" $1
-sudo passwd $1 && sudo usermod -aG wheel $1

@@ -1,0 +1,80 @@
+#!/bin/sh
+
+PROGNAME=${0##*/}
+PROGVERSION="0.0.1"
+
+source ~/.bash/shutils.conf
+
+print_usage(){
+	cat << EOF
+
+USAGE:
+Usage $PROGNAME [OPTIONS] COMMAND options....
+
+Available COMMAND:
+	update ....................... Update the current machine
+	reload ....................... Re-source dotfiles in the current shell
+	ignite <profile> ............. Setup a new machine using profile
+	gterm <sub-cmd> .............. Manipulate gnome terminal configuration
+	cheat <sub-cmd> .............. Manipulate cheat files
+	byobu <sub-cmd> .............. Manipulate byobu configuration
+	xcd .......................... Add xcd shortcuts
+
+OPTIONS:
+	-h | --help .................. Display this message
+	-v | --verbose ............... Display debug output
+
+EOF
+exit 1
+}
+
+_command_update() {
+	verbose $FUNCNAME: $*
+}
+_command_reload() {
+	verbose $FUNCNAME: $*
+}
+_command_ignite() {
+	verbose $FUNCNAME: $*
+}
+_command_gterm() {
+	verbose $FUNCNAME: $*
+}
+_command_cheat() {
+	verbose $FUNCNAME: $*
+}
+_command_byobu() {
+	verbose $FUNCNAME: $*
+}
+_command_xcd() {
+	verbose $FUNCNAME: $*
+}
+
+SHORTOPTS="hvV"
+LONGOPTS="help,verbose,version"
+
+ARGS=$(getopt -s bash --options $SHORTOPTS  \
+	--longoptions $LONGOPTS --name $PROGNAME -- "$@" )
+
+eval set -- "$ARGS"
+while true; do
+	case $1 in
+		-h|--help) print_usage;;
+		-v|--verbose) VERBOSE="yes";;
+		-V|--version) echo "$PROGVERSION"; exit 0 ;;
+		--)	shift; break;;
+		*) shift; break	;;
+	esac
+	shift
+done
+
+COMMAND="$1"
+SUB_CMD="$2"
+OPTIONS="${@:3}"
+
+_command_${COMMAND} ${SUB_CMD} ${OPTIONS} 2>/dev/null || \
+	failure "command not found! try --help"
+
+
+exit 0
+# vim: cc=80 tw=100 sw=4 ts=4:
