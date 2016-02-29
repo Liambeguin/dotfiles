@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# Script used to check if dnf update need to be ran
+# checks every 1h
+
+
+source /usr/libexec/byobu/include/shutil
+
+updates=$(pkcon get-updates -p | awk \
+	'/^Results:$/ { start=NR }; /^Security/ { security++ }; END { if (!/There are no updates available at this time./) { print NR-start, security }}')
+
+if [ -z "$updates" ]; then
+	color b g w; echo "No Updates"; color none; echo ''; color --
+else
+	color b r w; echo "Updates: $updates"; color none; echo ''; color --
+fi
+
