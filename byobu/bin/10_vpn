@@ -6,7 +6,7 @@
 
 source /usr/libexec/byobu/include/shutil
 
-vpn_interface="$(ip link show | grep -E '^[1-9]: tun?')"
+vpn_interface="$(ip link show | grep -E '^[0-9]*: tun[0-9]*:')"
 
 if [ -n "$vpn_interface" ]; then
 	color b b w; echo "VPN Activated"; color none; echo ''; color --
