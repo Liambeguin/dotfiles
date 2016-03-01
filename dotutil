@@ -3,31 +3,27 @@
 PROGNAME=${0##*/}
 PROGVERSION="0.0.1"
 
+# This safely assumes your bashrc is from dotfiles
+DOT_PATH="$dirname $(readlink -f ~/.bashrc)"
+DOT_AUTHOR="dotutil <liambeguin@gmail.com>"
+
+
 source ~/.bash/shutils.conf
 
-_commmand_help(){
-	echo -e "$@"
-	echo
+_command_help(){
+	[ -n "$*" ] && echo -e "$*"
 	cat << EOF
 
 USAGE:
 Usage $PROGNAME [OPTIONS] COMMAND options....
-
-Available COMMAND:
-	update ....................... Update the current machine
-	reload ....................... Re-source dotfiles in the current shell
-	ignite <profile> ............. Setup a new machine using profile
-	gterm <sub-cmd> .............. Manipulate gnome terminal configuration
-	cheat <sub-cmd> .............. Manipulate cheat files
-	byobu <sub-cmd> .............. Manipulate byobu configuration
-	xcd .......................... Add xcd shortcuts
 
 OPTIONS:
 	-h | --help .................. Display this message
 	-v | --verbose ............... Display debug output
 
 EOF
-exit 1
+	_command_list
+	exit 1
 }
 
 _command_list(){ # List all available commands
@@ -35,37 +31,55 @@ _command_list(){ # List all available commands
 	# add spaces at the beginning for better display
 	# strip unnecessary characters
 	# tabulate
+	echo "COMMANDS:"
 	grep -E '^_command_.*\{.*#' $0  \
-	| sed 's/\(^.\)/    \1/g' \
+	| sed 's/\(^.\)/\t\1/g' \
 	| sed 's/_command_\|[(){}]//g' \
-	| column -s'#' -t
+	| awk -F'#' '{printf "%-10s %s\n", $1, $2}'
+	#| awk -F'#' '{print $1 "..........." $2}'
+	#| column -s'#' -t
 	echo
 }
 
-_command_update() {
+_command_update() { # Update the current machine
 	verbose $FUNCNAME: $*
 }
-_command_reload() {
+_command_ignite() { # Setup a new machine using profile
 	verbose $FUNCNAME: $*
 }
-_command_ignite() {
+_command_gterm() { # Manipulate gnome terminal configuration
 	verbose $FUNCNAME: $*
 }
-_command_gterm() {
+
+save_cheats(){
+	pushd $DOT_PATH
+	cheat_files=$(git status cheat/ --porcelain | awk '{print $2}')
+	if [ -n "$cheat_files" ]; then
+		git add $cheat_files
+		git commit -m "cheat sheets updated." --author="$DOT_AUTHOR" $cheat_files
+		git push
+	else
+		echo "No changes found."
+	fi
+}
+
+_command_cheat() { # Manipulate cheat files
+	verbose $FUNCNAME: $*
+	case "$1" in
+		"save") save_cheats; break;;
+		*) failure "Bad usage, try $PROGNAME cheat save" ;;
+	esac
+}
+_command_byobu() { # Manipulate byobu configuration
 	verbose $FUNCNAME: $*
 }
-_command_cheat() {
-	verbose $FUNCNAME: $*
-}
-_command_byobu() {
-	verbose $FUNCNAME: $*
-}
-_command_xcd() {
+_command_xcd() { # Manipulate xcd shortcuts
 	verbose $FUNCNAME: $*
 }
 #Parsing arguments ###################
 set_option_defaults() {
 	VERBOSE="no"
+	COMMAND="help"
 }
 
 set_option_defaults
@@ -78,7 +92,7 @@ ARGS=$(getopt -s bash --options $SHORTOPTS  \
 eval set -- "$ARGS"
 while true; do
 	case $1 in
-		-h|--help) _commmand_help;;
+		-h|--help) _command_help;;
 		-v|--verbose) VERBOSE="yes";;
 		-V|--version) echo "$PROGVERSION"; exit 0 ;;
 		--)	shift; break;;
@@ -87,8 +101,10 @@ while true; do
 	shift
 done
 
-[ -z "$1" ] && COMMAND="$1"
+
+[ -n "$1" ] && COMMAND="$1"
 shift && OPTIONS="${@}"
+verbose "$COMMAND"
 
 _command_${COMMAND} ${SUB_CMD} ${OPTIONS} 2>/dev/null || \
 	failure "command not found! try --help"
