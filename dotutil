@@ -5,7 +5,9 @@ PROGVERSION="0.0.1"
 
 source ~/.bash/shutils.conf
 
-print_usage(){
+_commmand_help(){
+	echo -e "$@"
+	echo
 	cat << EOF
 
 USAGE:
@@ -26,6 +28,18 @@ OPTIONS:
 
 EOF
 exit 1
+}
+
+_command_list(){ # List all available commands
+	# get all _command definitions
+	# add spaces at the beginning for better display
+	# strip unnecessary characters
+	# tabulate
+	grep -E '^_command_.*\{.*#' $0  \
+	| sed 's/\(^.\)/    \1/g' \
+	| sed 's/_command_\|[(){}]//g' \
+	| column -s'#' -t
+	echo
 }
 
 _command_update() {
@@ -49,7 +63,12 @@ _command_byobu() {
 _command_xcd() {
 	verbose $FUNCNAME: $*
 }
+#Parsing arguments ###################
+set_option_defaults() {
+	VERBOSE="no"
+}
 
+set_option_defaults
 SHORTOPTS="hvV"
 LONGOPTS="help,verbose,version"
 
@@ -59,7 +78,7 @@ ARGS=$(getopt -s bash --options $SHORTOPTS  \
 eval set -- "$ARGS"
 while true; do
 	case $1 in
-		-h|--help) print_usage;;
+		-h|--help) _commmand_help;;
 		-v|--verbose) VERBOSE="yes";;
 		-V|--version) echo "$PROGVERSION"; exit 0 ;;
 		--)	shift; break;;
@@ -68,9 +87,8 @@ while true; do
 	shift
 done
 
-COMMAND="$1"
-SUB_CMD="$2"
-OPTIONS="${@:3}"
+[ -z "$1" ] && COMMAND="$1"
+shift && OPTIONS="${@}"
 
 _command_${COMMAND} ${SUB_CMD} ${OPTIONS} 2>/dev/null || \
 	failure "command not found! try --help"
