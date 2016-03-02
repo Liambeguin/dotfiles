@@ -38,6 +38,7 @@ BASE_PACKAGES=" \
 	vlc \
 	thunderbird \
 	ShellCheck \
+	tig \
 	gstreamer-tools \
 	gstreamer-plugins-base \
 	gstreamer-plugins-good \
