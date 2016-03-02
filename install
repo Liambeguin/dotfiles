@@ -37,6 +37,7 @@ BASE_PACKAGES=" \
 	vim \
 	vlc \
 	thunderbird \
+	ShellCheck \
 	gstreamer-tools \
 	gstreamer-plugins-base \
 	gstreamer-plugins-good \

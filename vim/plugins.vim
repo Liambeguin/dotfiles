@@ -17,9 +17,10 @@ Plugin 'bling/vim-airline'
 Plugin 'junegunn/vim-easy-align'
 Plugin 'vim-scripts/SearchComplete'
 Plugin 'xuhdev/vim-latex-live-preview'
-Plugin 'scrooloose/syntastic'
-
 Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'scrooloose/syntastic'
+let g:syntastic_sh_checkers = ['shellcheck']
+
 " Make it even better
 Plugin 'ervandew/supertab'
 Plugin 'ntpeters/vim-better-whitespace'
@@ -28,9 +29,6 @@ Plugin 'tpope/vim-surround'
 
 " Awesome notes !
 Plugin 'vimwiki/vimwiki'
-Plugin 'mrtazz/simplenote.vim'
-" add :Todo command
-nmap <silent> <leader>td :Simplenote -o 43292697f15ce825204ce88696762aac<cr>
 " Markdown foldings
 "Plugin 'nelstrom/vim-markdown-folding'
 
