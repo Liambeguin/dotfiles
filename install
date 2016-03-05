@@ -382,7 +382,7 @@ if [ "$DO_RC" == "yes" ]; then
 	verbose "Installing Bash completion scripts..."
 	for file in $dotfiles_home/autocompletion/*; do
 		verbose "Deploying $file"
-		sudo cp $file /etc/bash_completion.d/
+		sudo ln -sf $file /etc/bash_completion.d/
 	done
 	verbose "done"
 fi
