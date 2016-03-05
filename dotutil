@@ -1,10 +1,12 @@
-#!/bin/sh
+#!/bin/bash
 
 PROGNAME=${0##*/}
 PROGVERSION="0.0.1"
+PROGPATH="$(readlink -f $0)"
 
 # This safely assumes your bashrc is from dotfiles
-DOT_PATH="$dirname $(readlink -f ~/.bashrc)"
+DOT_PATH="$(dirname $(readlink -f ${HOME}/.bashrc))"
+TEMPLATE_PATH="$DOT_PATH/templates"
 DOT_AUTHOR="dotutil <liambeguin@gmail.com>"
 
 
@@ -26,29 +28,81 @@ EOF
 	exit 1
 }
 
-_command_list(){ # List all available commands
-	# get all _command definitions
-	# add spaces at the beginning for better display
-	# strip unnecessary characters
-	# tabulate
-	echo "COMMANDS:"
-	grep -E '^_command_.*\{.*#' $0  \
-	| sed 's/\(^.\)/\t\1/g' \
-	| sed 's/_command_\|[(){}]//g' \
-	| awk -F'#' '{printf "%-10s %s\n", $1, $2}'
-	#| awk -F'#' '{print $1 "..........." $2}'
-	#| column -s'#' -t
-	echo
+_command_list() {
+# about_cmd-list: List all available commands
+
+	# get a list of available commands and their description
+	echo "Available COMMAND options :"
+	commands="$(sed -n 's#^_command_\(.*\)() {#\1#p' $PROGPATH)"
+	for cmd in $commands; do
+		echo -n $cmd :
+		about _command_$cmd | head -n2 | tail -n1
+	done | awk -F':' '{printf "%-15s %s\n", $1, $2}'
 }
 
-_command_update() { # Update the current machine
+about(){
+	cmd="$1"
+	#name="$(echo $cmd | sed 's/_command_//g')"
+	name=${cmd//_command_/}
+
+
+	# parse current file for comments starting with about_
+	raw_about="$(sed -n "/^$cmd()/,/^\}/p" $PROGPATH \
+		| grep -Eo "# about_.*")"
+
+	usage="$(echo "$raw_about" \
+		| grep -Eo "_usage.*" \
+		| sed 's/^.*://g')"
+	desc="$(echo "$raw_about" \
+		| grep -Eo "_cmd.*" \
+		| sed 's/^.*: //g' \
+		| sed 's/^\(.*\)/\t\1/g')"
+
+	subcmds="$(echo "$raw_about" \
+		| grep -Eo "_subcmd.*" \
+		| cut -d'-' -f2 \
+		| sed 's/^\(.*\)/\t\1/g' \
+		| awk -F':' '{printf "%-15s %s\n", $1, $2}')"
+
+	echo "USAGE: $PROGNAME $name $usage"
+	echo "$desc"
+	if [ -n "$subcmds" ]; then
+		echo "SUB-COMMANDS:"
+		echo "$subcmds"
+	fi
+}
+
+
+_command_update() {
+# about_cmd: Update the current machine
+
 	verbose $FUNCNAME: $*
 }
-_command_ignite() { # Setup a new machine using profile
+_command_ignite() {
+# about_usage: profile
+# about_cmd: Setup a new machine using profile
+
 	verbose $FUNCNAME: $*
+	# This should use only one branch and appli patches
+	# depending on a profile
 }
-_command_gterm() { # Manipulate gnome terminal configuration
-	verbose $FUNCNAME: $*
+
+_command_gterm() {
+# about_usage: SUBCOMMAND OPTS..
+# about_cmd: Manipulate gnome terminal configuration
+#
+# about_subcmd-export: Generate a profile file based on current configuration
+
+	# checking distro since it's not the same on debian
+	if [ "$(get_distro)" != "Fedora" ]; then
+		failure "Not yet implemented"
+	fi
+	case "$1" in
+		"export")
+			gterm_settings="$DOT_PATH/gnome-terminal/terminal_settings"
+			dconf dump /org/gnome/terminal/legacy/ > $gterm_settings ;;
+		*) about $FUNCNAME;;
+	esac
 }
 
 save_cheats(){
@@ -61,21 +115,84 @@ save_cheats(){
 	else
 		echo "No changes found."
 	fi
+	popd
 }
 
-_command_cheat() { # Manipulate cheat files
-	verbose $FUNCNAME: $*
+_command_cheat() {
+# about_usage: SUBCOMMAND OPTS..
+# about_cmd: Manipulate cheat files
+#
+# about_subcmd-save: save edited cheats to git repo
+
 	case "$1" in
-		"save") save_cheats; break;;
-		*) failure "Bad usage, try $PROGNAME cheat save" ;;
+		"save") save_cheats;;
+		*) about $FUNCNAME;;
 	esac
 }
-_command_byobu() { # Manipulate byobu configuration
-	verbose $FUNCNAME: $*
+_command_byobu() {
+# about_usage: SUBCOMMAND OPTS..
+# about_cmd: Manipulate byobu configuration
+#
+# about_subcmd-enable: Enable a custom script
+# about_subcmd-disable: Disable a custom script
+# about_subcmd-refresh: Refresh custom scripts
+
+script="$(readlink -f ${HOME}/.byobu/bin/*_$2)"
+	case "$1" in
+		"enable")  [ ! -x "$script" ] && chmod +x "$script";;
+		"disable") [ -x "$script" ] && chmod -x "$script";;
+		"refresh") rm $BYOBU_RUN_DIR/*/custom.*;;
+		"list") ls --format=single-column ${HOME}/.byobu/bin/ ;;
+		*) about $FUNCNAME;;
+	esac
 }
-_command_xcd() { # Manipulate xcd shortcuts
-	verbose $FUNCNAME: $*
+_command_xcd() {
+# about_usage: SUBCOMMAND OPTS...
+# about_cmd: Manipulate xcd shortcuts
+#
+# about_subcmd-add: Add new xcd shortcut
+# about_subcmd-rm: Remove xcd shortcut
+
+	case "$1" in
+		"add") echo add;; # TODO
+		"rm") echo rm;; # TODO
+		*) about $FUNCNAME;;
+	esac
 }
+
+# extract descriptions from templates
+get_template_description() {
+
+	grep -Er '^# about_template' $TEMPLATE_PATH \
+		| sed 's#^/.*/\(.*\):#\1#g' \
+		| sed 's/# about_template/\t/g'
+}
+
+_command_template() {
+# about_usage: SUBCOMMAND <template name> <your file>
+# about_cmd: Manipulate templates
+#
+# about_subcmd-list: List available templates
+# about_subcmd-gen: Generate a new file based on a template
+
+	template="$2"
+	output="$3"
+	case "$1" in
+		"get")
+			if [ -e "$TEMPLATE_PATH/$template" ]; then
+				cp "$TEMPLATE_PATH/$template" "$output"
+				# remove template description
+				sed -i '/^# about_template/d' "$output"
+			else
+				failure "Could not find $template template..."
+			fi
+			;;
+		"list") get_template_description;;
+		*) about $FUNCNAME ;;
+	esac
+}
+
+
 #Parsing arguments ###################
 set_option_defaults() {
 	VERBOSE="no"
@@ -101,14 +218,10 @@ while true; do
 	shift
 done
 
-
 [ -n "$1" ] && COMMAND="$1"
-shift && OPTIONS="${@}"
-verbose "$COMMAND"
+shift && OPTIONS="${*}"
 
-_command_${COMMAND} ${SUB_CMD} ${OPTIONS} 2>/dev/null || \
-	failure "command not found! try --help"
-
+_command_${COMMAND} ${SUB_CMD} ${OPTIONS} 2>/dev/null || about _command${COMMAND}
 
 exit 0
 # vim: cc=80 tw=100 sw=4 ts=4:

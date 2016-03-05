@@ -1,0 +1,96 @@
+#!/bin/sh
+# about_template: Shell script using this pattern "PROGNAME [OPTIONS] COMMAND options..."
+
+PROGNAME=${0##*/}
+PROGVERSION="0.0.1"
+
+source ~/.bash/shutils.conf
+
+_command_help(){
+	[ -n "$*" ] && echo -e "$*"
+	cat << EOF
+
+USAGE:
+Usage $PROGNAME [OPTIONS] COMMAND options....
+
+OPTIONS:
+	-h | --help .................. Display this message
+	-v | --verbose ............... Display debug output
+
+EOF
+	_command_list
+	exit 1
+}
+
+_command_list(){ # List all available commands
+	# get all _command definitions
+	# add spaces at the beginning for better display
+	# strip unnecessary characters
+	# tabulate
+	echo "COMMANDS:"
+	grep -E '^_command_.*\{.*#' $0  \
+	| sed 's/\(^.\)/\t\1/g' \
+	| sed 's/_command_\|[(){}]//g' \
+	| awk -F'#' '{printf "%-10s %s\n", $1, $2}'
+	echo
+}
+
+_command_update() { # Update the current machine
+	verbose $FUNCNAME: $*
+}
+_command_ignite() { # Setup a new machine using profile
+	verbose $FUNCNAME: $*
+}
+_command_gterm() { # Manipulate gnome terminal configuration
+	verbose $FUNCNAME: $*
+}
+
+_command_cheat() { # Manipulate cheat files
+	case "$1" in
+		"save") save_cheats; break;;
+		*) failure "Bad usage, try $PROGNAME cheat save" ;;
+	esac
+}
+_command_byobu() { # Manipulate byobu configuration
+	verbose $FUNCNAME: $*
+	case "$1" in
+		"enable") echo enable; break;; # TODO
+		"disable") echo disable; break;; # TODO
+		*) failure "Bad usage, try $PROGNAME byobu <enable|disable> custom_status" ;;
+	esac
+}
+#Parsing arguments ###################
+set_option_defaults() {
+	VERBOSE="no"
+	COMMAND="help"
+}
+
+set_option_defaults
+SHORTOPTS="hvV"
+LONGOPTS="help,verbose,version"
+
+ARGS=$(getopt -s bash --options $SHORTOPTS  \
+	--longoptions $LONGOPTS --name $PROGNAME -- "$@" )
+
+eval set -- "$ARGS"
+while true; do
+	case $1 in
+		-h|--help) _command_help;;
+		-v|--verbose) VERBOSE="yes";;
+		-V|--version) echo "$PROGVERSION"; exit 0 ;;
+		--)	shift; break;;
+		*) shift; break	;;
+	esac
+	shift
+done
+
+[ -n "$1" ] && COMMAND="$1"
+shift && OPTIONS="${@}"
+
+
+_command_${COMMAND} ${SUB_CMD} ${OPTIONS} 2>/dev/null || \
+	failure "command not found! try --help"
+
+
+exit 0
+# vim: cc=80 tw=100 sw=4 ts=4:
