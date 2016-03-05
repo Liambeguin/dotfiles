@@ -235,91 +235,29 @@ eval set -- "$OPTS"
 
 while true; do
 	case "$1" in
-		-h|--help)
-			usage
-			;;
-		-v|--verbose)
-			VERBOSE="yes"
-			shift
-			;;
-		-y|--assumeyes)
-			ASSUMEYES="yes"
-			shift
-			;;
-		--disable-rc)
-			DO_RC="no"
-			shift
-			;;
-		--disable-gnome-term)
-			DO_GNOME_TERM="no"
-			shift
-			;;
-		--gnome-profile)
-			GNOME_profile="$(readlink -f $2)"
-			shift 2
-			;;
-		--disable-byobu)
-			DO_BYOBU="no"
-			shift
-			;;
-		--disable-vundle)
-			DO_VUNDLE="no"
-			shift
-			;;
-		--disable-pager)
-			DO_PAGER="no"
-			shift
-			;;
-		--disable-pip)
-			DO_PIP="no"
-			shift
-			;;
-		--disable-git)
-			DO_GIT="no"
-			shift
-			;;
-		--git-username)
-			GIT_username="$2"
-			shift 2
-			;;
-		--git-email)
-			GIT_email="$2"
-			shift 2
-			;;
-		--disable-chrome)
-			DO_CHROME="no"
-			shift
-			;;
-		--disable-bin)
-			DO_BIN="no"
-			shift
-			;;
-		--append-packages)
-			APPEND_PACKAGES="$2"
-			BASE_PACKAGES="$BASE_PACKAGES $APPEND_PACKAGES"
-			shift 2
-			;;
-		--append-pip)
-			APPEND_PIP="$2"
-			BASE_PIP_PACKAGES="$BASE_PIP_PACKAGES $APPEND_PIP"
-			shift 2
-			;;
-		--enable-extra)
-			DO_EXTRA="yes"
-			shift
-			;;
-		--clean)
-			failure "clean not yet implemented"
-			shift
-			;;
-		--)
-			shift
-			break
-			;;
-		*)
-			failure "Unknown argument."
-			break
-			;;
+		-h|--help) usage ;;
+		-v|--verbose) VERBOSE="yes"; shift ;;
+		-y|--assumeyes)	ASSUMEYES="yes"; shift ;;
+		--disable-rc) DO_RC="no"; shift ;;
+		--disable-gnome-term) DO_GNOME_TERM="no"; shift ;;
+		--gnome-profile) GNOME_profile="$(readlink -f $2)"; shift 2 ;;
+		--disable-byobu) DO_BYOBU="no"; shift ;;
+		--disable-vundle) DO_VUNDLE="no"; shift ;;
+		--disable-pager) DO_PAGER="no"; shift ;;
+		--disable-pip) DO_PIP="no"; shift ;;
+		--disable-git) DO_GIT="no"; shift ;;
+		--git-username) GIT_username="$2"; shift 2 ;;
+		--git-email) GIT_email="$2"; shift 2 ;;
+		--disable-chrome) DO_CHROME="no"; shift ;;
+		--disable-bin) DO_BIN="no"; shift ;;
+		--append-packages) APPEND_PACKAGES="$2"
+			BASE_PACKAGES="$BASE_PACKAGES $APPEND_PACKAGES"; shift 2 ;;
+		--append-pip) APPEND_PIP="$2"
+			BASE_PIP_PACKAGES="$BASE_PIP_PACKAGES $APPEND_PIP"; shift 2 ;;
+		--enable-extra) DO_EXTRA="yes"; shift ;;
+		--clean) failure "clean not yet implemented"; shift ;;
+		--) shift; break ;;
+		*) failure "Unknown argument."; break ;;
 	esac
 done
 
