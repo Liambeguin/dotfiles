@@ -1,4 +1,5 @@
-
+" NOTE: http://marcgg.com/blog/2016/03/01/vimrc-example
+"
 " ==  General Stuff  ==========================================================
 " Navigation
 "  for more go to : http://vim.wikia.com/wiki/All_the_right_moves
@@ -15,7 +16,10 @@ abbr W w
 "Enabling mouse..
 set mouse=a
 
-set hlsearch
+" default is to \
+"let mapleader=","
+
+set hlsearch  " Highlight found words
 set incsearch " set incremental search, like modern browsers
 
 set clipboard=unnamed

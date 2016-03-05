@@ -22,6 +22,7 @@ Plugin 'scrooloose/syntastic'
 let g:syntastic_sh_checkers = ['shellcheck']
 
 " Make it even better
+ " Autocomplete when using tab
 Plugin 'ervandew/supertab'
 Plugin 'ntpeters/vim-better-whitespace'
 Plugin 'vim-scripts/tComment'

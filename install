@@ -345,7 +345,7 @@ pm_chk_and_install "$BASE_PACKAGES"
 verbose "done"
 
 # Editing Window focus mode
-if [ -n $DISPLAY ]; then
+if [ -n "$DISPLAY" ]; then
 	verbose "Setting focus-mode to mouse..."
 	dconf write /org/gnome/desktop/wm/preferences/focus-mode "string 'mouse'"
 	verbose "done"
@@ -393,7 +393,7 @@ if [ "$DO_GNOME_TERM" == "yes" ]; then
 	TMP_FONT_DIR="/tmp/fonts.$$"
 	git clone https://github.com/powerline/fonts.git $TMP_FONT_DIR
 	$TMP_FONT_DIR/install.sh
-	if [ -n $DISPLAY ]; then
+	if [ -n "$DISPLAY" ]; then
 		verbose "Editing gnome-terminal settings..."
 		eval $edit_gnome_terminal
 	else
@@ -426,6 +426,26 @@ if [ "$DO_VUNDLE" == "yes" ]; then
 	fi
 	# Installing bundles...
 	vim +PluginInstall +qall
+
+
+	# Adding Markdown viewer
+	# More info at :
+	# https://github.com/suan/vim-instant-markdown
+	#
+	# TODO: this may need some testing and should be a Vim Plugin !
+	verbose "installing vim-instant-markdown..."
+	sudo npm -g install instant-markdown-d
+	pm_chk_and_install 'xdg-utils'
+	git clone https://github.com/suan/vim-instant-markdown.git $dotfiles_home/vim-instant-markdown
+	mkdir -p ${HOME}/.vim/after/ftplugin/markdown/
+	pushd $dotfiles_home/vim-instant-markdown
+	cp after/ftplugin/markdown/instant-markdown.vim ${HOME}/.vim/after/ftplugin/markdown/
+	verbose "Cleaning up..."
+	popd
+	sudo rm -rf $dotfiles_home/vim-instant-markdown
+	verbose "vim-instant-markdown done !"
+
+
 	verbose "done"
 fi
 
