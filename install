@@ -344,7 +344,8 @@ fi
 if [ "$DO_BYOBU" == "yes" ]; then
 	pm_chk_and_install "byobu"
 	unlink ${HOME}/.byobu
-	ln -sf $(pwd)/byobu ${HOME}/.byobu
+	ln -sf ${dotfiles_home}/byobu ${HOME}/.byobu
+	ln -sf ${dotfiles_home}/byobu/.tmux.conf ${HOME}
 
 fi
 
