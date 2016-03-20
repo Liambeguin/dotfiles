@@ -12,6 +12,10 @@ nmap <silent> <C-h> :wincmd h<CR>
 nmap <silent> <C-l> :wincmd l<CR>
 
 
+" Use enter to create new lines w/o entering insert mode
+nnoremap <CR> o<Esc>
+
+
 
 """ ABREVIATIONS
 abbr Wq wq
@@ -62,11 +66,13 @@ au InsertLeave * set notimeout
 
 
 
+
 """ COMMANDS
 " Delete all Whitespaces
 command Nws execute "%s/\\s\\+$//g | nohl"
 " Close buffer without removing split
 command Bd bp\|bd \#
+
 
 
 
