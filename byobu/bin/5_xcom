@@ -1,0 +1,11 @@
+#!/bin/sh
+# Print xcom device in status bar
+
+
+source /usr/libexec/byobu/include/shutil
+
+tst="$(pgrep -faP `tmux display-message -p "#{pane_pid}"` | grep xcom)"
+alias="$(echo $tst | awk '{print $4}')"
+if [ -n "$alias" ]; then
+	color d ; echo "XCOM:$alias"; color none; echo ''; color --
+fi
