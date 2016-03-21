@@ -17,6 +17,8 @@ Plugin 'bling/vim-airline'
 Plugin 'junegunn/vim-easy-align'
 Plugin 'vim-scripts/SearchComplete'
 Plugin 'xuhdev/vim-latex-live-preview'
+" Opens a browser to preview markdown files
+Plugin 'suan/vim-instant-markdown', {'do': 'npm install -g instant-markdown-d'}
 Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'scrooloose/syntastic'
 let g:syntastic_sh_checkers = ['shellcheck']
