@@ -29,6 +29,7 @@ Plugin 'ervandew/supertab'
 Plugin 'ntpeters/vim-better-whitespace'
 Plugin 'vim-scripts/tComment'
 Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-repeat'
 
 " Awesome notes !
 Plugin 'vimwiki/vimwiki'

@@ -2,6 +2,8 @@
 " NOTE: http://marcgg.com/blog/2016/03/01/vimrc-example
 " NOTE: https://github.com/sd65/MiniVim
 " NOTE: Bitbake has a set of files that can be used goto bitbake/contrib/vim
+" NOTE: this one is really good !
+"       http://stevelosh.com/blog/2010/09/coming-home-to-vim/
 
 
 
@@ -14,6 +16,11 @@ nmap <silent> <C-l> :wincmd l<CR>
 
 " Use enter to create new lines w/o entering insert mode
 nnoremap <CR> o<Esc>
+" Treat long lines as break lines
+map j gj
+map k gk
+" Quick Esc
+inoremap jj <Esc>
 
 
 
@@ -27,7 +34,14 @@ abbr W w
 """ GENERAL SETTING
 filetype off
 syntax on
-"let mapleader="," " default is to \
+" Configure backspace so it acts as it should act
+set backspace=eol,start,indent
+set whichwrap+=<,>,h,l
+" add leader to have more combinations
+let mapleader="," " default is to \
+let g:mapleader=","
+set so=7 " set 7 lines to the cursor up-down
+set ruler " always show current position
 set clipboard=unnamed
 set wildmenu " Better command-line completion
 set updatetime=1000 " Save swap file to disk every 1000ms
@@ -65,6 +79,8 @@ au InsertEnter * set timeout
 au InsertLeave * set notimeout
 
 
+""" Save on losing focus
+au FocusLost * :wa
 
 
 """ COMMANDS
@@ -93,7 +109,7 @@ highlight Cursor      cterm=NONE ctermfg=235  ctermbg=231
 highlight Visual      cterm=NONE ctermfg=NONE ctermbg=59
 highlight ColorColumn cterm=NONE ctermfg=NONE ctermbg=237
 " Search colors
-highlight MatchParen  cterm=bold ctermfg=197  ctermbg=NONE
+highlight MatchParen  cterm=bold ctermfg=NONE ctermbg=186
 highlight IncSearch   cterm=bold ctermfg=235  ctermbg=186
 highlight Search      cterm=bold ctermfg=235  ctermbg=186
 " Split
