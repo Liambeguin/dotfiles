@@ -318,6 +318,8 @@ if [ "$DO_RC" == "yes" ]; then
 	ln -sf $dotfiles_home/screenrc ${HOME}/.screenrc
 	ln -sf $dotfiles_home/vimrc ${HOME}/.vimrc
 
+	ln -sf $dotfiles_home/Xresources ${HOME}/.Xresources
+
 	verbose "Installing Bash completion scripts..."
 	for file in $dotfiles_home/autocompletion/*; do
 		verbose "Deploying $file"
