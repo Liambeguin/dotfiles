@@ -4,5 +4,8 @@
 # BetaSeries
 
 source /usr/libexec/byobu/include/shutil
-color b k b; echo "B$(bscli -p watchlist | wc -l)"; color --
+count="$(bscli -p watchlist | wc -l)"
+if [ "$count" != "0" ]; then
+	color b k b; echo "B$(bscli -p watchlist | wc -l)"; color --
+fi
 # vi: syntax=sh ts=4 noexpandtab
