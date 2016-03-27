@@ -1,0 +1,45 @@
+#!/bin/bash
+
+source ~/.bash/colorutils.conf
+
+VERSION="4.5"
+mkdir -p ~/kernelbuild
+
+WORKDIR="/tmp/get-kernel.$$"
+mkdir -p $WORKDIR
+
+pushd $WORKDIR
+wget -c https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-${VERSION}.tar.xz
+wget -c https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-${VERSION}.tar.sign
+
+# Could a a signature check here
+
+tar -xvJf linux-${VERSION}.tar.xz -C ~/kernelbuild
+
+# Cleanup
+rm -r $WORKDIR
+
+echo -e "
+you can now ${bldblk}cd ~/kernelbuild/linux-${VERSION}/${txtrst}
+
+and start editing your kernel config :
+${txtblu}# Cleanup the tree${txtrst}
+make mrproper
+${txtblu}# Generate config file from current kernel state${txtrst}
+make localmodconfig
+${txtblu}# Customize said config${txtrst}
+make menuconfig
+${txtblu}# Build the kernel${txtrst}
+make
+${txtblu}# Build kernel modules${txtrst}
+${txtblu}# This will copy the compiled modules into /lib/modules/<kernel version>-<config local version>${txtrst}
+sudo make modules_install
+${txtblu}#copy kernel to /boot partition${txtrst}
+sudo make install
+${txtblu}# generate GRUB config${txtrst}
+sudo grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg
+${txtblu}# You can now prevent dnf to update the kernel${txtrst}
+sudo echo 'exclude=kernel*' >> /etc/dnf/dnf.conf
+"
+popd
+exit 0
