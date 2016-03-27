@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+if [ "$USERNAME" != "root" ]; then
+	echo "This must be executed as root !"
+	exit 1
+fi
+# Create working dir for Broadcom driver files and patches.
+WORKDIR="/tmp/hybrid_wl_f23.$$"
+mkdir -p ${WORKDIR}
+
+# DKMS Support
+MOD_NAME="wl"
+MOD_VERSION="v35"
+MOD_PATH="/usr/src/${MOD_NAME}-${MOD_VERSION}"
+mkdir -p $MOD_PATH
+# Cleanup
+rm -rf $MOD_PATH/*
+
+cat << EOF > $MOD_PATH/dkms.conf
+PACKAGE_NAME="$MOD_NAME"
+PACKAGE_VERSION="$MOD_VERSION"
+BUILT_MODULE_NAME[0]="$MOD_NAME"
+DEST_MODULE_LOCATION[0]="/kernel/drivers/net/wireless/"
+AUTOINSTALL="yes"
+EOF
+
+if [ -n "$(dkms status | grep $MOD_NAME)" ]; then
+	dkms remove -m $MOD_NAME -v $MOD_VERSION --all
+fi
+
+# Change to working dir.
+cd ${WORKDIR}
+
+if [ 'x86_64' == `uname -m` ]; then
+	# 64-bit driver files.
+	FILE='hybrid-v35_64-nodebug-pcoem-6_30_223_271.tar.gz'
+else
+	# 32-bit driver files.
+	FILE='hybrid-v35-nodebug-pcoem-6_30_223_271.tar.gz'
+fi
+
+# Download Broadcom Linux Wi-Fi driver
+wget http://www.broadcom.com/docs/linux_sta/$FILE
+
+# Extract driver files.
+tar zxvf $FILE -C $MOD_PATH
+
+# Load module during boot
+# FIXME: is there a better way to do this ?!
+echo $MOD_NAME > /etc/modules-load.d/${MOD_NAME}.conf
+
+dkms add -m $MOD_NAME -v $MOD_VERSION
+dkms build -m $MOD_NAME -v $MOD_VERSION
+dkms install -m $MOD_NAME -v $MOD_VERSION
+
+sudo systemctl enable dkms.service
+sudo systemctl start dkms.service
+exit 0
