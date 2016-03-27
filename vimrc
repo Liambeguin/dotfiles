@@ -38,8 +38,8 @@ syntax on
 set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
 " add leader to have more combinations
-let mapleader="," " default is to \
-let g:mapleader=","
+let mapleader='\' " default is to \
+let g:mapleader='\'
 set so=7 " set 7 lines to the cursor up-down
 set ruler " always show current position
 set clipboard=unnamed
@@ -90,6 +90,9 @@ command Nws execute "%s/\\s\\+$//g | nohl"
 command Bd bp\|bd \#
 
 
+""" LEADER SHORTCUTS
+" Insert at the begining
+nnoremap <leader>i ggI
 
 
 """ VIM-AIRLINE
