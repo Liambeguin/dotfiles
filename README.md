@@ -22,6 +22,15 @@ $ cd ~/dev/dotfiles/gnome-terminal
 $ gconftool-2 --dump  /apps/gnome-terminal > profile.xml
 ```
 
+Generate color palette for xterm based on Fedora profile
+--------------------------------------------------------
+
+```
+$ grep palette gnome-terminal/terminal_settings | \
+sed 's/rgb/\n/g' | sed 's/^(\(.*\)).*$/\1/g' | tail -n+2 | \
+awk 'BEGIN {FS="," ; i=0 } {printf "xterm*color %d: rgb:%02X/%02X/%02X \n", i, $1, $2, $3; i++}'
+```
+
 Install instructions
 ---------------------
 **make sure you're sudo on the system !**
@@ -36,16 +45,16 @@ $ git clone https://github.com/Liambeguin/dotfiles.git
 $ cd dotfiles
 $ ./install
 ```
-**Add Machine specific (or private) stuff to `~/.bashrc_local`** 
+**Add Machine specific (or private) stuff to `~/.bashrc_local`**
 
 
-Other useful tools 
+Other useful tools
 ---------
 * [pw](https://github.com/Liambeguin/pw)
 ```
 $ cd ~/dev
 $ git clone https://github.com/Liambeguin/pw.git
-$ ln -sf $(pwd)/pw/pw ~/bin/pw 
+$ ln -sf $(pwd)/pw/pw ~/bin/pw
 ```
 
 TODOs
