@@ -141,7 +141,7 @@ script="$(readlink -f ${HOME}/.byobu/bin/*_$2)"
 	case "$1" in
 		"enable")  [ ! -x "$script" ] && chmod +x "$script";;
 		"disable") [ -x "$script" ] && chmod -x "$script";;
-		"refresh") rm $BYOBU_RUN_DIR/*/custom.*;;
+		"refresh") rm $BYOBU_RUN_DIR/*/{custom,update}*;;
 		"list") ls --format=single-column ${HOME}/.byobu/bin/ ;;
 		*) about $FUNCNAME;;
 	esac
