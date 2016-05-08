@@ -55,9 +55,9 @@ done
 if [ "$LIST" == "yes" ]; then
 	CMD="lq"
 elif [ -n "$(echo $1 | grep -Eo "^[0-9]{4}?")" ]; then
-	CMD="picocom -b 115200 -l /dev/serial/by-id/usb-Xiphos_Systems_Corp._Q7-PIM_${1}-if00-port0"
+	CMD="picocom -b 115200 /dev/serial/by-id/usb-Xiphos_Systems_Corp._Q7-PIM_${1}-if00-port0"
 elif [ -n "$1" ]; then
-	CMD="picocom -b 115200 -l /dev/ttyUSB${1}"
+	CMD="picocom -b 115200 /dev/ttyUSB${1}"
 else
 	print_usage
 fi
@@ -67,15 +67,8 @@ if [ -n "$LOGFILE" ]; then
 fi
 
 case "$REMOTE" in
-	kk)
-		ssh -t kingkong-ubuntu "$CMD"
-		;;
-	"")
-		$CMD
-		;;
-	*)
-		ssh -t "$REMOTE" "$CMD"
-		;;
+	"") $CMD ;;
+	*)  ssh -t "$REMOTE" "$CMD" ;;
 esac
 
 # vim: cc=80 tw=100 sw=4 ts=4:
