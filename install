@@ -192,8 +192,6 @@ print_settings(){
 
 	echo -e "  * configure git env? ${txtblu}$DO_GIT${txtrst}"
 	if [ "$DO_GIT" == "yes" ]; then
-		echo -e "    - push.default : ${txtblu}matching${txtrst} #hardcoded"
-		echo -e "    - color.ui     : ${txtblu}true${txtrst} #hardcoded"
 		echo -e "    - user.name    : ${txtblu}$GIT_username${txtrst}"
 		echo -e "    - user.email   : ${txtblu}$GIT_email${txtrst}"
 	fi
@@ -412,13 +410,9 @@ if [ "$DO_PIP" == "yes" ]; then
 fi
 
 if [ "$DO_GIT" == "yes" ]; then
+	ln -sf $dotfiles_home/gitconfig ~/.gitconfig
 	git config --global user.name  "$GIT_username"
 	git config --global user.email "$GIT_email"
-	# When push.default is set to 'matching', git will push local branches
-	# to the remote branches that already exist with the same name.
-	git config --global push.default matching
-	# Enable coloring
-	git config --global color.ui true
 fi
 
 if [ "$DO_CHROME" == "yes" ]; then

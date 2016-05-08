@@ -1,0 +1,24 @@
+[user]
+	email = liambeguin@gmail.com
+	name = Liam BEGUIN
+    editor = vi
+    whitespace = blank-at-eol,indent-with-non-tab,trailing-space
+
+[push]
+	default = matching
+[color]
+	ui = true
+	grep = auto
+# Use about the same colors as usual grep
+[color "grep"]
+	context = normal
+	filename = magenta
+	function = black bold
+	linenumber = green
+	match = red bold
+	selected = normal
+	separator = cyan
+[grep]
+	lineNumber = true
+[column]
+	ui = never

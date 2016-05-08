@@ -55,8 +55,8 @@ set matchtime=3 " ... during this time
 set hlsearch  " Highlight found words
 set incsearch " set incremental search, like modern browsers
 " Tab control
-"set noexpandtab " insert tabs rather than spaces for <Tab>
-set expandtab " insert spaces rather than tabs for <Tab>
+set noexpandtab " insert tabs rather than spaces for <Tab>
+" set expandtab " insert spaces rather than tabs for <Tab>
 set smarttab " tab respects 'tabstop', 'shiftwidth', and 'softtabstop'
 set tabstop=4 " the visible width of tabs
 set softtabstop=4 " edit as if the tabs are 4 characters wide
