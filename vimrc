@@ -123,6 +123,8 @@ highlight DiffDelete  cterm=bold ctermfg=Gray	ctermbg=17
 highlight DiffChange  cterm=bold ctermfg=Gray 	ctermbg=17
 highlight DiffText    cterm=bold ctermfg=White	ctermbg=124
 
+highlight Normal guifg=white guibg=black
+
 
 
 " vim: set cc=80:
