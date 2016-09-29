@@ -30,7 +30,9 @@ Plugin 'ntpeters/vim-better-whitespace'
 Plugin 'vim-scripts/tComment'
 Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-repeat'
-
+" Linux kernel style
+let g:linuxsty_patterns = [ "/usr/src/", "/linux" ]
+Plugin 'vivien/vim-linux-coding-style'
 " Awesome notes !
 Plugin 'vimwiki/vimwiki'
 " Markdown foldings

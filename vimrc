@@ -30,6 +30,9 @@ abbr Q q
 abbr W w
 
 
+""" ALLOW PROJECT SPECIFIC VIMRC FILES
+set exrc
+set secure
 
 """ GENERAL SETTING
 filetype off
