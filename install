@@ -15,7 +15,7 @@ VERBOSE="no"
 ASSUMEYES="no"
 DO_RC="yes"
 DO_GNOME_TERM="yes"
-DO_BYOBU="yes"
+DO_BYOBU="no"
 DO_VUNDLE="yes"
 DO_PAGER="yes" #vimcat &Co
 DO_PIP="yes"   #cheat speedtest, ...
@@ -348,6 +348,16 @@ if [ "$DO_BYOBU" == "yes" ]; then
 	ln -sf ${dotfiles_home}/byobu/.tmux.conf ${HOME}
 
 fi
+
+if [ "$DO_TMUX" == "yes" ]; then
+	pm_chk_and_install "tmux"
+	unlink ${HOME}/.tmux
+	unlink ${HOME}/.tmux.conf
+
+	ln -sf ${dotfiles_home}/tmux ${HOME}/.tmux
+	ln -sf ${dotfiles_home}/tmux.conf ${HOME}/.tmux.conf
+fi
+
 
 if [ "$DO_VUNDLE" == "yes" ]; then
 	# WARNING because we clone vundle inside ~/.vim if later we need to link
