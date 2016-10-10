@@ -50,7 +50,7 @@ right_status="uptime load_avg ram ip" #plus date
 out="#[default]"
 for i in $(eval echo "\$${side}_status"); do
 	#TODO if -z attr no space
-	out="$(printf "%s " "$out" ; eval echo -n "\#[\$${i}_attr]"; __${i})#[default]"
+	out="$(printf "%s" "$out" ; eval echo -n "\#[\$${i}_attr]"; __${i})#[default] "
 done
 echo "$out "
 
