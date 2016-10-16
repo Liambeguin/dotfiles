@@ -50,7 +50,8 @@ set wildmenu " Better command-line completion
 set updatetime=1000 " Save swap file to disk every 1000ms
 let &showbreak="\u21aa " " Show a left arrow when wrapping text
 set ttyfast " Set fast tty
-set mouse=nv "Enabling mouse in Normal and Visual mode
+set mouse=a " Enable mouse all the time1
+set ttymouse=xterm2 " Fix unable to resize window in tmux
 set cursorline " Highlight cursor line
 set showmatch  " When a bracket is inserted, briefly jump to the matching one
 set matchtime=3 " ... during this time
