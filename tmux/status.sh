@@ -4,23 +4,14 @@
 
 # Available attribute options:
 #
-# black
-# red
-# green
-# yellow
-# blue
-# magenta
-# cyan
-# white
-# black
-# brightblack
-# brightred
-# brightgreen
-# brightyellow
-# brightblue
-# brightmagenta
-# brightcyan
-# brightwhite
+# [bright] black
+# [bright] red
+# [bright] green
+# [bright] yellow
+# [bright] blue
+# [bright] magenta
+# [bright] cyan
+# [bright] white
 #
 # dim
 # underscore
@@ -34,24 +25,32 @@
 
 side="$1"
 if [ "$side" != "left" ] && [ "$side" != "right" ]; then
-	echo error
+	echo " #[fg=white,bold,bg=red]ERROR#[default] "
 	exit 1
 fi
 
+# Set attributes for given fields
 test_attr="fg=red,bg=green,bold"
 uptime_attr="fg=black,bg=white"
 load_avg_attr="fg=black,bg=yellow"
 ram_attr="fg=white,bg=green"
 ip_attr="fg=black,bold,bg=white"
+vpn_attr="fg=white,bold,bg=blue"
+wifi_attr="fg=white,bold,bg=blue"
 
-left_status="logo release whoami session"
-right_status="uptime load_avg ram ip" #plus date
+# NOTE: set this to track a different network interface
+export TMUX_MONITORING_INTERFACE=""
+export TMUX_DATE_FORMAT="(%A) [%Y-%b-%d] %H:%M"
+
+left_status="logo battery whoami session"
+right_status="uptime load_avg ram vpn ip wifi date"
 
 out="#[default]"
 for i in $(eval echo "\$${side}_status"); do
-	#TODO if -z attr no space
-	out="$(printf "%s" "$out" ; eval echo -n "\#[\$${i}_attr]"; __${i})#[default] "
+	if [ -n "$(__${i} | sed 's/\s//g')" ]; then
+		out="$(printf "%s" "$out" ; eval echo -n "\#[\$${i}_attr]"; __${i})#[default] "
+	fi
 done
-echo "$out "
+echo "$out"
 
 exit 0
