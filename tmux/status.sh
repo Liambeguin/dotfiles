@@ -43,7 +43,7 @@ export TMUX_MONITORING_INTERFACE=""
 export TMUX_DATE_FORMAT="(%A) [%Y-%b-%d] %H:%M"
 
 left_status="logo battery whoami session"
-right_status="uptime load_avg ram vpn ip wifi date"
+right_status="uptime load_avg disk ram vpn ip wifi date"
 
 out="#[default]"
 for i in $(eval echo "\$${side}_status"); do
