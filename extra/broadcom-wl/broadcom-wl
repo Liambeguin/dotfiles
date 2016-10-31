@@ -1,0 +1,45 @@
+#!/bin/sh -e
+
+# source ~/.bash/shutils.conf
+
+PROGNAME=${0##*/}
+PROGPATH="$(dirname $(realpath ${PROGNAME}))"
+
+dkms_name="broadcom-wl"
+dkms_vers="6.30.223.271"
+dkms_path="/usr/src/${dkms_name}-${dkms_vers}/"
+dkms_patch_path="/usr/src/${dkms_name}-${dkms_vers}/patches"
+dkms_kvers=""
+
+if [ "$(whoami)" != root ]; then
+	 echo "This should be run as root !"
+	 exit -1
+fi
+
+if [ -n "$1" ]; then
+	dkms_kvers="-k $1"
+fi
+
+if [ "$(uname -m)" == "x86_64" ]; then
+	# 64-bit driver files.
+	FILE="hybrid-v35_64-nodebug-pcoem-${dkms_vers//./_}.tar.gz"
+else
+	# 32-bit driver files.
+	FILE="hybrid-v35-nodebug-pcoem-${dkms_vers//./_}.tar.gz"
+fi
+
+mkdir -p ${dkms_path}
+mkdir -p ${dkms_patch_path}
+cd ${dkms_path}
+
+# Download Broadcom Linux Wi-Fi driver and untar
+wget -O- http://www.broadcom.com/docs/linux_sta/${FILE} | tar zxf -
+
+cp ${PROGPATH}/dkms.conf ${dkms_path}/
+cp ${PROGPATH}/patches/* ${dkms_patch_path}/
+
+dkms add     -m ${dkms_name} -v ${dkms_vers} ${dkms_kvers}
+dkms build   -m ${dkms_name} -v ${dkms_vers} ${dkms_kvers}
+dkms install -m ${dkms_name} -v ${dkms_vers} ${dkms_kvers}
+
+exit 0
