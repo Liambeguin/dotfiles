@@ -107,6 +107,7 @@ execute 'runtime!' 'plugin/plugins.vim'
 
 
 
+set guifont=Terminess\ Powerline\ 9
 
 """ CLOLORS
 " http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim
