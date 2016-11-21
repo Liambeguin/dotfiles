@@ -57,11 +57,6 @@ $ git clone https://github.com/Liambeguin/pw.git
 $ ln -sf $(pwd)/pw/pw ~/bin/pw
 ```
 
-TODOs
------
-- [ ] Hilight a specific set of words on the command line (eg :`$ bash | sed -e 's/foo/\x1b[7m&\x1b[0m/g'`)
-- [ ] Cmdline tool to manage a todolist.
-- [ ] add list of what install does to this file
-- [ ] add dynamic window names in byobu
-- [ ] dynamic bashrc depending on install script (cp bashrc in bash and edit that one ...)
-
+NOTE
+---
+simple terminal: http://git.suckless.org/st/
