@@ -2,7 +2,7 @@
 
 PROGNAME=${0##*/}
 PROGVERSION="0.0.1"
-PROGPATH="$(readlink -f $0)"
+PROGPATH="$(realpath ${0%/*})"
 
 # This safely assumes your bashrc is from dotfiles
 DOT_PATH="$(dirname $(readlink -f ${HOME}/.bashrc))"
