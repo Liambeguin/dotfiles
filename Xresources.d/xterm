@@ -1,0 +1,24 @@
+! TIP: use alt-Enter to toggle fullsreen
+
+XTerm*foreground: white
+XTerm*background: black
+XTerm*faceName:   Terminess Powerline:pixelsize=14:antialias=false
+
+! unicode
+XTerm*utf8:   1
+XTerm*locale: true
+
+! scroll stuff
+XTerm*ScrollBar: false
+XTerm*ScrollKey: true
+XTerm*savelines: 65536
+! stop output to terminal from jumping down to bottom of scroll again
+XTerm*scrollTtyOutput: false
+
+XTerm*visualbell:   false
+XTerm*bellIsUrgent: true
+
+
+! double-click to select whole URLs and file names
+XTerm*charClass: 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
+

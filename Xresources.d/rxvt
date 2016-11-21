@@ -1,0 +1,41 @@
+Rxvt*foreground: white
+Rxvt*background: black
+
+! ScrollBar
+Rxvt*scrollBar: false
+! unicode
+Rxvt*utf8:   1
+
+! -- Fonts -- !
+! Use the following to change the font at runtime:
+! printf '\e]710;%s\007' "xft:Terminess Powerline:pixelsize=30"
+! Use fc-list to list available fonts
+Rxvt*font: xft:Terminess Powerline:pixelsize=14:style=Regular
+
+! Remove scrollBars
+Rxvt.scrollBar: false
+! do not scroll with output
+Rxvt*scrollTtyOutput: false
+! scroll in relation to buffer (with mouse scroll or Shift+Page Up)
+Rxvt*scrollWithBuffer: true
+! scroll back to the bottom on keypress
+Rxvt*scrollTtyKeypress: true
+
+Rxvt.visualBell:	false
+Rxvt.urgentOnBell:  false
+
+Rxvt.colorIT:      #87af5f
+Rxvt.colorBD:      #87afd7
+Rxvt.colorUL:      #87afd7
+
+! Enable <F11>
+! Rxvt.perl-ext-common: ...,fullscreen,...
+! Rxvt.keysym.F11: perl:fullscreen:switch
+
+
+! Make URLs clickable
+Rxvt.perl-ext-common: default,matcher
+Rxvt.url-launcher: /usr/bin/xdg-open
+Rxvt.matcher.button: 1
+! make the URL light yellow
+Rxvt.matcher.rend.0: Uline Bold fg13
