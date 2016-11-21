@@ -1,24 +1,62 @@
 [user]
-	email = liambeguin@gmail.com
-	name = Liam BEGUIN
-    editor = vi
-    whitespace = blank-at-eol,indent-with-non-tab,trailing-space
+	email  = liambeguin@gmail.com
+	name   = Liam BEGUIN
+	editor = vi
+	whitespace = blank-at-eol,indent-with-non-tab,trailing-space
+
+[gui]
+	fontui   = -family \"Terminess Powerline\" -size 12 -weight normal -underline 0 -overstrike 0
+	fontdiff = -family \"Terminess Powerline\" -size 12 -weight normal -underline 0 -overstrike 0
+	warndetachedcommit = true
+
+[help]
+	autocorrect = 10
 
 [push]
 	default = matching
+
+[log]
+	decorate = true
+
+[merge]
+	tool = meld
+
+[mergetool "meld"]
+	keepBackup = false
+	prompt = false
+
 [color]
-	ui = true
-	grep = auto
+	ui     = true
+	status = auto
+	grep   = auto
+	branch = auto
+
 # Use about the same colors as usual grep
 [color "grep"]
-	context = normal
-	filename = magenta
-	function = black bold
+	context    = normal
+	filename   = magenta
+	function   = black bold
 	linenumber = green
-	match = red bold
-	selected = normal
-	separator = cyan
+	match      = red bold
+	selected   = normal
+	separator  = cyan
+
+[color "branch"]
+	current = green
+	remote  = red
+	local   = normal
+
 [grep]
 	lineNumber = true
+
 [column]
 	ui = never
+
+[alias]
+	graph = log --all --oneline --decorate --graph
+	st    = status
+	ba    = branch --all --verbose
+	rv    = remote --verbose
+	lo    = log --all --oneline --decorate
+	last  = log -n1
+	bl    = "!sh --login -c \"vi +Gblame $@\" "
