@@ -1,43 +1,33 @@
-
-" == Vundle ===================================================================
+" vim:set ft=vim cc=80:
+"
+" Here are all the Vundle specific configurations
+" and all my plugins
 "
 set nocompatible " be iMproved
-filetype off " required!
-
-" Vundle setup
-" required!
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#rc()
+filetype off     " required!
 
 " let Vundle manage Vundle
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#rc()
 Plugin 'gmarik/vundle'
-Plugin 'tpope/vim-fugitive'
-" Make vim fancy
-Plugin 'bling/vim-airline'
-Plugin 'junegunn/vim-easy-align'
-Plugin 'vim-scripts/SearchComplete'
-Plugin 'xuhdev/vim-latex-live-preview'
-" Opens a browser to preview markdown files
-Plugin 'suan/vim-instant-markdown', {'do': 'npm install -g instant-markdown-d'}
-Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'scrooloose/syntastic'
-let g:syntastic_sh_checkers = ['shellcheck']
 
-" Make it even better
- " Autocomplete when using tab
-Plugin 'ervandew/supertab'
-Plugin 'ntpeters/vim-better-whitespace'
-Plugin 'vim-scripts/tComment'
-Plugin 'tpope/vim-surround'
-Plugin 'tpope/vim-repeat'
-" Linux kernel style
-let g:linuxsty_patterns = [ "/usr/src/", "/linux" ]
-Plugin 'vivien/vim-linux-coding-style'
-" Awesome notes !
-Plugin 'vimwiki/vimwiki'
-" Markdown foldings
-"Plugin 'nelstrom/vim-markdown-folding'
+
+Plugin 'tpope/vim-fugitive'             " use git inside vi
+Plugin 'tpope/vim-surround'             " Easily add characters arround stuff
+Plugin 'tpope/vim-repeat'               " Enable . command with vim-surround
+Plugin 'vim-airline/vim-airline'        " making vi fancy
+Plugin 'ntpeters/vim-better-whitespace' " Hilight whitespace
+Plugin 'vim-scripts/tComment'           " powerful comment shortcuts
+
+Plugin 'vim-scripts/SearchComplete'     " Autocomplete while searching
+Plugin 'ervandew/supertab'              " Autocomplete when using tab
+
+Plugin 'xuhdev/vim-latex-live-preview'  " Make it easier to write latex
+Plugin 'christoomey/vim-tmux-navigator' " Navigate using ctrl+[hjkl]
+
+Plugin 'scrooloose/syntastic'                " Syntax parser
+let g:syntastic_sh_checkers = ['shellcheck'] " ... Set specific shell parser
+
 
 filetype plugin indent on " required!
-" =============================================================================
-" vim:set ft=vim cc=80:
+
