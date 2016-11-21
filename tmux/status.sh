@@ -30,7 +30,8 @@ if [ "$side" != "left" ] && [ "$side" != "right" ]; then
 fi
 
 # Set attributes for given fields
-test_attr="fg=red,bg=green,bold"
+whoami_attr="bold"
+session_attr="fg=white,bg=red"
 uptime_attr="fg=black,bg=white"
 load_avg_attr="fg=black,bg=yellow"
 ram_attr="fg=white,bg=green"
@@ -42,7 +43,7 @@ wifi_attr="fg=white,bold,bg=blue"
 export TMUX_MONITORING_INTERFACE=""
 export TMUX_DATE_FORMAT="(%A) [%Y-%b-%d] %H:%M"
 
-left_status="logo battery whoami session"
+left_status="logo session battery whoami"
 right_status="uptime load_avg disk ram vpn ip wifi date"
 
 out="#[default]"
