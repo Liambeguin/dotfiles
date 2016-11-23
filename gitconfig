@@ -59,4 +59,7 @@
 	rv    = remote --verbose
 	lo    = log --all --oneline --decorate
 	last  = log -n1
+	# this requires vim fugitive
 	bl    = "!sh --login -c \"vi +Gblame $@\" "
+
+	info  = "!echo; sh -c \"git branch -vla ; echo; git remote -v\"; echo"
