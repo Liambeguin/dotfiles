@@ -8,9 +8,10 @@
 	fontui   = -family \"Terminess Powerline\" -size 12 -weight normal -underline 0 -overstrike 0
 	fontdiff = -family \"Terminess Powerline\" -size 12 -weight normal -underline 0 -overstrike 0
 	warndetachedcommit = true
+	spellingdictionary = none
 
 [help]
-	autocorrect = 10
+	autocorrect = 1
 
 [push]
 	default = matching
