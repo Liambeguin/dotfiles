@@ -2,3 +2,4 @@ vimpager
 *.swp
 bash/local
 vim/local.vim
+tmux/plugins/
