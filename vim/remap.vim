@@ -12,3 +12,4 @@ inoremap jj <Esc>
 " Insert at the begining
 nnoremap <leader>i ggI
 
+nnoremap Q <Esc>
