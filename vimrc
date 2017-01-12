@@ -96,5 +96,5 @@ execute 'runtime!' 'plugin/colors.vim'
 execute 'runtime!' 'plugin/remap.vim'
 
 " file type specific options
-autocmd FileType c setlocal tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab
+autocmd FileType c,cpp setlocal tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab
 

@@ -13,3 +13,5 @@ inoremap jj <Esc>
 nnoremap <leader>i ggI
 
 nnoremap Q <Esc>
+
+nmap <leader>d :d#<bar>bd#<CR>

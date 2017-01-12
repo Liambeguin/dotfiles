@@ -27,7 +27,7 @@ Plugin 'christoomey/vim-tmux-navigator' " Navigate using ctrl+[hjkl]
 
 Plugin 'scrooloose/syntastic'                " Syntax parser
 let g:syntastic_sh_checkers = ['shellcheck'] " ... Set specific shell parser
-
+let g:syntastic_c_remove_include_errors = 1  " ... Exclude include errors
 
 filetype plugin indent on " required!
 
