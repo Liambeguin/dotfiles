@@ -23,10 +23,12 @@ abbr W w
 
 " General settings
 syntax on                " Enable syntax highlighting
+colorscheme lvbdark      " Use custom colorscheme
 set mouse=a              " Enable mouse all the time
 set scrolloff=7          " Set minimal number of lines above and below the cursor
 set ruler                " Always show line and column of the cursor position
 set cursorline           " Highlight cursor line
+" set cursorcolumn         " Highlight cursor column
 set clipboard=unnamed
 set ttyfast              " Set fast tty
 set ttymouse=xterm2      " Fix unable to resize window in tmux
@@ -53,8 +55,8 @@ set wildmode=longest,list    " Set command-line completion options
 set completeopt=menu,longest " Set insert-mode completion options
 
 " Swapfiles
-set updatetime=1000 " Save swapfile to disk every 1000ms
-set dir=~/.vim      " Save swapfile here instead of besides the original file
+set updatetime=1000    " Save swapfile to disk every 1000ms
+set dir=~/.vim/swfiles " Save swapfile here instead of besides the original file
 
 
 " Search
@@ -92,7 +94,6 @@ command Nws execute "%s/\\s\\+$//g | noh"
 " include other files
 execute 'runtime!' 'plugin/airline.vim'
 execute 'runtime!' 'plugin/plugins.vim'
-execute 'runtime!' 'plugin/colors.vim'
 execute 'runtime!' 'plugin/remap.vim'
 
 " file type specific options

@@ -12,12 +12,13 @@ call vundle#rc()
 Plugin 'gmarik/vundle'
 
 
-Plugin 'tpope/vim-fugitive'             " use git inside vi
+Plugin 'tpope/vim-fugitive'             " Use git inside vi
 Plugin 'tpope/vim-surround'             " Easily add characters arround stuff
 Plugin 'tpope/vim-repeat'               " Enable . command with vim-surround
-Plugin 'vim-airline/vim-airline'        " making vi fancy
+Plugin 'vim-airline/vim-airline'        " Making vi fancy
+Plugin 'vim-airline/vim-airline-themes' " ... more themes
 Plugin 'ntpeters/vim-better-whitespace' " Hilight whitespace
-Plugin 'vim-scripts/tComment'           " powerful comment shortcuts
+Plugin 'vim-scripts/tComment'           " Powerful comment shortcuts
 
 Plugin 'vim-scripts/SearchComplete'     " Autocomplete while searching
 Plugin 'ervandew/supertab'              " Autocomplete when using tab
