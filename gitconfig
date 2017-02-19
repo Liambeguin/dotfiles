@@ -56,6 +56,7 @@
 [alias]
 	graph = log --all --oneline --decorate --graph
 	st    = status
+	mt    = mergetool
 	ba    = branch --all --verbose
 	rv    = remote --verbose
 	lo    = log --all --oneline --decorate
