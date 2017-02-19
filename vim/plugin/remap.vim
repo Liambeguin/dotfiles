@@ -15,3 +15,10 @@ nnoremap <leader>i ggI
 nnoremap Q <Esc>
 
 nmap <leader>d :d#<bar>bd#<CR>
+
+
+" empty file: useful when aborting a git rebase -i
+nmap <leader>A ggVGd
+
+" resume exploring files
+nmap <leader>r :Rexplore<CR>
