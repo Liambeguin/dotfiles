@@ -1,8 +1,5 @@
 # vim: ft=sh :
 
-source ./bash/shutils.conf
-
-
 die()
 {
     echo "${HEADER}fatal: $*"
@@ -63,7 +60,7 @@ subsection_cmd()
 	local level=$1
 	shift
 	HEADER="$SUBSECTION_HEADER"
-	$* &> | while read LINE; do
+	$* 2>&1 | while read LINE; do
 		$level "$LINE"
 	done
 	HEADER="$SECTION_HEADER"
@@ -73,13 +70,14 @@ subsection_cmd()
 __sudo()
 {
 	if $IS_SUDOER; then
-		su -c "$@"
+		su -c "$*"
 	else
 		warning "Not sudoer, skipping '$*'"
 	fi
 }
 
-distro_configs() {
+distro_configs()
+{
 	if [ "$DISTRO" = "auto" ]; then
 		verbose "auto detection of distro..."
 		[ ! -f /etc/os-release ] && die "Failed to detect distribution.."

@@ -21,8 +21,8 @@ set_global()
 	NO_INTERNET=false
 
 	DISTRO=""
-	SUDOGROUP=""
-    DOTFILES_HOME=""
+	SUDOGROUP="wheel"
+	DOTFILES_HOME=""
 	PACKAGE_MANAGER="dnf"
 
 	CONFFILE="configs/${CONFFILE:-simple}"
@@ -52,7 +52,7 @@ cfg_parser $CONFFILE
 # NOTE: the order in the list is important! for instance, if general goes after
 #       extra, we do not know where DOTFILES_HOME is...
 #       system should go after dotfiles. e.g.: ln .vim to ~ then install vim.
-for section in general dotfiles system extra gnome pager git; do
+for section in general dotfiles system extra gnome git st; do
     if __prep $section; then
 		HEADER=${SECTION_HEADER}
         __run_${section}

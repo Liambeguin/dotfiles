@@ -34,9 +34,8 @@ __run_general()
 	verbose "log level is  ${LOGLEVEL}"
 	[ -n "$assumeyes" ] && ASSUME_YES=$assumeyes
 	verbose "assume yes?   $ASSUME_YES"
-	[ -n "$dryrun" ] && DRYRUN=$dryrun
+	[ -n "$dryrun" ] && DRYRUN=${dryrun}
 	verbose "dry run?      $DRYRUN"
-	echo
 
 
 	# If the script is run as root, $HOME is going to be wrong
@@ -63,14 +62,15 @@ __run_general()
 	DISTRO=$distro
 	distro_configs
 	verbose "DISTRO is $DISTRO"
-	groups $(whoami) | grep -q $SUDOGROUP && IS_SUDOER=true
+	groups $(whoami) | grep -q $SUDOGROUP || die "sudo access required..."
+	sudo -v
 
 
 	if [ "${hostname}" = "auto" ]; then
 		read -p "${HEADER}enter new hostname: " hostname
 	fi
 	if [ -n "${hostname}" ]; then
-		if [ ! $DRYRUN ]; then
+		if ! ${DRYRUN}; then
 			ask_yesno "use $hostname as the new hostname?" && \
 				hostnamectl set-hostname $hostname
 		else
@@ -118,10 +118,8 @@ __run_dotfiles()
         verbose "Saving old dotfiles to:"
         verbose "$backupname"
 		HEADER="$SUBSECTION_HEADER"
-		if [ ! $DRYRUN ]; then
-			tar -hcf "$backupname" "${home_files[@]}" 2>&1 | while read LINE; do
-				info "$LINE"
-			done
+		if ! ${DRYRUN}; then
+			subsection_cmd info tar --ignore-failed-read -hcf "$backupname" "${home_files[@]}"
 			verbose "Done!"
 		else
 			dry_info "tar -hcf '$backupname' '\${home_files[@]}'"
@@ -141,7 +139,8 @@ __run_dotfiles()
     fi
 	HEADER="$SUBSECTION_HEADER"
     for i in $(seq 0 $(( ${#links[*]} - 1))); do
-		if [ ! $DRYRUN ]; then
+		if ! ${DRYRUN}; then
+			[ -L ${home_files[$i]} ] && unlink ${home_files[$i]}
 			ln ${ln_args} ${DOTFILES_HOME}/${links[$i]} ${home_files[$i]}
 		else
 			dry_info "ln ${ln_args} ${DOTFILES_HOME}/${links[$i]} ${home_files[$i]}"
@@ -159,6 +158,7 @@ __run_system()
 	# TODO:
 	#    - Add multi package manager support
 	#    - Add multi fonts
+	#	 - Vi PLUGINS: update if using vim8 ?
 	#
 	# options
 	#    +--------------+-------+-------------------------+------------------+
@@ -170,47 +170,57 @@ __run_system()
 	#    | fonts        | str   | none                    | font to install  |
 	#    | autocomplete | bool  | false                   | install bash auto|
 	#    |              |       |                         | complete files   |
-	#    | viplugin     | bool  | false                   | install vi plugin|
+	#    | vundle       | bool  | false                   | install vi plugin|
+	#    | vimpager     | bool  | false                   | install vi pager |
+	#    | chrome       | bool  | false                   | install chrome   |
 	#    +--------------+-------+-------------------------+------------------+
 
+	local start_dir=$PWD
 	# PKGMAN
 	if [ "$pkgman" != "dnf" -a "$pkgman" != "auto" ]; then
 		die "Use dnf as a package manager: $pkgman not yet ready."
 	fi
 
+
 	# RPM FUSION
 	if [ -n "$rpmfusionfree" ] && $rpmfusionfree; then
-		[ $DRYRUN ] && dry_info "install rpmfusion free" || \
-		__sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-	fi
+		info "install rpmfusion free"
+		${DRYRUN} && dry_info "skip" || \
+		sudo dnf install -q -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+		fi
 
 	if [ -n "$rpmfusionnonfree" ] && $rpmfusionnonfree; then
-		[ $DRYRUN ] && dry_info "install rpmfusion non-free" || \
-		__sudo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+		info "install rpmfusion non-free"
+		${DRYRUN} && dry_info "skip" || \
+		sudo dnf install -q -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 	fi
 
+
 	# PACKAGES
-	if [ -n "${pkgbase[*]}" ]; then
-		[ $DRYRUN ] && dry_info "install packages: ${pkgbase[@]}" && return
-		__sudo dnf install -y "${pkgbase[@]}"
+	pkgs=${pkgbase[@]}
+	if [ -n "${pkgs}" ]; then
+		info "install packages: "${pkgs}""
+		${DRYRUN} && dry_info "skip" && return
+		sudo dnf install -q -y ${pkgbase[@]}
 	fi
+
 
 	# FONTS
 	if [ "$font" = "terminus-powerline" ]; then
-		HEADER="$SUBSECTION_HEADER"
 		info "installing terminus-powerline"
 		local tmp_dir="/tmp/fonts.$$"
 		local start_dir=$PWD
 		mkdir $tmp_dir && cd $tmp_dir
-		git clone https://github.com/powerline/fonts.git >/dev/null
+		git clone --quiet https://github.com/powerline/fonts.git
 		cd fonts
 		./install.sh >/dev/null
 		cd $start_dir
-		rm -r $tmp_dir
+		rm -rf $tmp_dir
 	else
 		warning "unsupported font..."
 	fi
 	HEADER="$SECTION_HEADER"
+
 
 	# AUTOCOMPLETION
 	if [ ${autocomplete} ]; then
@@ -218,28 +228,53 @@ __run_system()
 		HEADER="$SUBSECTION_HEADER"
 		for f in ${DOTFILES_HOME}/autocompletion/*; do
 			verbose "$f"
-			__sudo ln -sf $f /etc/bash_completion.d/
+			sudo ln -sf $f /etc/bash_completion.d/
 		done
 		HEADER="$SECTION_HEADER"
 	fi
 
-	# Vi PLUGINS (TODO update if using vim8 ?)
 	info "installing vim plugins..."
-	if [ ! -d ${HOME}/.vim/bundle/Vundle.vim ]; then
-		subsection_cmd info git clone https://github.com/gmarik/Vundle.vim.git ${HOME}/.vim/bundle/Vundle.vim
-		subsection_cmd vim +PluginInstall +qall
+	mkdir -p  ${HOME}/.vim/swfiles
+	if [ ${vundle} ]; then
+		if [ ! -d ${HOME}/.vim/bundle/Vundle.vim ]; then
+			git clone --quiet https://github.com/gmarik/Vundle.vim.git \
+				${HOME}/.vim/bundle/Vundle.vim
+		fi
+		vi +PluginInstall +qall
 	fi
+
 
 	# VIMPAGER
 	if [ $vimpager ]; then
-
 		info "installing vimpager..."
-		__sudo dnf install -y pandoc &> /dev/null
-		subsection_cmd info git clone https://github.com/rkitover/vimpager.git ${DOTFILES_HOME}/vimpager
+		sudo dnf install -q -y sharutils pandoc
+		git clone --quiet https://github.com/rkitover/vimpager.git \
+			${DOTFILES_HOME}/vimpager
 		cd ${DOTFILES_HOME}/vimpager
-		subsection_cmd make install
-		# __sudo rm -rf ${DOTFILES_HOME}/vimpager
+		sudo make install &>/dev/null
+		cd $start_dir
+		sudo rm -rf ${DOTFILES_HOME}/vimpager
 	fi
+
+
+	# CHROME
+	if [ "$chrome" ]; then
+		HEADER="$SUBSECTION_HEADER"
+		info "enabling Google yum repository..."
+		cat <<- EOF > /tmp/google-chrome.repo
+		[google-chrome]
+		name=google-chrome - \$basearch
+		baseurl=http://dl.google.com/linux/chrome/rpm/stable/\$basearch
+		enabled=1
+		gpgcheck=1
+		gpgkey=https://dl-ssl.google.com/linux/linux_signing_key.pub
+		EOF
+		sudo mv /tmp/google-chrome.repo /etc/yum.repos.d/google-chrome.repo
+		info "installing google chrome stable"
+		sudo dnf install -q -y google-chrome-stable
+		HEADER="$SECTION_HEADER"
+	fi
+
 }
 
 
@@ -255,22 +290,20 @@ __run_extra()
 	#          ${DOTFILES_HOME}/extra/foo test1 test2
 	#
 	# options
-	#    +--------------+-----------------+------------------+
-	#    | arg name     | default         | possible values  |
-	#    +--------------+-----------------+------------------+
-	#    | enable       | false           |  true, false     |
-	#    | ${name}args  | none            |  strings         |
-	#    +--------------+-----------------+------------------+
+	#    +--------------+-------+-------------------------+------------------+
+	#    | arg name     | type  | default                 | description      |
+	#    +--------------+-------+-------------------------+------------------+
+	#    | enable       | bool  | false                   | enable section   |
+	#    | ${name}args  | str   | none                    | extra sh args    |
+	#    +--------------+-------+-------------------------+------------------+
 
 	files=$(find ${DOTFILES_HOME}/extra/ -executable -type f 2>/dev/null)
 
     for f in $files; do
         info "Running $f $(eval echo \$$(basename $f)args)"
 		HEADER="$SUBSECTION_HEADER"
-		if [ ! $DRYRUN ]; then
-			$f $(eval echo \$$(basename $f)args) | while read LINE; do
-				info "$LINE"
-			done
+		if ! ${DRYRUN}; then
+			subsection_cmd info $f $(eval echo \$$(basename $f)args)
 		else
 			dry_info "$f $(eval echo \$$(basename $f)args)"
 		fi
@@ -291,59 +324,86 @@ __run_gnome()
 	#    - add gnome-shell extensions ?
 	#
 	# options
-	#    +--------------+-----------------+------------------+
-	#    | arg name     | default         | possible values  |
-	#    +--------------+-----------------+------------------+
-	#    | enable       | false           |  true, false     |
-	#    +--------------+-----------------+------------------+
+	#    +--------------+-------+-------------------------+------------------+
+	#    | arg name     | type  | default                 | description      |
+	#    +--------------+-------+-------------------------+------------------+
+	#    | enable       | bool  | false                   | enable section   |
+	#    +--------------+-------+-------------------------+------------------+
 
 	info "remap capslock to ctrl"
-	gsettings set org.gnome.desktop.input-sources xkb-options ['ctrl:nocaps']
+	gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:nocaps']"
 	info "focus on window on mouseover"
 	gsettings set org.gnome.desktop.wm.preferences focus-mode 'mouse'
 	info "allow resize of window using Super+rightclick and drag"
 	gsettings set org.gnome.desktop.wm.preferences resize-with-right-button true
 
 	info "set workspace nav using ctrl+alt+hjkl"
-	gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up ['<Primary><Alt><Meta>k', '<Control><Alt>Up']
-	gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down ['<Primary><Alt><Meta>j', '<Control><Alt>Down']
+	gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up \
+		"['<Primary><Alt><Meta>k', '<Control><Alt>Up']"
+	gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down \
+		"['<Primary><Alt><Meta>j', '<Control><Alt>Down']"
 
 	info "set workspace movements using ctrl+alt+shift+hjkl"
-	gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-up ['<Primary><Shift><Alt>k', '<Control><Shift><Alt>Up']
-	gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-down ['<Primary><Shift><Alt>j', '<Control><Shift><Alt>Down']
-	gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-right ['<Primary><Shift><Alt>l']
-	gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-left ['<Primary><Shift><Alt>h']
-
-	# TODO load gnome-terminal settings
+	gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-up \
+		"['<Primary><Shift><Alt>k', '<Control><Shift><Alt>Up']"
+	gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-down \
+		"['<Primary><Shift><Alt>j', '<Control><Shift><Alt>Down']"
+	gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-right \
+		"['<Primary><Shift><Alt>l']"
+	gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-left \
+		"['<Primary><Shift><Alt>h']"
 }
 
 
 __run_st()
 {
+	# brief
+	#    This section builds and installs simpleterm.
+	#
+	# TODO
+	#    - enable dryrun
+	#
+	# options
+	#    +--------------+-------+-------------------------+------------------+
+	#    | arg name     | type  | default                 | description      |
+	#    +--------------+-------+-------------------------+------------------+
+	#    | enable       | bool  | false                   | enable section   |
+	#    +--------------+-------+-------------------------+------------------+
+
 	local tmp_dir="/tmp/st.$$"
 	local start_dir=$PWD
 	mkdir $tmp_dir && cd $tmp_dir
 	HEADER="$SUBSECTION_HEADER"
-	subsection_cmd info git clone https://github.com/liambeguin/st.git
+
+	info "installing dependencies..."
+	sudo dnf install -q -y libXft-devel
+	git clone --quiet https://github.com/liambeguin/st.git
 	cd st
-	subsection_cmd info make
-	subsection_cmd info __sudo make install
+	info "building..."
+	make &>/dev/null
+	info "installing..."
+	sudo make install &>/dev/null
 	cd $start_dir
-	rm -r $tmp_dir
+	rm -rf $tmp_dir
 }
 
 
 __run_git()
 {
 	# brief
-	#    TODO
+	#    make changes to gitconfig.
 	#
 	# options
-	#    +--------------+-----------------+------------------+
-	#    | arg name     | default         | possible values  |
-	#    +--------------+-----------------+------------------+
-	#    | enable       | false           |  true, false     |
-	#    +--------------+-----------------+------------------+
+	#    +--------------+-------+-------------------------+------------------+
+	#    | arg name     | type  | default                 | description      |
+	#    +--------------+-------+-------------------------+------------------+
+	#    | enable       | bool  | false                   | enable section   |
+	#    | username     | str   | none                    | git username     |
+	#    | email        | str   | none                    | git email addr   |
+	#    +--------------+-------+-------------------------+------------------+
 
-    info "TBD..."
+    info "setting user info..."
+	[ -n "${username}" ] && git config --global user.name "${username}"
+	[ -n "${email}" ] && git config --global user.email "${email}"
 }
+
