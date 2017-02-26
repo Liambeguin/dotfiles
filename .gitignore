@@ -3,3 +3,4 @@ vimpager
 bash/local
 vim/local.vim
 tmux/plugins/
+backups

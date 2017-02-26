@@ -1,0 +1,53 @@
+[general]
+	enable = true
+	dotfileshome = auto
+	hostname = atris
+	assumeyes = true
+	loglevel = 4
+	nointernet = false
+	distro = auto
+	# extragroups = dialout
+	dryrun = true
+
+[dotfiles]
+	enable = true
+	backup = true
+	backupname = auto
+	forcelinks = true
+	links = bin bash bashrc vim vimrc Xresources Xresources.d tmux tmux.conf
+
+[system]
+	enable = true
+	rpmfusionfree = true
+	rpmfusionnonfree = false
+
+	pkgman = auto
+	pkgbase = vim picocom wmctrl htop ack blivet-gui git-gui gitk meld
+	font = terminus-powerline
+
+[extra]
+	enable = true
+	fooargs = "agr1 arg2 arg3"
+
+[gnome]
+	enable = false
+
+[st]
+	enable = false
+
+[cheat]
+	enable = false
+
+# vimcat, vimpager, manpager, ...
+[pager]
+	enable = false
+
+
+
+[git]
+# gitconfig
+	enable = false
+	username = "Liam Beguin"
+	email    = "liambeguin@gmail.com"
+
+# vim: set ft=gitconfig:

@@ -1,0 +1,334 @@
+#!/bin/bash
+
+__run_general()
+{
+	# brief
+	#    check global status and prepare for the rest of the install.
+	#
+	# TODO
+	#    - Add extragroups option
+	#
+	# options
+	#    +--------------+-------+-------------------------+------------------+
+	#    | arg name     | type  | default                 | Description      |
+	#    +--------------+-------+-------------------------+------------------+
+	#    | enable       | bool  | false                   | Enable section   |
+	#    | loglevel     | int   | 3                       | Change loglevel  |
+	#    | nointernet   | bool  | false                   | are we connected |
+	#    | dotfileshome | path  | auto -> $(dirname $0)   | path to git repo |
+	#    | assumeyes    | bool  | false                   | ask user's input |
+	#    | distro       | str   | auto -> /etc/os-release | set distro       |
+	#    | hostname     | str   | auto -> ask user        | set new hostname |
+	#    | extragroups  | str   | none                    | add user to grps |
+	#    | dryrun       | bool  | false                   | fake the process |
+	#    +--------------+-------+-------------------------+------------------+
+	#
+	# Notes:
+	#    loglevel = 0 -> minimal output
+	#    loglevel = 1 -> err
+	#    loglevel = 2 -> err, warn
+	#    loglevel = 3 -> err, warn, info
+	#    loglevel = 4 -> err, warn, info, verbose
+
+	[ -n "$loglevel" ] && LOGLEVEL=$loglevel
+	verbose "log level is  ${LOGLEVEL}"
+	[ -n "$assumeyes" ] && ASSUME_YES=$assumeyes
+	verbose "assume yes?   $ASSUME_YES"
+	[ -n "$dryrun" ] && DRYRUN=$dryrun
+	verbose "dry run?      $DRYRUN"
+	echo
+
+
+	# If the script is run as root, $HOME is going to be wrong
+	[ $(whoami) = "root" ] && die "This must NOT be run as root!"
+
+
+	info "Checking internet connexion..."
+	if ! ping -c2 8.8.8.8 > /dev/null || $nointernet; then
+		warning "Running with no internet connexion!"
+		NO_INTERNET=true
+	fi
+
+
+    if [ "${dotfileshome}" = "auto" ]; then
+        DOTFILES_HOME="${PROGPATH}"
+    elif [ -d "${dotfileshome}" ]; then
+        DOTFILES_HOME="${dotfileshome}"
+    else
+        die "Unable to set DOTFILES_HOME"
+    fi
+    verbose "dotfiles home is: $DOTFILES_HOME"
+
+
+	DISTRO=$distro
+	distro_configs
+	verbose "DISTRO is $DISTRO"
+	groups $(whoami) | grep -q $SUDOGROUP && IS_SUDOER=true
+
+
+	if [ "${hostname}" = "auto" ]; then
+		read -p "${HEADER}enter new hostname: " hostname
+	fi
+	if [ -n "${hostname}" ]; then
+		if [ ! $DRYRUN ]; then
+			ask_yesno "use $hostname as the new hostname?" && \
+				hostnamectl set-hostname $hostname
+		else
+			dry_info "hostname set-hostname $hostname"
+		fi
+	else
+		verbose "not changing hostname"
+	fi
+}
+
+
+__run_dotfiles()
+{
+	# brief
+	#    Install dotfiles stored in the git repo. This also allows you to
+	#    backup the current dotfiles to a tarfile.
+	#
+	# options
+	#    +--------------+-------+-------------------------+------------------+
+	#    | arg name     | type  | default                 | description      |
+	#    +--------------+-------+-------------------------+------------------+
+	#    | enable       | bool  | false                   | enable section   |
+	#    | backup       | bool  | false                   | enable backup of |
+	#    |              |       |                         | old dotfiles     |
+	#    | backupname   | str   | ${dotfiles_home}/backups| path to tarfile  |
+	#    | forcelinks   | bool  | false                   | enable backup of |
+	#    +--------------+-------+-------------------------+------------------+
+
+    for i in $(seq 0 $(( ${#links[*]} - 1))); do
+		if [ "${links[$i]}" = "bin" ]; then
+			home_files[$i]="${HOME}/${links[$i]}"
+		else
+			home_files[$i]="${HOME}/.${links[$i]}"
+		fi
+    done
+
+
+    # backup
+    if $backup; then
+        if [ "$backupname" = "auto" ]; then
+            backupname="${DOTFILES_HOME}/backups/dotfiles-$(date +%s).tar"
+            mkdir -p ${DOTFILES_HOME}/backups
+        fi
+
+        verbose "Saving old dotfiles to:"
+        verbose "$backupname"
+		HEADER="$SUBSECTION_HEADER"
+		if [ ! $DRYRUN ]; then
+			tar -hcf "$backupname" "${home_files[@]}" 2>&1 | while read LINE; do
+				info "$LINE"
+			done
+			verbose "Done!"
+		else
+			dry_info "tar -hcf '$backupname' '\${home_files[@]}'"
+		fi
+		HEADER="$SECTION_HEADER"
+    else
+        verbose "No backup"
+    fi
+
+
+    # links
+    if ${forcelinks}; then
+        verbose "forcing symlinks to '${HOME}'..."
+        ln_args="-sf"
+    else
+        ln_args="-s"
+    fi
+	HEADER="$SUBSECTION_HEADER"
+    for i in $(seq 0 $(( ${#links[*]} - 1))); do
+		if [ ! $DRYRUN ]; then
+			ln ${ln_args} ${DOTFILES_HOME}/${links[$i]} ${home_files[$i]}
+		else
+			dry_info "ln ${ln_args} ${DOTFILES_HOME}/${links[$i]} ${home_files[$i]}"
+		fi
+    done
+	HEADER="$SECTION_HEADER"
+}
+
+
+__run_system()
+{
+	# brief
+	#    enable extra repos, install packages, fonts, service files, ...
+	#
+	# TODO:
+	#    - Add multi package manager support
+	#    - Add multi fonts
+	#
+	# options
+	#    +--------------+-------+-------------------------+------------------+
+	#    | arg name     | type  | default                 | description      |
+	#    +--------------+-------+-------------------------+------------------+
+	#    | enable       | bool  | false                   | enable section   |
+	#    | fusionfree   | bool  | false                   | enable extra repo|
+	#    | fusionnonfree| bool  | false                   | enable extra repo|
+	#    | fonts        | str   | none                    | font to install  |
+	#    +--------------+-------+-------------------------+------------------+
+
+	# PKGMAN
+	if [ "$pkgman" != "dnf" -a "$pkgman" != "auto" ]; then
+		die "Use dnf as a package manager: $pkgman not yet ready."
+	fi
+
+	# RPM FUSION
+	if [ -n "$rpmfusionfree" ] && $rpmfusionfree; then
+		[ $DRYRUN ] && dry_info "install rpmfusion free" || \
+		__sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+	fi
+
+	if [ -n "$rpmfusionnonfree" ] && $rpmfusionnonfree; then
+		[ $DRYRUN ] && dry_info "install rpmfusion non-free" || \
+		__sudo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+	fi
+
+	# PACKAGES
+	if [ -n "${pkgbase[*]}" ]; then
+		[ $DRYRUN ] && dry_info "install packages: ${pkgbase[@]}" && return
+		__sudo dnf install -y "${pkgbase[@]}"
+	fi
+
+	# FONTS
+	if [ "$font" = "terminus-powerline" ]; then
+		HEADER="$SUBSECTION_HEADER"
+		info "installing terminus-powerline"
+		local tmp_dir="/tmp/fonts.$$"
+		local start_dir=$PWD
+		mkdir $tmp_dir && cd $tmp_dir
+		git clone https://github.com/powerline/fonts.git >/dev/null
+		cd fonts
+		./install.sh >/dev/null
+		cd $start_dir
+		rm -r $tmp_dir
+	else
+		warning "unsupported font..."
+	fi
+	HEADER="$SECTION_HEADER"
+}
+
+
+__run_extra()
+{
+	# brief
+	#    This section runs all exectable files in ${DOTFILES_HOME}/extra
+	#    and can pass arguments by setting ${executable_name}args variable
+	#    in the configuration file.
+	#    e.g.:
+	#          fooargs = test1 test2
+	#	 will run (given foo is executable, chmod +x)
+	#          ${DOTFILES_HOME}/extra/foo test1 test2
+	#
+	# options
+	#    +--------------+-----------------+------------------+
+	#    | arg name     | default         | possible values  |
+	#    +--------------+-----------------+------------------+
+	#    | enable       | false           |  true, false     |
+	#    | ${name}args  | none            |  strings         |
+	#    +--------------+-----------------+------------------+
+
+	files=$(find ${DOTFILES_HOME}/extra/ -executable -type f 2>/dev/null)
+
+    for f in $files; do
+        info "Running $f $(eval echo \$$(basename $f)args)"
+		HEADER="$SUBSECTION_HEADER"
+		if [ ! $DRYRUN ]; then
+			$f $(eval echo \$$(basename $f)args) | while read LINE; do
+				info "$LINE"
+			done
+		else
+			dry_info "$f $(eval echo \$$(basename $f)args)"
+		fi
+		HEADER="$SECTION_HEADER"
+	done
+}
+
+__run_gnome()
+{
+	# brief
+	#    This section configures the gnome desktop env
+	#        - add keyboard shortcuts
+	#        - add mouse shortcuts
+	#        - add gnome-shell extensions
+	#
+	# TODO
+	#    - set gnome-terminal preferences
+	#    - add gnome-shell extensions ?
+	#
+	# options
+	#    +--------------+-----------------+------------------+
+	#    | arg name     | default         | possible values  |
+	#    +--------------+-----------------+------------------+
+	#    | enable       | false           |  true, false     |
+	#    +--------------+-----------------+------------------+
+
+	info "remap capslock to ctrl"
+	gsettings set org.gnome.desktop.input-sources xkb-options ['ctrl:nocaps']
+	info "focus on window on mouseover"
+	gsettings set org.gnome.desktop.wm.preferences focus-mode 'mouse'
+	info "allow resize of window using Super+rightclick and drag"
+	gsettings set org.gnome.desktop.wm.preferences resize-with-right-button true
+
+	info "set workspace nav using ctrl+alt+hjkl"
+	gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up ['<Primary><Alt><Meta>k', '<Control><Alt>Up']
+	gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down ['<Primary><Alt><Meta>j', '<Control><Alt>Down']
+
+	info "set workspace movements using ctrl+alt+shift+hjkl"
+	gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-up ['<Primary><Shift><Alt>k', '<Control><Shift><Alt>Up']
+	gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-down ['<Primary><Shift><Alt>j', '<Control><Shift><Alt>Down']
+	gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-right ['<Primary><Shift><Alt>l']
+	gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-left ['<Primary><Shift><Alt>h']
+}
+
+
+__run_st()
+{
+	local tmp_dir="/tmp/st.$$"
+	local start_dir=$PWD
+	mkdir $tmp_dir && cd $tmp_dir
+	HEADER="$SUBSECTION_HEADER"
+	git clone https://github.com/liambeguin/st.git 2>&1 | while read LINE; do
+		info "$LINE"
+	done
+	cd st
+	make 2>&1 | while read LINE; do
+		info "$LINE"
+	done
+	__sudo make install
+	cd $start_dir
+	rm -r $tmp_dir
+	HEADER="$SECTION_HEADER"
+}
+
+
+__run_pager()
+{
+	# brief
+	#    TODO
+	#
+	# options
+	#    +--------------+-----------------+------------------+
+	#    | arg name     | default         | possible values  |
+	#    +--------------+-----------------+------------------+
+	#    | enable       | false           |  true, false     |
+	#    +--------------+-----------------+------------------+
+
+    info "TBD..."
+}
+__run_git()
+{
+	# brief
+	#    TODO
+	#
+	# options
+	#    +--------------+-----------------+------------------+
+	#    | arg name     | default         | possible values  |
+	#    +--------------+-----------------+------------------+
+	#    | enable       | false           |  true, false     |
+	#    +--------------+-----------------+------------------+
+
+    info "TBD..."
+}

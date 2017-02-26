@@ -1,0 +1,92 @@
+# vim: ft=sh :
+
+source ./bash/shutils.conf
+
+
+die()
+{
+    echo "${HEADER}fatal: $*"
+    exit 1
+}
+error()
+{
+	if [[ ${LOGLEVEL} -ge 1 ]]; then
+		echo "${HEADER}error: $*"
+	fi
+}
+warning()
+{
+	if [[ ${LOGLEVEL} -ge 2 ]]; then
+		echo "${HEADER}warning: $*"
+	fi
+}
+info()
+{
+	if [[ ${LOGLEVEL} -ge 3 ]]; then
+		echo "${HEADER}$*"
+	fi
+}
+verbose()
+{
+	if [[ ${LOGLEVEL} -ge 4 ]]; then
+		echo "${HEADER}$*"
+    fi
+}
+dry_info()
+{
+		echo "${HEADER}DR: $@"
+}
+ask_yesno()
+{
+	# brief
+	#    return 0 if yes else 1
+	#
+	# usage
+	#    ask_yesno "all good ?" && echo perfect || echo what now !
+
+    local question="$1"
+
+    if ! ${ASSUME_YES}; then
+		read -p "$question [y/n] " rc
+		if [ $rc = "y" ]; then
+			return 0
+		else
+			return 1
+		fi
+	else
+		verbose "$question... assuming yes"
+		return 0
+	fi
+}
+
+__sudo()
+{
+	if $IS_SUDOER; then
+		su -c "$@"
+	else
+		warning "Not sudoer, skipping '$*'"
+	fi
+}
+
+distro_configs() {
+	if [ "$DISTRO" = "auto" ]; then
+		verbose "auto detection of distro..."
+		[ ! -f /etc/os-release ] && die "Failed to detect distribution.."
+		DISTRO=$(. /etc/os-release && echo "$NAME")
+	fi
+
+	case "$(echo $DISTRO | tr '[:upper:]' '[:lower:]')" in
+	fedora|rhel|centos*)
+		SUDOGROUP="wheel"
+		;;
+	ubuntu|debian)
+		SUDOGROUP="sudo"
+		;;
+	ukn)
+		die "Could not figure out which distro you're running..."
+		;;
+	*)
+		die "It looks like you're running an unsupported distro. Sorry !"
+		;;
+	esac
+}
