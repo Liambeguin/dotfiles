@@ -24,6 +24,9 @@
 	pkgman = auto
 	pkgbase = vim picocom wmctrl htop ack blivet-gui git-gui gitk meld
 	font = terminus-powerline
+	autocomplete = true
+	vundle = true
+	vimpager = true
 
 [extra]
 	enable = true

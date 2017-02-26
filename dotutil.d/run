@@ -168,6 +168,9 @@ __run_system()
 	#    | fusionfree   | bool  | false                   | enable extra repo|
 	#    | fusionnonfree| bool  | false                   | enable extra repo|
 	#    | fonts        | str   | none                    | font to install  |
+	#    | autocomplete | bool  | false                   | install bash auto|
+	#    |              |       |                         | complete files   |
+	#    | viplugin     | bool  | false                   | install vi plugin|
 	#    +--------------+-------+-------------------------+------------------+
 
 	# PKGMAN
@@ -208,6 +211,35 @@ __run_system()
 		warning "unsupported font..."
 	fi
 	HEADER="$SECTION_HEADER"
+
+	# AUTOCOMPLETION
+	if [ ${autocomplete} ]; then
+		info "installing bash autocompletion scripts..."
+		HEADER="$SUBSECTION_HEADER"
+		for f in ${DOTFILES_HOME}/autocompletion/*; do
+			verbose "$f"
+			__sudo ln -sf $f /etc/bash_completion.d/
+		done
+		HEADER="$SECTION_HEADER"
+	fi
+
+	# Vi PLUGINS (TODO update if using vim8 ?)
+	info "installing vim plugins..."
+	if [ ! -d ${HOME}/.vim/bundle/Vundle.vim ]; then
+		subsection_cmd info git clone https://github.com/gmarik/Vundle.vim.git ${HOME}/.vim/bundle/Vundle.vim
+		subsection_cmd vim +PluginInstall +qall
+	fi
+
+	# VIMPAGER
+	if [ $vimpager ]; then
+
+		info "installing vimpager..."
+		__sudo dnf install -y pandoc &> /dev/null
+		subsection_cmd info git clone https://github.com/rkitover/vimpager.git ${DOTFILES_HOME}/vimpager
+		cd ${DOTFILES_HOME}/vimpager
+		subsection_cmd make install
+		# __sudo rm -rf ${DOTFILES_HOME}/vimpager
+	fi
 }
 
 
@@ -281,6 +313,8 @@ __run_gnome()
 	gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-down ['<Primary><Shift><Alt>j', '<Control><Shift><Alt>Down']
 	gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-right ['<Primary><Shift><Alt>l']
 	gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-left ['<Primary><Shift><Alt>h']
+
+	# TODO load gnome-terminal settings
 }
 
 
@@ -290,34 +324,15 @@ __run_st()
 	local start_dir=$PWD
 	mkdir $tmp_dir && cd $tmp_dir
 	HEADER="$SUBSECTION_HEADER"
-	git clone https://github.com/liambeguin/st.git 2>&1 | while read LINE; do
-		info "$LINE"
-	done
+	subsection_cmd info git clone https://github.com/liambeguin/st.git
 	cd st
-	make 2>&1 | while read LINE; do
-		info "$LINE"
-	done
-	__sudo make install
+	subsection_cmd info make
+	subsection_cmd info __sudo make install
 	cd $start_dir
 	rm -r $tmp_dir
-	HEADER="$SECTION_HEADER"
 }
 
 
-__run_pager()
-{
-	# brief
-	#    TODO
-	#
-	# options
-	#    +--------------+-----------------+------------------+
-	#    | arg name     | default         | possible values  |
-	#    +--------------+-----------------+------------------+
-	#    | enable       | false           |  true, false     |
-	#    +--------------+-----------------+------------------+
-
-    info "TBD..."
-}
 __run_git()
 {
 	# brief

@@ -58,6 +58,17 @@ ask_yesno()
 		return 0
 	fi
 }
+subsection_cmd()
+{
+	local level=$1
+	shift
+	HEADER="$SUBSECTION_HEADER"
+	$* &> | while read LINE; do
+		$level "$LINE"
+	done
+	HEADER="$SECTION_HEADER"
+}
+
 
 __sudo()
 {

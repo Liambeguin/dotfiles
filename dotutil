@@ -50,7 +50,8 @@ verbose "Configuration file is: $CONFFILE"
 cfg_parser $CONFFILE
 
 # NOTE: the order in the list is important! for instance, if general goes after
-#       extra, we do not know where DOTFILES_HOME is
+#       extra, we do not know where DOTFILES_HOME is...
+#       system should go after dotfiles. e.g.: ln .vim to ~ then install vim.
 for section in general dotfiles system extra gnome pager git; do
     if __prep $section; then
 		HEADER=${SECTION_HEADER}

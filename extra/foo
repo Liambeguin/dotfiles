@@ -1,0 +1,7 @@
+#!/bin/sh
+# This is a test program to show how to use the
+# config file mecanism.
+
+for i in $@; do
+	echo argument is $i
+done
