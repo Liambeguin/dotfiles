@@ -7,7 +7,10 @@ COLOR=true
 __print()
 {
 	local cheatsheet=$1
-	[ ! -f "${cheatsheet}" ] && echo "Unknown cheatsheet $(basename "${cheatsheet}")"
+	if [ ! -f "${cheatsheet}" ]; then
+		echo "Unknown cheatsheet $(basename "${cheatsheet}")"
+		return
+	fi
 
 	if [ $COLOR ]; then
 		vimcat -c "set bg=light|set ft=sh" "${cheatsheet}"
@@ -21,8 +24,8 @@ case $1 in
 	-l|--list) ls -c "${CHEATSHEETS}" ;;
 	-e|--edit) ${EDITOR} "${CHEATSHEETS}/${2}" ;;
 	-a|--add)  ${EDITOR} "${CHEATSHEETS}/${2}" ;;
-	-h|--help)
-		echo "Usage: "
+	-h|--help|"")
+		echo "Usage: cheat [OPTIONS] <CMD>"
 		echo "    cheat -a | --add .......... Add new cheatsheet"
 		echo "    cheat -e | --edit ......... Edit existing cheatsheet"
 		echo "    cheat -l | --list ......... List cheatsheets"
