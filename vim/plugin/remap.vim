@@ -17,5 +17,21 @@ nnoremap gb :e #<CR>
 " Git
 " Insert at the begining
 nnoremap <leader>gi ggI
+" insert signoff line
+nnoremap <leader>gs :call GitSign("Signed-off-by: ")<CR>
 " empty file: useful when aborting a git rebase -i
 nmap <leader>gd ggVGd
+
+
+function! GitSign(text)
+	let b:user  = system('git config user.name')
+	let b:email = " <" . system('git config user.email') . ">"
+	let b:sign = substitute(a:text.b:user.b:email, "[^[:print:]]", "", "g")
+	let s:test = search(b:sign, "")
+
+	if !s:test
+		call append(".", b:sign)
+	else
+		echo "Already added Signed!"
+	endif
+endfunction
