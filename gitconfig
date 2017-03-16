@@ -1,3 +1,9 @@
+[core]
+	abbrev = 12
+
+[pretty]
+	fixes = Fixes: %h (\"%s\")
+
 [user]
 	email  = liambeguin@gmail.com
 	name   = Liam Beguin
