@@ -30,7 +30,7 @@ if [ "$side" != "left" ] && [ "$side" != "right" ]; then
 fi
 
 # Set attributes for given fields
-whoami_attr="bold"
+# whoami_attr="bold"
 session_attr="fg=white,bg=red"
 uptime_attr="fg=black,bg=white"
 load_avg_attr="fg=black,bg=yellow"
