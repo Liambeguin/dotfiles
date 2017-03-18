@@ -40,7 +40,12 @@ TERM=xterm-256color
 # Uncomment the following line if you don't like systemctl's auto-paging feature:
 # export SYSTEMD_PAGER=
 
+# Force ignoreups and ignorespace
 HISTCONTROL=ignoreboth
+# ignore common cmds
+HISTIGNORE="ls:bg:fg:tm :"
+# append to history file, no overwrite
+shopt -s histappend
 
 PATH="$PATH:/opt/gcc-arm-none-eabi-4_9-2014q4/bin"
 PATH="$PATH:/home/lvb/bin"
