@@ -10,14 +10,11 @@
 # XXX We could also just source everything in ~/.bash
 [ -f ~/.bash/shutils.conf ] && source ~/.bash/shutils.conf
 [ -f ~/.bash/colorutils.conf ] && source ~/.bash/colorutils.conf
-# the following file includes machine specifics
-# or private variables/functions, ...
+# the following file includes machine specifics or private variables, functions
 [ -f ~/.bash/local.conf ] && source ~/.bash/local.conf
-# set PS1 depending on hostname
-# Default PS1 is : '[\u@\h \W]\$ '
+# set PS1 depending on hostname. Default PS1 is : '[\u@\h \W]\$ '
 [ -f ~/.bash/ps1.conf ] && source ~/.bash/ps1.conf
 [ -f ~/.bash/aliases.conf ] && source ~/.bash/aliases.conf
-[ -f ~/.bash/screen.conf ] && source ~/.bash/screen.conf
 [ -f ~/.bash/pager.conf ] && source ~/.bash/pager.conf
 [ -f ~/.bash/xcd.conf ] && source ~/.bash/xcd.conf
 
@@ -47,6 +44,6 @@ HISTIGNORE="ls:bg:fg:tm :"
 # append to history file, no overwrite
 shopt -s histappend
 
+
 PATH="$PATH:/opt/gcc-arm-none-eabi-4_9-2014q4/bin"
 PATH="$PATH:/home/lvb/bin"
-
