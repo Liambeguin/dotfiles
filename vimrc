@@ -30,6 +30,7 @@ set ruler                " Always show line and column of the cursor position
 set cursorline           " Highlight cursor line
 " set cursorcolumn         " Highlight cursor column
 set clipboard=unnamed
+set pastetoggle=<leader>p
 set ttyfast              " Set fast tty
 set ttymouse=xterm2      " Fix unable to resize window in tmux
 let &showbreak="\u21aa " " Show a left arrow when wrapping text
