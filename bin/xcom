@@ -249,7 +249,7 @@ case "$CMD" in
 	s|send) xcom_send   "$1" "$2"  ;;
 	l|list) xcom_list   ${OPTIONS} ;;
 	e|edit) $EDITOR "$XCOM_BOOKMARKS";;
-	p|patterns) column -t -s: "$XCOM_BOOKMARKS" ;;
+	p|patterns) sed 's/#//' "$XCOM_BOOKMARKS" |column -t -s: ;;
 	h|help) xcom_usage ;;
 	*) xcom_picocom ${CMD} || xcom_usage ;;
 esac
