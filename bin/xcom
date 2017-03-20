@@ -1,74 +1,255 @@
-#!/bin/sh
-# TODO : add option to find on which remote is connected serial
+#!/bin/bash
 
-PROGNAME=${0##*/}
-PROGVERSION="0.0.1"
+[ -f ~/.bash/shutils.conf ] && source ~/.bash/shutils.conf
 
-REMOTE=""
-LOGFILE=""
-LIST="no"
+# globals
+declare -g PROGNAME=${0##*/}
+declare -g PROGVERSION="0.1.$(get_minor "$0")"
+declare -g XCOM_BOOKMARKS="${XCOM_BOOKMARKS:-${HOME}/.xcom.bookmarks}"
+declare -g EXECLOG="/tmp/xcom.$$"
+declare -g TTY=
+declare -g BAUD=
+declare -g LOGFILE=
 
-print_usage(){
+# log whole execution to file
+exec &> >(tee "$EXECLOG")
+trap cleanup SIGHUP SIGINT SIGTERM EXIT
+
+[ ! -f "$XCOM_BOOKMARKS" ] && touch "$XCOM_BOOKMARKS"
+
+# Helpers
+version() { printf '%s, versions %s\n\n' "$PROGNAME" "$PROGVERSION"; exit 0; }
+escape()  { printf '%s' "$1" | sed 's/[.[\*^$()+?{|]/\\&/g'; }
+
+cleanup () {
+	if [ "$LOG" == "yes" ]; then
+		LOGFILE="${LOGDIR}/xcom-$(basename "$TTY")-$(date +'%s').log"
+		echo "writing log to: $LOGFILE"
+		mv "$EXECLOG" "$LOGFILE"
+	else
+		rm "$EXECLOG"
+	fi
+}
+
+get_match() {
+	declare str="$1"
+	declare pattern=
+	declare pretty=
+	declare path=
+
+	[ -z "$str" ] && die "match string empty..."
+
+	while IFS= read -r line; do
+		pattern="$(echo "$line" | cut -d':' -f1)"
+		pretty="$(echo "$line" | cut -d':' -f2)"
+		path="$(echo "$line" | cut -d':' -f3)"
+
+		if [ -n "$(echo "$str" | grep -Eo "$pattern")" ]; then
+			TTY="${path/$TEMPLATE_STR/$str}"
+			BAUD="$(echo "$line" | cut -d':' -f4)"
+			return
+		fi
+	done < <(grep -v '^ *#' < "$XCOM_BOOKMARKS")
+
+    die "No match found for $str"
+}
+
+set_defaults() {
+	VERBOSE="no"
+	TEMPLATE_STR="<#>"
+	BAUDRATE=115200
+	SLEEP=0
+	LOGDIR="${HOME}"
+	REMOTE=""
+}
+
+
+# Commands
+xcom_usage() {
 	cat << EOF
 
-USAGE:
-$(basename $0) [OPTIONS] <pim-serial|ttyUSB-number>
+USAGE: $PROGNAME [OPTIONS] <CMD [ARGS...] | TTY>
 
 OPTIONS:
-	-h | --help ............ Display this message
-	-l | --list ............ List available serial devices
-	-L | --log FILE ........ Log session to file
-	-r | --remote REMOTE ... remote machine on which the PIM is connected
+    -h | --help ............................ Display this message and exit
+    -v | --verbose  ........................ Display more information
+    -V | --version ......................... Print version string and exit
+    -r | --remote REMOTE ................... Open serial port on remote (ssh)
+    -d | --delay N ......................... Sleep N seconds after execution
+    -l | --log ............................. Log tty session to file in $LOGDIR
+
+CMD:
+    [a]dd PATTERN PNAME PATH [BAUDRATE] .... Add pattern to bookmarks
+    [r]m  PATTERN .......................... Remove pattern from bookmarks
+    [e]dit ................................. Edit bookmarks
+    [p]atterns ............................. Show all patterns
+    [s]end COMMAND TTY ..................... Send a single command to TTY
+    [l]ist ................................. List connected devices matching patterns
 
 EOF
-exit 1
+	if [ "$VERBOSE" == "yes" ]; then
+		cat << EOF
+NOTES:
+    - [a]dd means 'a' is sort option for 'add'
+    - TTY can be a pattern or a caracter device.
+    - If PATTERN is a regex, use ${TEMPLATE_STR} in PATH to match argument.
+      e.g.: command       : xcom 1234
+            with pattern  : ^[0-9]{4}?:USB${TEMPLATE_STR}:/dev/ttyUSB${TEMPLATE_STR}:
+            will expand to: /dev/ttyUSB1234
+
+EOF
+	else
+		echo "use -v for more info"
+	fi
+	exit 1
 }
 
-#Parsing arguments ###################
-set_option_defaults() {
-	VERBOSE="no"
-	COMMAND="help"
+xcom_add() {
+	declare pattern esc_pattern pretty_name path baudrate
+	pattern=$1
+	esc_pattern=$(escape "$pattern")
+	pretty_name=$2
+	path=$3
+	baudrate=${4:-$BAUDRATE}
+
+	if [ -n "$(echo "$pattern $pretty_name $path $baudrate" | grep ":")" ]; then
+		die "bookmark arguments cannot contain colon characters"
+	fi
+
+    if [ -z "$pattern" ]; then
+        die "No pattern given..."
+    elif grep -Eq "^$esc_pattern:" "$XCOM_BOOKMARKS"; then
+        die "pattern '${pattern}' already exists !"
+	elif [ -z "$pretty_name" ]; then
+        die "No pretty name given!"
+    elif grep -Eq ":$pretty_name:" "$XCOM_BOOKMARKS"; then
+        die "pname '${pretty_name}' already exists !"
+    elif [ -z "$path" ]; then
+        die "No path given!"
+    else
+        echo "${pattern}:${pretty_name}:${path}:${baudrate}" >> "$XCOM_BOOKMARKS"
+        echo "Added '${pattern}' !"
+    fi
 }
 
-set_option_defaults
-SHORTOPTS="hvVr:lL:"
-LONGOPTS="help,verbose,version,remote:list,log:"
+xcom_remove() {
+	#TODO: remove based on pretty name
+    declare pattern="$1"
+
+    sed -i "/^$pattern:/d" "$XCOM_BOOKMARKS"
+}
+
+xcom_picocom() {
+	#FIXME: command not working with REMOTE. need quotes arround whole cmd
+	get_match "$1"
+
+	[ -z "$($REMOTE ls "$TTY" 2>/dev/null)" ] && die "$TTY, No such file"
+
+	$REMOTE flock -x -n "$TTY" -c "picocom -b $BAUD $TTY" || \
+		die "$TTY is locked by another instance!"
+}
+
+xcom_send() {
+	declare cmd="$1"
+	get_match "$1"
+
+	if [ -n "$TTY" ]; then
+		verbose "setting speed to $BAUD"
+		stty -F "$TTY" "$BAUD"
+		verbose "sending [$cmd] to $TTY"
+		sh -c "$REMOTE 'echo $cmd > $TTY'"
+		verbose "sleep for $SLEEP sec"
+		sleep $SLEEP
+	else
+        die "No match found for $1"
+	fi
+}
+
+xcom_list() {
+	#TODO: make this work with --remote option
+	declare output
+	# output: end result that is printed to screen
+	declare pretty pattern path
+	# sections of the bookmark file
+	declare match_file match_str real_file pid user
+	# match_str: part of the pattern that is matched in the filename
+	# match_file: file matched by the template
+	# real_file: remove symlink in match_file
+	# pid: pid of the open session on file
+	# user: owner of the pid
+
+	printf "hostname: %s\n" "$(pprint_hostname)"
+	if [ "$VERBOSE" == "yes" ]; then
+		output="PRETTY#PATTERN#PIDs#USERs#FILE#REALPATH\n"
+		output="${output}\n------#-------#----#-----#----#--------\n"
+	else
+		output="PRETTY#PATTERN#PIDs#USERs#REALPATH\n"
+		output="${output}\n------#-------#----#-----#--------\n"
+	fi
+
+	# For each pattern in bookmark file, get real chardev
+	while IFS= read -r line; do
+		pattern="$(echo "$line" | cut -d':' -f1)"
+		pretty="$(echo "$line" | cut -d':' -f2)"
+		path="$(echo "$line" | cut -d':' -f3)"
+
+		# For each real chardev, get good info
+		while IFS= read -r match_file; do
+			match_str=$(echo "$match_file" | grep -Eo "${pattern/^/}")
+			real_file="$(realpath "$match_file")"
+			[ -z "$match_str" ] && match_str="$pattern"
+
+			pid=$(pgrep -d, -f "picocom.*${real_file}$")
+			user=$(ps -o user --no-headers -p "$pid" 2>/dev/null | tr '\n' , | sed 's/,$//')
+
+			output="$output\n${pretty/$TEMPLATE_STR/$match_str}#$match_str#"
+			if [ "$VERBOSE" == "yes" ]; then
+				output="$output$pid#$user#$(basename "$match_file")#$real_file"
+			else
+				output="$output$pid#$user#$real_file"
+			fi
+		done < <(find "${path/$TEMPLATE_STR/*}" 2>/dev/null)
+	done < <(grep -v '^ *#' < "$XCOM_BOOKMARKS")
+	echo -e "$output" | column -t -s#
+}
+
+
+# Start
+# Parse options
+set_defaults
+SHORTOPTS="hvVr:d:l"
+LONGOPTS="help,verbose,version,remote:delay:log"
 
 ARGS=$(getopt -s bash --options $SHORTOPTS  \
-	--longoptions $LONGOPTS --name $PROGNAME -- "$@" )
+    --longoptions $LONGOPTS --name "$PROGNAME" -- "$@" )
 
 eval set -- "$ARGS"
 while true; do
-	case $1 in
-		-h|--help) print_usage;;
-		-v|--verbose) VERBOSE="yes";;
-		-V|--version) echo "$PROGVERSION"; exit 0 ;;
-		-r|--remote) REMOTE="$2"; shift ;;
-		-l|--list) LIST="yes" ;;
-		-L|--log) LOGFILE="$2"; shift ;;
-		--)	shift; break;;
-		*) shift; break	;;
-	esac
-	shift
+    case $1 in
+        -h|--help)    CMD="help";;
+        -v|--verbose) VERBOSE="yes";;
+		-V|--version) version ;;
+        -r|--remote)  REMOTE="ssh -t $2"; shift ;;
+		-d|--delay)   SLEEP="$2"; shift ;;
+		-l|--log)     LOG="yes";;
+        --) shift; break ;;
+        *)  shift; break ;;
+    esac
+    shift
 done
 
-if [ "$LIST" == "yes" ]; then
-	CMD="lq"
-elif [ -n "$(echo $1 | grep -Eo "^[0-9]{4}?")" ]; then
-	CMD="picocom -b 115200 /dev/serial/by-id/usb-Xiphos_Systems_Corp._Q7-PIM_${1}-if00-port0"
-elif [ -n "$1" ]; then
-	CMD="picocom -b 115200 /dev/ttyUSB${1}"
-else
-	print_usage
-fi
 
-if [ -n "$LOGFILE" ]; then
-	CMD="$CMD | tee $LOGFILE "
-fi
+# Parse command and execute
+CMD="${CMD:-$1}"
+shift; OPTIONS=$*
 
-case "$REMOTE" in
-	"") $CMD ;;
-	*)  ssh -t "$REMOTE" "$CMD" ;;
+case "$CMD" in
+	a|add)  xcom_add    ${OPTIONS} ;;
+	r|rm)   xcom_remove ${OPTIONS} ;;
+	s|send) xcom_send   "$1" "$2"  ;;
+	l|list) xcom_list   ${OPTIONS} ;;
+	e|edit) $EDITOR "$XCOM_BOOKMARKS";;
+	p|patterns) column -t -s: "$XCOM_BOOKMARKS" ;;
+	h|help) xcom_usage ;;
+	*) xcom_picocom ${CMD} || xcom_usage ;;
 esac
-
-# vim: cc=80 tw=100 sw=4 ts=4:
