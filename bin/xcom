@@ -151,7 +151,7 @@ xcom_picocom() {
 
 xcom_send() {
 	declare cmd="$1"
-	get_match "$1"
+	get_match "$2"
 
 	if [ -n "$TTY" ]; then
 		verbose "setting speed to $BAUD"
