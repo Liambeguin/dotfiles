@@ -44,6 +44,7 @@ HISTIGNORE="ls:bg:fg:tm :"
 # append to history file, no overwrite
 shopt -s histappend
 
+export DOTFILES_HOME="${HOME}/dev/dotfiles"
 
 PATH="$PATH:/opt/gcc-arm-none-eabi-4_9-2014q4/bin"
 PATH="$PATH:/home/lvb/bin"
