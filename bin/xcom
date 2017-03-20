@@ -5,7 +5,7 @@
 # globals
 declare -g PROGNAME=${0##*/}
 declare -g PROGVERSION="0.1.$(get_minor "$0")"
-declare -g XCOM_BOOKMARKS="${XCOM_BOOKMARKS:-${HOME}/.xcom.bookmarks}"
+declare -g XCOM_BOOKMARKS="${XCOM_BOOKMARKS:-${DOTFILES_HOME}/xcom.bookmarks}"
 declare -g EXECLOG="/tmp/xcom.$$"
 declare -g TTY=
 declare -g BAUD=
