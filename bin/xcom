@@ -199,7 +199,7 @@ xcom_list() {
 			real_file="$(realpath "$match_file")"
 			[ -z "$match_str" ] && match_str="$pattern"
 
-			pid=$(pgrep -d, -f "picocom.*${real_file}$")
+			pid=$(pgrep -d, -f "^picocom.*${match_file}$")
 			user=$(ps -o user --no-headers -p "$pid" 2>/dev/null | tr '\n' , | sed 's/,$//')
 
 			output="$output\n${pretty/$TEMPLATE_STR/$match_str}#$match_str#"
