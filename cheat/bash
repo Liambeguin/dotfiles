@@ -1,6 +1,6 @@
 # To implement a for loop:
 for file in *;
-do 
+do
     echo $file found;
 done
 
@@ -23,5 +23,22 @@ set +x
 printf 'foo' | fgrep 'foo' | sed 's/foo/bar/'
 echo ${PIPESTATUS[0]}  # replace 0 with N
 
-# Lock file:
+# Lock file: check flock(1)
 ( set -o noclobber; echo > my.lock ) || echo 'Failed to create lock file'
+
+
+#
+# Log whole script.sh exec to file and print to screen
+# cf: http://unix.stackexchange.com/questions/145651/using-exec-and-tee-to-redirect-logs-to-stdout-and-a-log-file-in-the-same-time
+#
+# Use process substitution with & redirection and exec:
+exec &> >(tee -a "$log_file")
+echo This will be logged to the file and to the screen
+# `$log_file` will contain the output of the script and any subprocesses,
+# and the output will also be printed to the screen.
+# `>(...)` starts the process `...` and returns a file representing its
+# standard input.
+# `exec &> ...` redirects both stdout and stderr into `...` for the remainder of the script.
+# NOTE: use just `exec > ...` for stdout only.
+# tee -a appends its standard input to the file, and also prints it to the screen.
+
