@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -u
 
 [ -f ~/.bash/shutils.conf ] && source ~/.bash/shutils.conf
 
@@ -8,6 +8,7 @@ declare -g PROGVERSION="0.1.$(get_minor "$0")"
 declare -g XCOM_BOOKMARKS="${XCOM_BOOKMARKS:-${DOTFILES_HOME}/xcom.bookmarks}"
 declare -g EXECLOG="/tmp/xcom.$$"
 declare -g TTY=
+declare -g LOG=
 declare -g BAUD=
 declare -g LOGFILE=
 
@@ -51,7 +52,7 @@ get_match() {
 		fi
 	done < <(grep -v '^ *#' < "$XCOM_BOOKMARKS")
 
-    die "No match found for $str"
+	die "No match found for $str"
 }
 
 set_defaults() {
@@ -116,20 +117,20 @@ xcom_add() {
 		die "bookmark arguments cannot contain colon characters"
 	fi
 
-    if [ -z "$pattern" ]; then
-        die "No pattern given..."
-    elif grep -Eq "^$esc_pattern:" "$XCOM_BOOKMARKS"; then
-        die "pattern '${pattern}' already exists !"
+	if [ -z "$pattern" ]; then
+		die "No pattern given..."
+	elif grep -Eq "^$esc_pattern:" "$XCOM_BOOKMARKS"; then
+		die "pattern '${pattern}' already exists !"
 	elif [ -z "$pretty_name" ]; then
-        die "No pretty name given!"
-    elif grep -Eq ":$pretty_name:" "$XCOM_BOOKMARKS"; then
-        die "pname '${pretty_name}' already exists !"
-    elif [ -z "$path" ]; then
-        die "No path given!"
-    else
-        echo "${pattern}:${pretty_name}:${path}:${baudrate}" >> "$XCOM_BOOKMARKS"
-        echo "Added '${pattern}' !"
-    fi
+		die "No pretty name given!"
+	elif grep -Eq ":$pretty_name:" "$XCOM_BOOKMARKS"; then
+		die "pname '${pretty_name}' already exists !"
+	elif [ -z "$path" ]; then
+		die "No path given!"
+	else
+		echo "${pattern}:${pretty_name}:${path}:${baudrate}" >> "$XCOM_BOOKMARKS"
+		echo "Added '${pattern}' !"
+	fi
 }
 
 xcom_remove() {
@@ -238,17 +239,17 @@ ARGS=$(getopt -s bash --options $SHORTOPTS  \
 
 eval set -- "$ARGS"
 while true; do
-    case $1 in
-        -h|--help)    CMD="help";;
-        -v|--verbose) VERBOSE="yes";;
+	case $1 in
+		-h|--help)    CMD="help" ;;
+		-v|--verbose) VERBOSE="yes" ;;
 		-V|--version) version ;;
 		-r|--remote)  REMOTE="$2"; shift ;;
-		-d|--delay)   SLEEP="$2"; shift ;;
-		-l|--log)     LOG="yes";;
-        --) shift; break ;;
-        *)  shift; break ;;
-    esac
-    shift
+		-d|--delay)   SLEEP="$2";  shift ;;
+		-l|--log)     LOG="yes" ;;
+		--) shift; break ;;
+		*)  shift; break ;;
+	esac
+	shift
 done
 
 
