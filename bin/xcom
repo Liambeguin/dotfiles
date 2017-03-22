@@ -222,7 +222,7 @@ xcom_list() {
 			else
 				output="$output$pid#$user#$real_file"
 			fi
-		done < <(find "${path/$TEMPLATE_STR/*}" 2>/dev/null)
+		done < <(find ${path/<\#>/*} 2>/dev/null)
 	done < <(grep -v '^ *#' < "$XCOM_BOOKMARKS")
 	echo -e "$output" | column -t -s#
 }
