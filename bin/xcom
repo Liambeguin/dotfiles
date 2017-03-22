@@ -140,24 +140,37 @@ xcom_remove() {
 }
 
 xcom_picocom() {
-	#FIXME: command not working with REMOTE. need quotes arround whole cmd
 	get_match "$1"
 
-	[ -z "$($REMOTE ls "$TTY" 2>/dev/null)" ] && die "$TTY, No such file"
-
-	$REMOTE flock -x -n "$TTY" -c "picocom -b $BAUD $TTY" || \
-		die "$TTY is locked by another instance!"
+	if [ -z "$REMOTE" ]; then
+		[ ! -c "$TTY" ] && die "$TTY, No such file"
+		flock -x -n "$TTY" -c "picocom -b $BAUD $TTY" || \
+			die "$TTY is locked by another instance!"
+	else
+		ssh -t $REMOTE "[ -c "$TTY" ] && \
+			flock -x -n '$TTY' -c 'picocom -b $BAUD $TTY' || \
+			echo 'fatal: $TTY is locked by another instance!'"
+	fi
 }
 
 xcom_send() {
-	declare cmd="$1"
+	declare text="$1"
 	get_match "$2"
 
 	if [ -n "$TTY" ]; then
 		verbose "setting speed to $BAUD"
-		stty -F "$TTY" "$BAUD"
-		verbose "sending [$cmd] to $TTY"
-		sh -c "$REMOTE 'echo $cmd > $TTY'"
+
+		if [ -z "$REMOTE" ]; then
+			[ ! -c "$TTY" ] && die "$TTY, No such file"
+			verbose "sending [$text] to $TTY"
+			stty -F "$TTY" "$BAUD"
+			echo "$text" > "$TTY"
+		else
+			verbose "sending [$text] to $TTY on $REMOTE"
+			ssh -t $REMOTE "[ -c $TTY ] && stty -F $TTY $BAUD && \
+				echo $text > $TTY || echo 'fatal:$TTY, No such file'"
+		fi
+
 		verbose "sleep for $SLEEP sec"
 		sleep $SLEEP
 	else
@@ -229,7 +242,7 @@ while true; do
         -h|--help)    CMD="help";;
         -v|--verbose) VERBOSE="yes";;
 		-V|--version) version ;;
-        -r|--remote)  REMOTE="ssh -t $2"; shift ;;
+		-r|--remote)  REMOTE="$2"; shift ;;
 		-d|--delay)   SLEEP="$2"; shift ;;
 		-l|--log)     LOG="yes";;
         --) shift; break ;;
