@@ -34,7 +34,7 @@ nmap <leader><Return> <Plug>AirlineSelectNextTab
 " airline-whitespace
 let g:airline#extensions#whitespace#enabled = 1
 let g:airline#extensions#whitespace#checks = [ 'indent', 'trailing', 'long' ]
-let g:airline#extensions#whitespace#show_message = 0
+let g:airline#extensions#whitespace#show_message = 1
 let g:airline#extensions#whitespace#symbol = '!'
 " spaces are allowed after tabs, but not in between
 " this algorithm works well with programming styles that use tabs for
