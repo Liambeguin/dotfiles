@@ -61,6 +61,7 @@
 
 [alias]
 	graph = log --all --oneline --decorate --graph
+	short = log --oneline -n5 --
 	st    = status
 	mt    = mergetool
 	ba    = branch --all --verbose
