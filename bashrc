@@ -22,12 +22,6 @@ for local_file in ~/.bash/local/* ; do
 	[ -f $local_file ] && source $local_file
 done
 
-
-## remapping CAPS LOCK to CTRL
-if [ -n "$DISPLAY" ]; then
-	setxkbmap -option ctrl:nocaps
-fi
-
 # Fix vim blocked when typing <ctrl>-S
 stty -ixon
 
