@@ -23,7 +23,7 @@ for local_file in ~/.bash/local/* ; do
 done
 
 # Fix vim blocked when typing <ctrl>-S
-stty -ixon
+[ -n "$PS1" ] && stty -ixon
 
 # Make sure we are using the correct TERM (vim-airline)
 TERM=xterm-256color
