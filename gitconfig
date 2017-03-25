@@ -25,6 +25,10 @@
 [log]
 	decorate = true
 
+[difftool]
+	tool = meld
+	prompt = false
+
 [merge]
 	tool = meld
 
