@@ -55,6 +55,17 @@ get_match() {
 	die "No match found for $str"
 }
 
+run_cmd() {
+	declare command="$*"
+
+	if [ -n "$REMOTE" ]; then
+		# cf SC2095 for rationale behind </dev/null
+		ssh "$REMOTE" "${command}" < /dev/null
+	else
+		$command
+	fi
+}
+
 set_defaults() {
 	VERBOSE="no"
 	TEMPLATE_STR="<#>"
@@ -180,7 +191,6 @@ xcom_send() {
 }
 
 xcom_list() {
-	#TODO: make this work with --remote option
 	declare output
 	# output: end result that is printed to screen
 	declare pretty pattern path
@@ -191,8 +201,9 @@ xcom_list() {
 	# real_file: remove symlink in match_file
 	# pid: pid of the open session on file
 	# user: owner of the pid
+	declare h=$(run_cmd hostname)
 
-	printf "hostname: %s\n" "$(pprint_hostname)"
+	printf "hostname: %s\n" "$(pprint_hostname $h)"
 	if [ "$VERBOSE" == "yes" ]; then
 		output="PRETTY#PATTERN#PIDs#USERs#FILE#REALPATH\n"
 		output="${output}\n------#-------#----#-----#----#--------\n"
@@ -210,11 +221,11 @@ xcom_list() {
 		# For each real chardev, get good info
 		while IFS= read -r match_file; do
 			match_str=$(echo "$match_file" | grep -Eo "${pattern/^/}")
-			real_file="$(realpath "$match_file")"
+			real_file=$(run_cmd realpath "$match_file")
 			[ -z "$match_str" ] && match_str="$pattern"
 
-			pid=$(pgrep -d, -f "^picocom.*${match_file}$")
-			user=$(ps -o user --no-headers -p "$pid" 2>/dev/null | tr '\n' , | sed 's/,$//')
+			pid=$(run_cmd pgrep -d, -f "^picocom.*${match_file}$")
+			user=$(run_cmd ps -o user --no-headers -p "$pid" 2>/dev/null | tr '\n' , | sed 's/,$//')
 
 			output="$output\n${pretty/$TEMPLATE_STR/$match_str}#$match_str#"
 			if [ "$VERBOSE" == "yes" ]; then
@@ -222,7 +233,7 @@ xcom_list() {
 			else
 				output="$output$pid#$user#$real_file"
 			fi
-		done < <(find ${path/<\#>/*} 2>/dev/null)
+		done < <(run_cmd "find ${path/<\#>/*}" 2>/dev/null)
 	done < <(grep -v '^ *#' < "$XCOM_BOOKMARKS")
 	echo -e "$output" | column -t -s#
 }
