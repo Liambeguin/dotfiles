@@ -13,6 +13,7 @@ nmap <leader>r :Rexplore<CR>
 " go back to previous file after 'gf'
 nnoremap gb :e #<CR>
 
+nnoremap q: :q<CR>
 
 " Git
 " Insert at the begining
