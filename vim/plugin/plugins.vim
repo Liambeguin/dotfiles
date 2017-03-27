@@ -26,9 +26,9 @@ Plugin 'ervandew/supertab'              " Autocomplete when using tab
 Plugin 'xuhdev/vim-latex-live-preview'  " Make it easier to write latex
 Plugin 'christoomey/vim-tmux-navigator' " Navigate using ctrl+[hjkl]
 
-Plugin 'scrooloose/syntastic'                " Syntax parser
-let g:syntastic_sh_checkers = ['shellcheck'] " ... Set specific shell parser
-let g:syntastic_c_remove_include_errors = 1  " ... Exclude include errors
+Plugin 'scrooloose/syntastic'                       " Syntax parser
+let g:syntastic_sh_checkers = ['shellcheck']        " ... Set shell parser
+let g:syntastic_c_checkers  = ['checkpatch', 'gcc'] " ... Set C parsers
 
 Plugin 'vivien/vim-linux-coding-style'  " Make it easy to follow kernel style
 let g:linuxsty_patterns = [ "/usr/src/", $HOME.'/dev/linux/' ]
