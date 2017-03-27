@@ -33,5 +33,10 @@ let g:syntastic_c_remove_include_errors = 1  " ... Exclude include errors
 Plugin 'vivien/vim-linux-coding-style'  " Make it easy to follow kernel style
 let g:linuxsty_patterns = [ "/usr/src/", $HOME.'/dev/linux/' ]
 
+Plugin 'godlygeek/tabular'
+Plugin 'plasticboy/vim-markdown'
+let g:vim_markdown_folding_disabled = 1
+
+
 filetype plugin indent on " required!
 
