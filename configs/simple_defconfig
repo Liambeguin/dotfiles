@@ -14,7 +14,7 @@
 	backup = false
 	backupname = auto
 	forcelinks = true
-	links = bin bash bashrc vim vimrc Xresources Xresources.d tmux tmux.conf cheat gitconfig
+	links = bin bash bashrc vim vimrc Xresources Xresources.d tmux tmux.conf cheat gitconfig inputrc
 
 [system]
 	enable = true

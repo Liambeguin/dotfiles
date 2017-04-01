@@ -22,6 +22,9 @@ for local_file in ~/.bash/local/* ; do
 	[ -f $local_file ] && source $local_file
 done
 
+# be awesome !!
+set -o vi
+
 # Fix vim blocked when typing <ctrl>-S
 [ -n "$PS1" ] && stty -ixon
 
