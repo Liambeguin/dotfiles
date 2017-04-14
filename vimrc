@@ -62,8 +62,9 @@ set wildignore+=*.o,*.pyc
 
 
 " Search
-set hlsearch  " Highlight found words
-set incsearch " set incremental search, like modern browsers
+set hlsearch   " Highlight found words
+set incsearch  " Set incremental search
+set nowrapscan " Do not wrap arround
 
 " Tab control
 set noexpandtab   " insert tabs rather than spaces for <Tab>
