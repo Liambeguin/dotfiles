@@ -95,17 +95,27 @@
 	count = "!\
 		f() { \
 			base_branch=${1-master}; \
-			echo counting against: $base_branch >/dev/stderr; \
-			git rev-list --count HEAD ^${base_branch}; \
+			if git show-branch ${base_branch} &>/dev/null; then \
+				echo counting against: $base_branch >/dev/stderr; \
+				git rev-list --count HEAD ^${base_branch}; \
+			else \
+				echo \"fatal: unknown branch '${base_branch}'\"; \
+				return 128; \
+			fi \
 		}; f"
 
 	# Interactively rebase changes since branching from $1
 	squashbase = "!\
 		f() {\
-			base_branch=${1-master}; \
-			count=$(git count ${base_branch}); \
-			usleep 200000; \
-			git rebase -i HEAD~${count}; \
+			base_branch=${1-base}; \
+			if git show-branch ${base_branch} &>/dev/null; then \
+				count=$(git count ${base_branch}); \
+				usleep 200000; \
+				git rebase -i HEAD~${count}; \
+			else \
+				echo \"fatal: unknown branch '${base_branch}'\"; \
+				return 128; \
+			fi \
 		}; f"
 
 # vim: ft=gitconfig
