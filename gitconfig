@@ -77,24 +77,25 @@
 	info  = "!\
 		echo; sh -c \"git branch -vla ; \
 		echo; git remote -v\"; echo"
+
 	# Open git blame in vim (requires vim-fugitive)
 	bl    = "!sh --login -c \"vi +Gblame $@\" "
 
 	# Count number of commits since branching from $1
 	count = "!\
 		f() { \
-		base_branch=${1-master}; \
-		echo counting against: $base_branch >/dev/stderr; \
-		git rev-list --count HEAD ^${base_branch}; \
+			base_branch=${1-master}; \
+			echo counting against: $base_branch >/dev/stderr; \
+			git rev-list --count HEAD ^${base_branch}; \
 		}; f"
 
 	# Interactively rebase changes since branching from $1
 	squashbase = "!\
 		f() {\
-		base_branch=${1-master}; \
-		count=$(git count ${base_branch}); \
-		usleep 200000; \
-		git rebase -i HEAD~${count}; \
+			base_branch=${1-master}; \
+			count=$(git count ${base_branch}); \
+			usleep 200000; \
+			git rebase -i HEAD~${count}; \
 		}; f"
 
 # vim: ft=gitconfig
