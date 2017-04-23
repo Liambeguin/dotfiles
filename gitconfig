@@ -82,8 +82,8 @@
 	rv    = remote --verbose
 	lo    = log --all --oneline --decorate
 	last  = log -n1
-	k     = "!gitk &"
-	ui    = "!(git gui &)"
+	k     = "!f() { gitk    $@ & }; f"
+	ui    = "!f() { git gui $@ & }; f"
 	info  = "!\
 		echo; sh -c \"git branch -vla ; \
 		echo; git remote -v\"; echo"
