@@ -65,7 +65,17 @@
 
 [alias]
 	graph = log --all --oneline --decorate --graph
-	short = log --oneline -n5 --
+	# Get the most used prefix for a given file
+	short = "!\
+		f() { \
+			git_file=${1}; \
+			git log --format=%s --no-merges -- $git_file \
+				| cut -d: -f1 \
+				| sort \
+				| uniq -c \
+				| sort -nr \
+				| head; \
+		}; f"
 	st    = status
 	mt    = mergetool
 	ba    = branch --all --verbose
