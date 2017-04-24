@@ -40,7 +40,7 @@ TERM=xterm-256color
 # Force ignoreups and ignorespace
 HISTCONTROL=ignoreboth
 # ignore common cmds
-HISTIGNORE="ls:bg:fg:tm :"
+HISTIGNORE="ls:bg:fg:tm :re :"
 # append to history file, no overwrite
 shopt -s histappend
 
