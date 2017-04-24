@@ -71,6 +71,8 @@
 
 [alias]
 	graph = log --all --oneline --decorate --graph
+	oneline = log --oneline --no-merges
+
 	# Get the most used prefix for a given file
 	short = "!\
 		f() { \
