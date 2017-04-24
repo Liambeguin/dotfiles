@@ -27,8 +27,9 @@
 	rpmfusionnonfree = false
 	pkgman = auto
 	pkgbase = \
-		tmux vim picocom wmctrl htop ack blivet-gui \
-		git-gui gitk meld
+		tmux vim picocom wmctrl htop blivet-gui \
+		git-gui gitk meld git-email \
+		ack the_silver_searcher
 	font = terminus-powerline
 	autocomplete = true
 	vundle = true
