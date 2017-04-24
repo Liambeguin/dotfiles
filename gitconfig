@@ -70,8 +70,22 @@
 	smtpServerPort = 587
 
 [alias]
-	graph = log --all --oneline --decorate --graph
+	st      = status
+	last    = log -n1
+	mt      = mergetool
+	rv      = remote --verbose
+	ba      = branch --all --verbose
 	oneline = log --oneline --no-merges
+	lo      = log --all --oneline --decorate
+	graph   = log --all --oneline --decorate --graph
+	k       = "!f() { gitk    $@ & }; f"
+	ui      = "!f() { git gui $@ & }; f"
+	info    = "!\
+		echo; sh -c \"git branch -vla ; \
+		echo; git remote -v\"; echo"
+
+	# Open git blame in vim (requires vim-fugitive)
+	bl      = "!sh --login -c \"vi +Gblame ${1}\" "
 
 	# Get the most used prefix for a given file
 	short = "!\
@@ -96,21 +110,6 @@
 				| head \
 				| column -s- -t; \
 		}; f"
-
-	st    = status
-	mt    = mergetool
-	ba    = branch --all --verbose
-	rv    = remote --verbose
-	lo    = log --all --oneline --decorate
-	last  = log -n1
-	k     = "!f() { gitk    $@ & }; f"
-	ui    = "!f() { git gui $@ & }; f"
-	info  = "!\
-		echo; sh -c \"git branch -vla ; \
-		echo; git remote -v\"; echo"
-
-	# Open git blame in vim (requires vim-fugitive)
-	bl    = "!sh --login -c \"vi +Gblame $@\" "
 
 	# Count number of commits since branching from $1
 	count = "!\
