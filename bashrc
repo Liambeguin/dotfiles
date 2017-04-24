@@ -3,6 +3,9 @@
 # Source global definitions
 [ -f /etc/bashrc ] && source /etc/bashrc
 
+# fix Del key issue
+tput smkx
+
 # --------------------------
 # SOURCEING FILES IN ~/.bash
 # --------------------------
