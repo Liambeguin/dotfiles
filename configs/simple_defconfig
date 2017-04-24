@@ -14,14 +14,21 @@
 	backup = false
 	backupname = auto
 	forcelinks = true
-	links = bin bash bashrc vim vimrc Xresources Xresources.d tmux tmux.conf cheat gitconfig inputrc
+	links = \
+		bin bash bashrc \
+		vim vimrc \
+		Xresources Xresources.d \
+		tmux tmux.conf \
+		cheat gitconfig inputrc
 
 [system]
 	enable = true
 	rpmfusionfree = true
 	rpmfusionnonfree = false
 	pkgman = auto
-	pkgbase = tmux vim picocom wmctrl htop ack blivet-gui git-gui gitk meld
+	pkgbase = \
+		tmux vim picocom wmctrl htop ack blivet-gui \
+		git-gui gitk meld
 	font = terminus-powerline
 	autocomplete = true
 	vundle = true
