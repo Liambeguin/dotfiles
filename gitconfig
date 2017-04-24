@@ -84,6 +84,19 @@
 				| sort -nr \
 				| head; \
 		}; f"
+
+	# Get the authors with the most commits on a given file
+	authors = "!\
+		f() { \
+			git_file=${1}; \
+			git log --format='%an - %ae' --no-merges -- $git_file \
+				| sort \
+				| uniq -c \
+				| sort -nr \
+				| head \
+				| column -s- -t; \
+		}; f"
+
 	st    = status
 	mt    = mergetool
 	ba    = branch --all --verbose
