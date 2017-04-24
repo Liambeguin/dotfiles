@@ -63,6 +63,12 @@
 [column]
 	ui = never
 
+[sendemail]
+	smtpEncryption = tls
+	smtpServer     = smtp.gmail.com
+	smtpUser       = liambeguin@gmail.com
+	smtpServerPort = 587
+
 [alias]
 	graph = log --all --oneline --decorate --graph
 	# Get the most used prefix for a given file
