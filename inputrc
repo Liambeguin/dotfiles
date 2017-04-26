@@ -10,4 +10,7 @@ $if mode=vi
 	set keymap vi-command
 	"v": ""
 	"VV": edit-and-execute-command
+
+	set keymap vi-insert
+	"jk": vi-movement-mode
 $endif
