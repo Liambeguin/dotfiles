@@ -90,26 +90,22 @@
 	# Get the most used prefix for a given file
 	short = "!\
 		f() { \
-			git_file=${1}; \
-			git log --format=%s --no-merges -- $git_file \
+			git log --format=%s --no-merges $@ \
 				| cut -d: -f1 \
 				| sort \
 				| uniq -c \
-				| sort -nr \
-				| head; \
+				| sort -nr; \
 		}; f"
 
 	# Get the authors with the most commits on a given file
 	authors = "!\
 		f() { \
-			git_file=${1}; \
-			git log --format='%an - %ae' --no-merges -- $git_file \
+			git log --format='%an # %ae' --no-merges $@ \
 				| iconv -c \
 				| sort \
 				| uniq -c \
 				| sort -nr \
-				| head \
-				| column -s- -t; \
+				| column -s# -t; \
 		}; f"
 
 	# Count number of commits since branching from $1
