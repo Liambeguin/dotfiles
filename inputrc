@@ -5,3 +5,9 @@ set vi-cmd-mode-string \1\e[32;1m\2(cmd) \1\e[0m\2
 set vi-ins-mode-string \1\e[34;1m\2(ins) \1\e[0m\2
 # disable ESC lag
 set keyseq-timeout 0
+
+$if mode=vi
+	set keymap vi-command
+	"v": ""
+	"VV": edit-and-execute-command
+$endif
