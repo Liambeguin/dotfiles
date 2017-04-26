@@ -104,6 +104,7 @@
 		f() { \
 			git_file=${1}; \
 			git log --format='%an - %ae' --no-merges -- $git_file \
+				| iconv -c \
 				| sort \
 				| uniq -c \
 				| sort -nr \
