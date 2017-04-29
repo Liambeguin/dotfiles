@@ -128,7 +128,7 @@
 			if git show-branch ${base_branch} &>/dev/null; then \
 				count=$(git count ${base_branch}); \
 				usleep 200000; \
-				git rebase -i HEAD~${count}; \
+				git rebase -i --autosquash HEAD~${count}; \
 			else \
 				echo \"fatal: unknown branch '${base_branch}'\"; \
 				return 128; \
