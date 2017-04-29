@@ -15,7 +15,7 @@
 	backupname = auto
 	forcelinks = true
 	links = \
-		bin bash bashrc \
+		bashrc \
 		vim vimrc \
 		Xresources Xresources.d \
 		tmux tmux.conf \

@@ -6,6 +6,7 @@ export DOTFILES_HOME="${HOME}/dev/dotfiles"
 # Make sure we are using the correct TERM (vim-airline)
 export TERM=xterm-256color
 export PATH="$PATH:/opt/gcc-arm-none-eabi-4_9-2014q4/bin"
+export PATH="$PATH:${DOTFILES_HOME}/bin"
 export PATH="$PATH:/home/lvb/bin"
 
 # Force ignoreups and ignorespace
