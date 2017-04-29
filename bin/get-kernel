@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source ~/.bash/colorutils.conf
-
 VERSION="4.5"
 mkdir -p ~/kernelbuild
 

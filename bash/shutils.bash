@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # shellcheck disable=SC1090
-[ -f ~/.bash/colorutils.conf ] && source ~/.bash/colorutils.conf
 LOGLEVEL=${LOGLEVEL:-2}
 HEADER=${HEADER:-""}
 
@@ -88,3 +87,7 @@ get_minor() {
 	rev=$(git -C "$(dirname "$filepath")" rev-list --all --count -- "$(basename "$filepath")" 2>/dev/null) || rev=X
 	printf "%s" $rev
 }
+
+export -f get_minor
+export -f get_hostname_color
+export -f pprint_hostname

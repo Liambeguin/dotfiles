@@ -1,7 +1,5 @@
 #!/bin/bash -u
 
-[ -f ~/.bash/shutils.conf ] && source ~/.bash/shutils.conf
-
 # globals
 declare -g PROGNAME=${0##*/}
 declare -g PROGVERSION="0.1.$(get_minor "$0")"

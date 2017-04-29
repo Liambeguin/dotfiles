@@ -5,9 +5,6 @@
 # If PS1 needs to be reloaded with each new command use this:
 # PROMPT_COMMAND='set_prompt'
 
-[ -f ~/.bash/colorutils.conf ] && source ~/.bash/colorutils.conf
-[ -f ~/.bash/shutils.conf ] && source ~/.bash/shutils.conf
-
 set_prompt () {
 	local base_color="${PS1_COLOR_BASE:-"$txtrst"}"
 	local path_color="${PS1_COLOR_PATH:-"$txtrst"}"
@@ -21,5 +18,3 @@ set_prompt () {
 	PS1="${PS1}\[$path_color\]\\w "
 	PS1="${PS1}\[${bldwht}\]>>>\[$txtrst\] "
 }
-
-set_prompt
