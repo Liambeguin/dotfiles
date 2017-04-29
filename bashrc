@@ -20,8 +20,9 @@ shopt -s histappend
 # be awesome !!
 set -o vi
 
-tput smkx                   # st: fix Del key issue
-[ -n "$PS1" ] && stty -ixon # Fix vim blocked when typing <ctrl>-S
+tput smkx                      # st: fix Del key issue
+[ -n "$PS1" ] && stty -ixon    # Fix vim blocked when typing <ctrl>-S
+unset command_not_found_handle # prevent dnf from prompting for install
 
 
 # Source personnal bash utilities
