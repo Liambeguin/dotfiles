@@ -111,7 +111,7 @@
 	# Count number of commits since branching from $1
 	count = "!\
 		f() { \
-			base_branch=${1-master}; \
+			base_branch=${1-base}; \
 			if git show-branch ${base_branch} &>/dev/null; then \
 				echo counting against: $base_branch >/dev/stderr; \
 				git rev-list --count HEAD ^${base_branch}; \
