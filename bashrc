@@ -9,6 +9,8 @@ export PATH="$PATH:/opt/gcc-arm-none-eabi-4_9-2014q4/bin"
 export PATH="$PATH:${DOTFILES_HOME}/bin"
 export PATH="$PATH:/home/lvb/bin"
 
+[ -z "$PS1" ] && return
+
 # Force ignoreups and ignorespace
 HISTCONTROL=ignoreboth
 # ignore common cmds
