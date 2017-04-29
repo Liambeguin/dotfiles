@@ -4,11 +4,11 @@
 LOGLEVEL=${LOGLEVEL:-2}
 HEADER=${HEADER:-""}
 
-die()     {                            echo -e "${HEADER}fatal: $*"; exit 1; }
-error()   { [[ ${LOGLEVEL} -ge 1 ]] && echo -e "${HEADER}error: $*"; }
-warning() { [[ ${LOGLEVEL} -ge 2 ]] && echo -e "${HEADER}warning: $*"; }
-info()    { [[ ${LOGLEVEL} -ge 3 ]] && echo -e "${HEADER}$*"; }
-verbose() { [ "$VERBOSE" == "yes" ] && echo -e "${HEADER}$*"; }
+l_die()     {                            echo -e "${HEADER}fatal: $*"; exit 1; }
+l_error()   { [[ ${LOGLEVEL} -ge 1 ]] && echo -e "${HEADER}error: $*"; }
+l_warning() { [[ ${LOGLEVEL} -ge 2 ]] && echo -e "${HEADER}warning: $*"; }
+l_info()    { [[ ${LOGLEVEL} -ge 3 ]] && echo -e "${HEADER}$*"; }
+l_verbose() { [ "$VERBOSE" == "yes" ] && echo -e "${HEADER}$*"; }
 # Keeping this for backwards compatibility
 exit_err() { die "$@"; }
 
