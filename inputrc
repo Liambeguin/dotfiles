@@ -8,6 +8,7 @@ set keyseq-timeout 0
 
 $if mode=vi
 	set keymap vi-command
+	"q": "cc\n"
 	"v": ""
 	"VV": edit-and-execute-command
 
