@@ -74,6 +74,8 @@
 	mt      = mergetool
 	oneline = log --oneline --no-merges
 	graph   = log --all --oneline --decorate --graph
+	# Get the authors with the most commits on a given file
+	authors = shortlog -sn
 	k       = "!f() { gitk    $@ & }; f"
 	ui      = "!f() { git gui $@ & }; f"
 	info    = "!\
@@ -91,17 +93,6 @@
 				| sort \
 				| uniq -c \
 				| sort -nr; \
-		}; f"
-
-	# Get the authors with the most commits on a given file
-	authors = "!\
-		f() { \
-			git log --format='%an # %ae' --no-merges $@ \
-				| iconv -c \
-				| sort \
-				| uniq -c \
-				| sort -nr \
-				| column -s# -t; \
 		}; f"
 
 	# Count number of commits since branching from $1
