@@ -70,18 +70,14 @@
 	smtpServerPort = 587
 
 [alias]
-	st      = status
 	last    = log -n1
 	mt      = mergetool
-	rv      = remote --verbose
-	ba      = branch --all --verbose
 	oneline = log --oneline --no-merges
-	lo      = log --all --oneline --decorate
 	graph   = log --all --oneline --decorate --graph
 	k       = "!f() { gitk    $@ & }; f"
 	ui      = "!f() { git gui $@ & }; f"
 	info    = "!\
-		echo; sh -c \"git branch -vla ; \
+		echo; sh -c \"git branch -vv ; \
 		echo; git remote -v\"; echo"
 
 	# Open git blame in vim (requires vim-fugitive)
