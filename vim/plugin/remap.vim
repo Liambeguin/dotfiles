@@ -9,7 +9,7 @@ map k gk
 " Quick Esc
 inoremap jj <Esc>
 " resume exploring files
-nmap <leader>r :Rexplore<CR>
+nmap - :Rexplore<CR>
 " go back to previous file after 'gf'
 nnoremap gb :e #<CR>
 
