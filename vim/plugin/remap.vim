@@ -17,6 +17,8 @@ nnoremap q: :q<CR>
 
 " Git
 " Insert at the begining
+nnoremap <leader>gp :%s/^pick/p/g<CR>
+" Insert at the begining
 nnoremap <leader>gi ggI
 " insert signoff line
 nnoremap <leader>gs :call GitSign("Signed-off-by: ")<CR>
