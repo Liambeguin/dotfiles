@@ -8,6 +8,9 @@ set keyseq-timeout 0
 # fix del in ST
 set enable-keypad on
 
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+
 $if mode=vi
 	set keymap vi-command
 	"q": "cc\n"
