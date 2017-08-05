@@ -55,6 +55,7 @@ alias tm="tmux attach || tmux new"
 alias pg="pgrep -la"
 alias tfs="wmctrl -r :ACTIVE: -b toggle,fullscreen"
 alias taredit=_taredit
+alias path="echo \"$PATH\" | tr ':' '\n'"
 
 # Code
 alias acck="ack --cc"
