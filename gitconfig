@@ -78,6 +78,7 @@
 	authors = shortlog -sn
 	k       = "!f() { gitk    $@ & }; f"
 	ui      = "!f() { git gui $@ & }; f"
+	find    = "!f() { git ls-files *${1}*; }; f"
 	info    = "!\
 		echo; sh -c \"git branch -vv ; \
 		echo; git remote -v\"; echo"
