@@ -29,7 +29,7 @@ set scrolloff=7          " Set minimal number of lines above and below the curso
 set ruler                " Always show line and column of the cursor position
 set cursorline           " Highlight cursor line
 " set cursorcolumn         " Highlight cursor column
-set clipboard=unnamed
+set clipboard=unnamedplus
 set pastetoggle=<leader>p
 set ttyfast              " Set fast tty
 set ttymouse=xterm2      " Fix unable to resize window in tmux
@@ -70,9 +70,9 @@ set nowrapscan " Do not wrap arround
 set noexpandtab   " insert tabs rather than spaces for <Tab>
 " set expandtab   " insert spaces rather than tabs for <Tab>
 set smarttab      " tab respects 'tabstop', 'shiftwidth', and 'softtabstop'
-set tabstop=4     " the visible width of tabs
-set softtabstop=4 " edit as if the tabs are 4 characters wide
-set shiftwidth=4  " number of spaces to use for indent and unindent
+set tabstop=8     " the visible width of tabs
+set softtabstop=8 " edit as if the tabs are 4 characters wide
+set shiftwidth=8  " number of spaces to use for indent and unindent
 set shiftround    " round indent to a multiple of 'shiftwidth'
 set smartindent   " Smart indent...
 
@@ -100,6 +100,9 @@ execute 'runtime!' 'plugin/plugins.vim'
 execute 'runtime!' 'plugin/remap.vim'
 
 " file type specific options
-autocmd FileType c,cpp setlocal tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab
-autocmd FileType diff  setlocal ft=gitsendemail
+autocmd FileType sh,bash setlocal tabstop=4 softtabstop=4 shiftwidth=4 noexpandtab
+autocmd FileType c,cpp,h setlocal tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab
+autocmd FileType py      setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+
+autocmd FileType diff    setlocal ft=gitsendemail
 
