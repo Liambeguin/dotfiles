@@ -1,12 +1,15 @@
 [core]
 	abbrev = 12
 
+[status]
+	showStash = true
+
 [pretty]
 	fixes = Fixes: %h (\"%s\")
 
 [user]
-	email  = liambeguin@gmail.com
-	name   = Liam Beguin
+	email = liambeguin@gmail.com
+	name = Liam Beguin
 	editor = vi
 	whitespace = blank-at-eol,indent-with-non-tab,trailing-space
 
@@ -24,6 +27,7 @@
 
 [log]
 	decorate = true
+	mailmap = true
 
 [difftool]
 	tool = meld
