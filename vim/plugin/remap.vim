@@ -15,6 +15,8 @@ nnoremap gb :e #<CR>
 
 nnoremap q: :q<CR>
 
+nnoremap <leader>l :set list!<CR>
+
 " Git
 " Insert at the begining
 nnoremap <leader>gp :%s/^pick/p/g<CR>
