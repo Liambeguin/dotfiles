@@ -5,4 +5,4 @@ vim/local.vim
 tmux/plugins/
 backups
 .config
-xcd.bookmarks
+xcd.bookmarks.local
