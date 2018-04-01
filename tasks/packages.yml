@@ -1,0 +1,19 @@
+- name: Install packages
+  become_user: root
+  become: true
+  package: name={{ item }}
+  with_items:
+          - make
+          - tmux
+          - vim
+          - picocom
+          - wmctrl
+          - htop
+          - blivet-gui
+          - git
+          - git-gui
+          - gitk
+          - git-email
+          - meld
+          - ack
+          - the_silver_searcher

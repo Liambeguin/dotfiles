@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  remote_user: lvb
+
+  tasks:
+          # Misc
+          - include: tasks/ansible.yml
+          - include: tasks/packages.yml

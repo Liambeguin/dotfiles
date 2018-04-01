@@ -1,0 +1,25 @@
+- name: Create ansible user
+  become_user: root
+  become: true
+  user: name=ansible uid=900
+
+- name: Copy sudoers_ansible
+  become_user: root
+  become: true
+  copy:
+          src: 'files/sudoers_ansible'
+          dest: '/etc/sudoers.d/ansible'
+          owner: root
+          group: root
+          mode: 0440
+
+- name: Install ansible-pull cron job
+  become_user: root
+  become: true
+  cron:
+          name: "ansible provision"
+          user: "ansible"
+          minute: "0"
+          hour: "0"
+          job: "/usr/bin/ansible-pull -o -U https://github.com/liambeguin/dotfiles.git > /dev/null"
+          cron_file: ansible_autoupdate
