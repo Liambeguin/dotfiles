@@ -1,0 +1,27 @@
+- name: Install Vundle
+  git:
+          repo: 'https://github.com/gmarik/Vundle.vim.git'
+          dest: '{{ ansible_env.HOME }}/.vim/bundle/Vundle.vim'
+
+- name: Install Vi plugins
+  command: vim +PluginInstall +qall
+
+- name: Fetch Vimpager
+  git:
+          repo: 'https://github.com/rkitover/vimpager.git'
+          dest: '{{ ansible_env.HOME }}/dev/vimpager'
+
+- name: Install Vimpager Dependencies
+  become_user: root
+  become: true
+  package: name={{ item }}
+  with_items:
+          - sharutils
+          - pandoc
+
+- name: Install Vimpager
+  become_user: root
+  become: true
+  command: make install
+  args:
+          chdir: '{{ ansible_env.HOME }}/dev/vimpager'

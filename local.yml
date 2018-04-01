@@ -8,3 +8,6 @@
           - include: tasks/packages.yml
           - include: tasks/fonts.yml
           - include: tasks/dotfiles.yml
+
+          # Applications
+          - include: tasks/vi.yml
