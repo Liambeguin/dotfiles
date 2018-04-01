@@ -1,0 +1,9 @@
+- name: Download Fonts
+  git:
+          repo: 'https://github.com/powerline/fonts.git'
+          dest: '{{ ansible_env.HOME }}/dev/fonts'
+
+- name: Install powerline fonts
+  command: ./install.sh
+  args:
+          chdir: '{{ ansible_env.HOME }}/dev/fonts'
