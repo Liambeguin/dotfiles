@@ -20,6 +20,9 @@
 	warndetachedcommit = true
 	spellingdictionary = none
 
+[rebase]
+	abbreviateCommands = true
+
 [help]
 	autocorrect = 1
 
@@ -29,6 +32,13 @@
 [log]
 	decorate = true
 	mailmap = true
+
+[format]
+	coverLetter = true
+	# useAutoBase = True
+
+[diff]
+	statGraphWidth = 72
 
 [difftool]
 	tool = meld
