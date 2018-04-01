@@ -1,0 +1,50 @@
+- name: Call external gsetting script
+  command: ./files/gsettings.sh
+
+# https://github.com/jistr/ansible-gsetting
+# This is not yet in ansible... Skip it for now
+#
+# - name: Remap capslock to ctrl
+#   gsetting:
+#           key: "org.gnome.desktop.input-sources.xkb-options"
+#           value: "['ctrl:nocaps']"
+#
+# - name: Focus window on mouseover
+#   gsetting:
+#           key: "org.gnome.desktop.wm.preferences.focus-mode"
+#           value: "mouse"
+#
+# - name: Allow resize of window using Super+rightclick and drag
+#   gsetting:
+#           key: "org.gnome.desktop.wm.preferences.resize-with-right-button"
+#           value: true
+#
+# - name: Set workspace nav using ctrl+alt+hjkl (Up)
+#   gsettings:
+#           key: "org.gnome.desktop.wm.keybindings.switch-to-workspace-up"
+# 	  value: "['<Primary><Alt><Meta>k', '<Control><Alt>Up']"
+#
+# - name: Set workspace nav using ctrl+alt+hjkl (Down)
+#   gsettings:
+#           key: "org.gnome.desktop.wm.keybindings switch-to-workspace-down"
+# 	  value: "['<Primary><Alt><Meta>j', '<Control><Alt>Down']"
+#
+# - name: Set workspace movements using ctrl+alt+shift+hjkl (Up)
+#   gsettings:
+#           key: "org.gnome.desktop.wm.keybindings move-to-workspace-up"
+#           value: "['<Primary><Shift><Alt>k', '<Control><Shift><Alt>Up']"
+#
+# - name: Set workspace movements using ctrl+alt+shift+hjkl (Down)
+#   gsettings:
+#           key: "org.gnome.desktop.wm.keybindings move-to-workspace-down"
+#           value: "['<Primary><Shift><Alt>j', '<Control><Shift><Alt>Down']"
+#
+# - name: Monitor focus (Right)
+#   gsettings:
+#           key: "org.gnome.desktop.wm.keybindings move-to-monitor-right"
+#           value: "['<Primary><Shift><Alt>l']"
+#
+# - name: Monitor focus (Left)
+#   gsettings:
+#           key: "org.gnome.desktop.wm.keybindings move-to-monitor-left"
+#           value: "['<Primary><Shift><Alt>h']"

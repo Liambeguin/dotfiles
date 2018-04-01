@@ -12,4 +12,4 @@
           # Applications
           - include: tasks/vi.yml
           - include: tasks/google-chrome.yml
-
+          - include: tasks/gnome.yml
