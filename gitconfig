@@ -6,6 +6,7 @@
 
 [pretty]
 	fixes = Fixes: %h (\"%s\")
+	ol = %C(auto)%h %<(50,trunc)%s %d %C(green)%cr%Creset %C(blue)%<(15,trunc)%aN%Creset
 
 [user]
 	email = liambeguin@gmail.com
@@ -76,7 +77,7 @@
 [alias]
 	last    = log -n1
 	mt      = mergetool
-	oneline = log --oneline --no-merges
+	oneline = log --no-merges --pretty=ol
 	graph   = log --all --oneline --decorate --graph
 	# Get the authors with the most commits on a given file
 	authors = shortlog -sn
