@@ -1,0 +1,14 @@
+- name: Install Google Chrome repo
+  become_user: root
+  become: true
+  copy:
+          src: 'files/google-chrome.repo'
+          dest: '/etc/yum.repos.d/google-chrome.repo'
+          owner: root
+          group: root
+          mode: 0440
+
+- name: Install Google Chrome application
+  become_user: root
+  become: true
+  package: name=google-chrome-stable
