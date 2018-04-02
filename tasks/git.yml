@@ -1,0 +1,25 @@
+- name: Git Download Source Code
+  git:
+          repo: 'git://git.kernel.org/pub/scm/git/git.git'
+          dest: '{{ ansible_env.HOME }}/dev/git'
+
+- name: Git Install Dependencies
+  become_user: root
+  become: true
+  package: name={{ item }}
+  with_items:
+          - gcc
+          - curl-devel
+          - expat-devel
+          - gettext-devel
+          - openssl-devel
+          - perl-devel
+          - zlib-devel
+          - asciidoc
+          - xmlto
+          - docbook2X
+
+- name: Git Build and Install
+  command: /usr/bin/make all doc install install-doc
+  args:
+          chdir: '{{ ansible_env.HOME }}/dev/git'

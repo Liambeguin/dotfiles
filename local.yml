@@ -11,5 +11,6 @@
 
           # Applications
           - include: tasks/vi.yml
+          - include: tasks/git.yml
           - include: tasks/google-chrome.yml
           - include: tasks/gnome.yml
