@@ -1,6 +1,0 @@
-#PATTERN:PRETTY:PATH:BAUDERATE
-#-------:------:----:---------
-^[0-9]{4}?:pim-<#>:/dev/serial/by-id/usb-Xiphos_Systems_Corp._Q7-PIM_<#>-if00-port0:115200
-ftdi:ftdi:/dev/serial/by-id/usb-FTDI_TTL232R-3V3_FTF5GECI-if00-port0:115200
-^[0-9]{1,2}$:USB-<#>:/dev/ttyUSB<#>:115200
-bea*:beaglebone:/dev/serial/by-id/usb-FTDI_TTL232R-3V3_FTF5GECI-if00-port0:115200
