@@ -73,5 +73,5 @@ alias vvi='vi -p ~/.vimrc ~/.vim/plugin/'
 
 # IP stuff
 alias ifconfig="echo \$\* >/dev/null; cheat ip;echo LEARN TO USE IP !!!"
-alias ipa="ip -br address | column -t"
-alias ipl="ip -br link    | column -t"
+alias ipa="ip -br -c address | column -t"
+alias ipl="ip -br -c link    | column -t"
