@@ -42,11 +42,11 @@ read_vlc(){
 	cvlc http://${REMOTE}:${PORT}/stream.wmv > /dev/null 2>&1 &
 }
 start_gst(){
-	gst-launch v4l2src device=${VIDEO_DEV} ! videoscale! video/x-raw-yuv,width=320,height=240 ! \
+	gst-launch-1.0 v4l2src device=${VIDEO_DEV} ! videoscale! video/x-raw-yuv,width=320,height=240 ! \
 	ffmpegcolorspace ! jpegenc ! tcpserversink host=${IP} port=${PORT} > /dev/null 2>&1 &
 }
 read_gst(){
-	gst-launch tcpclientsrc host=${REMOTE} port=${PORT}  ! jpegdec ! \
+	gst-launch-1.0 tcpclientsrc host=${REMOTE} port=${PORT}  ! jpegdec ! \
 	autovideosink > /dev/null 2>&1 &
 }
 ##########################
