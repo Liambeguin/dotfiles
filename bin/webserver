@@ -14,4 +14,6 @@ print("serving at port {}".format(PORT))
 try:
     httpd.serve_forever()
 except KeyboardInterrupt:
+    httpd.shutdown()
+    httpd.server_close()
     print("User interrupt")
