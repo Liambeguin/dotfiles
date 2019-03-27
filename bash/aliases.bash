@@ -51,6 +51,7 @@ alias ffind=_ffind
 alias listcmds="compgen -c"
 alias weather='curl http://wttr.in/montreal'
 alias hist="history | grep -i $1"
+alias tmux="tmux -2"
 alias tm="tmux attach || tmux new"
 alias pg="pgrep -la"
 alias tfs="wmctrl -r :ACTIVE: -b toggle,fullscreen"
