@@ -7,7 +7,13 @@ PORT = 8000
 
 Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
 
-httpd = SocketServer.TCPServer(("", PORT), Handler)
+
+for i in xrange(10):
+    try:
+        httpd = SocketServer.TCPServer(("", PORT), Handler)
+        break
+    except:
+        PORT += 1
 
 print("serving at port {}".format(PORT))
 
