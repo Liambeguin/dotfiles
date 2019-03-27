@@ -40,10 +40,11 @@ $ sudo -v
 
 **Set things up and install**
 ```
+$ sudo dnf install git ansible
 $ mkdir -p ~/dev/ && cd ~/dev/
 $ git clone https://github.com/Liambeguin/dotfiles.git
 $ cd dotfiles
-$ ./install
+$ ansible-playbook -K local.yml
 ```
 **Add Machine specific (or private) stuff to `~/.bashrc_local`**
 
