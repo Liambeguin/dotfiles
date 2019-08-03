@@ -19,6 +19,7 @@ Plugin 'vim-airline/vim-airline'        " Making vi fancy
 Plugin 'vim-airline/vim-airline-themes' " ... more themes
 Plugin 'ntpeters/vim-better-whitespace' " Hilight whitespace
 Plugin 'vim-scripts/tComment'           " Powerful comment shortcuts
+Plugin 'vim-scripts/visincr'
 
 Plugin 'vim-scripts/SearchComplete'     " Autocomplete while searching
 Plugin 'ervandew/supertab'              " Autocomplete when using tab
