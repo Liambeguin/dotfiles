@@ -89,6 +89,7 @@
 	mt      = mergetool
 	oneline = log --no-merges --pretty=ol
 	graph   = log --all --oneline --decorate --graph
+	fixup   = "!f() { git commit --fixup=$1; }; f"
 	# Get the authors with the most commits on a given file
 	authors = shortlog -sn
 	k       = "!f() { gitk    $@ & }; f"
