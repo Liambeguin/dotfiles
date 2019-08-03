@@ -106,4 +106,5 @@ autocmd FileType py,python setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandt
 autocmd FileType rst     setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab cc=80 tw=80
 
 autocmd FileType diff    setlocal ft=gitsendemail
+autocmd BufRead *defconfig setlocal ft=config
 
