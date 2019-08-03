@@ -15,8 +15,8 @@
 	whitespace = blank-at-eol,indent-with-non-tab,trailing-space
 
 [gui]
-	fontui   = -family \"Terminess Powerline\" -size 12 -weight normal -underline 0 -overstrike 0
-	fontdiff = -family \"Terminess Powerline\" -size 12 -weight normal -underline 0 -overstrike 0
+	fontui = -family \"Terminess Powerline\" -size 12 -weight normal -slant roman -underline 0 -overstrike 0
+	fontdiff = -family \"Terminess Powerline\" -size 12 -weight normal -slant roman -underline 0 -overstrike 0
 	warndetachedcommit = true
 	spellingdictionary = none
 
