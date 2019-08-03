@@ -1,0 +1,4 @@
+# large repo config
+set commit-order = default
+set main-options = -n 1000
+#set show-changes = no
