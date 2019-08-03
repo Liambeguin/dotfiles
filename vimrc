@@ -92,7 +92,7 @@ au InsertLeave * set notimeout
 
 " Custom commands
 "  delete all eol whitespaces
-command Nws execute "%s/\\s\\+$//g | noh"
+command! Nws execute "%s/\\s\\+$//g | noh"
 
 " include other files
 execute 'runtime!' 'plugin/airline.vim'
