@@ -1,0 +1,25 @@
+# vim: set ft=yaml:
+bookmarks:
+        - {pattern: '^q7-([0-9]{4})$', pretty: 'Q7-PIM-{pattern}', path: '/dev/serial/by-id/usb-Xiphos_Systems_Corp._Q7-PIM_{pattern}-if00-port0', baud: '115200'}
+        - {pattern: '^q8-([0-9]{4})$', pretty: 'Q8-PIM-{pattern}', path: '/dev/serial/by-id/usb-Xiphos_Systems_Corp._Q8-PIM_{pattern}-if00-port0', baud: '115200'}
+        - {pattern: '^([0-9]{1,2})$', pretty: 'USB-{pattern}', path: '/dev/ttyUSB{pattern}', baud: '115200'}
+        - {pattern: '^ser([1-8])$', pretty: 'ser{pattern}', path: '/home/lvb/ser/com{pattern}', baud: '115200'}
+          # parentheses in patter: are here to to match an empty group so that we can add {pattern} without having an error
+        - {pattern: 'com11()', pretty: 'com11{pattern}', path: '/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6O4XF4-if00-port0{pattern}', baud: '115200'}
+        - {pattern: 'com12()', pretty: 'com12{pattern}', path: '/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6O4XF4-if01-port0{pattern}', baud: '115200'}
+        - {pattern: 'com13()', pretty: 'com13{pattern}', path: '/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6O4XFD-if00-port0{pattern}', baud: '115200'}
+        - {pattern: 'com14()', pretty: 'com14{pattern}', path: '/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6O4XFD-if01-port0{pattern}', baud: '115200'}
+        - {pattern: 'com15()', pretty: 'com15{pattern}', path: '/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6O4XFP-if00-port0{pattern}', baud: '115200'}
+        - {pattern: 'com16()', pretty: 'com16{pattern}', path: '/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6O4XFP-if01-port0{pattern}', baud: '115200'}
+        - {pattern: 'com17()', pretty: 'com17{pattern}', path: '/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6O4XFZ-if00-port0{pattern}', baud: '115200'}
+        - {pattern: 'com18()', pretty: 'com18{pattern}', path: '/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6O4XFZ-if01-port0{pattern}', baud: '115200'}
+        - {pattern: 'com21()', pretty: 'com21{pattern}', path: '/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6B5ATM-if00-port0{pattern}', baud: '115200'}
+        - {pattern: 'com22()', pretty: 'com22{pattern}', path: '/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6B5ATM-if01-port0{pattern}', baud: '115200'}
+        - {pattern: 'com23()', pretty: 'com23{pattern}', path: '/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6B5ATV-if00-port0{pattern}', baud: '115200'}
+        - {pattern: 'com24()', pretty: 'com24{pattern}', path: '/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6B5ATV-if01-port0{pattern}', baud: '115200'}
+        - {pattern: 'com25()', pretty: 'com25{pattern}', path: '/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6B5AU1-if00-port0{pattern}', baud: '115200'}
+        - {pattern: 'com26()', pretty: 'com26{pattern}', path: '/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6B5AU1-if01-port0{pattern}', baud: '115200'}
+        - {pattern: 'com27()', pretty: 'com27{pattern}', path: '/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6B5AUA-if00-port0{pattern}', baud: '115200'}
+        - {pattern: 'com28()', pretty: 'com28{pattern}', path: '/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6B5AUA-if01-port0{pattern}', baud: '115200'}
+        - {pattern: 'blue()', pretty: 'blue-ftdi{pattern}', path: '/dev/serial/by-id/usb-FTDI_US232R_FTG6RB5E-if00-port0', baud: '115200'}
+        - {pattern: 'zcu102()', pretty: 'zcu102{pattern}', path: '/dev/serial/by-id/usb-Silicon_Labs_CP2108_Quad_USB_to_UART_Bridge_Controller_9CD6541D22A7EEA911E6B129123D721-if00-port0{pattern}', baud: '115200'}
