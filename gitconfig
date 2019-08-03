@@ -45,7 +45,7 @@
 	prompt = false
 
 [merge]
-	tool = gvimdiff
+	tool = vimdiff
 
 [mergetool "meld"]
 	keepBackup = false
