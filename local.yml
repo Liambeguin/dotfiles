@@ -14,3 +14,4 @@
           - include: tasks/git.yml
           - include: tasks/google-chrome.yml
           - include: tasks/gnome.yml
+          - include: tasks/tmux.yml
