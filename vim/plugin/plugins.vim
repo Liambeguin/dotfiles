@@ -39,6 +39,10 @@ Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
 let g:vim_markdown_folding_disabled = 1
 
+Plugin 'tmatilai/gitolite.vim'   " Gitolite coloring
+Plugin 'kergoth/vim-bitbake'     " BitBake coloring
+Plugin 'liambeguin/vim-bif-syntax'
+Plugin 'seeamkhan/robotframework-vim'
 
 filetype plugin indent on " required!
 
