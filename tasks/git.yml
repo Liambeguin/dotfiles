@@ -1,9 +1,9 @@
-- name: Git Download Source Code
+- name: 'git: clone'
   git:
           repo: 'git://git.kernel.org/pub/scm/git/git.git'
           dest: '{{ ansible_env.HOME }}/dev/git'
 
-- name: Git Install Dependencies
+- name: 'git: install dependencies'
   become_user: root
   become: true
   package: name={{ item }}
@@ -19,7 +19,7 @@
           - xmlto
           - docbook2X
 
-- name: Git Build and Install
+- name: 'git: build and install'
   command: /usr/bin/make all doc install install-doc
   args:
           chdir: '{{ ansible_env.HOME }}/dev/git'
