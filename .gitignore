@@ -2,6 +2,10 @@ vimpager
 *.swp
 bash/local
 vim/local.vim
+vim/swfiles/
+vim/.netrwhist
+vim/bundle/
+
 tmux/plugins/
 backups
 .config
