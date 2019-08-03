@@ -78,11 +78,8 @@
 [column]
 	ui = never
 
-[sendemail]
-	smtpEncryption = tls
-	smtpServer     = smtp.gmail.com
-	smtpUser       = liambeguin@gmail.com
-	smtpServerPort = 587
+[include]
+	path = /home/lvb/.ssh/git-send-email.config
 
 [alias]
 	last    = log -n1
