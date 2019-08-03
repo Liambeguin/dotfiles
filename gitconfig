@@ -6,7 +6,7 @@
 
 [pretty]
 	fixes = Fixes: %h (\"%s\")
-	ol = %C(auto)%h %<(50,trunc)%s %d %C(green)%cr%Creset %C(blue)%<(15,trunc)%aN%Creset
+	ol = %C(auto)%h %<(50,trunc)%s %d %C(green)%ar%Creset %C(blue)%<(15,trunc)%aN%Creset
 
 [user]
 	email = liambeguin@gmail.com
