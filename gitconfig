@@ -1,6 +1,9 @@
 [core]
 	abbrev = 12
 
+[completion]
+	commands = -cherry
+
 [status]
 	showStash = true
 
