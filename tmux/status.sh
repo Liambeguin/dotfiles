@@ -43,7 +43,7 @@ wifi_attr="fg=white,bold,bg=blue"
 export TMUX_MONITORING_INTERFACE=""
 export TMUX_DATE_FORMAT="(%A) [%Y-%b-%d] %H:%M"
 
-left_status="logo session whoami"
+left_status="logo whoami session"
 right_status="uptime load_avg disk ram ip date"
 
 out="#[default]"
