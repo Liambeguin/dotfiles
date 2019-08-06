@@ -4,15 +4,6 @@
 LOGLEVEL=${LOGLEVEL:-2}
 HEADER=${HEADER:-""}
 
-l_die()     {                            echo -e "${HEADER}fatal: $*"; exit 1; }
-l_error()   { [[ ${LOGLEVEL} -ge 1 ]] && echo -e "${HEADER}error: $*"; }
-l_warning() { [[ ${LOGLEVEL} -ge 2 ]] && echo -e "${HEADER}warning: $*"; }
-l_info()    { [[ ${LOGLEVEL} -ge 3 ]] && echo -e "${HEADER}$*"; }
-l_verbose() { [ "$VERBOSE" == "yes" ] && echo -e "${HEADER}$*"; }
-# Keeping this for backwards compatibility
-exit_err() { die "$@"; }
-
-
 get_hostname_color() {
 	declare mode=${1:-shell}
 	declare hostname=${2:-$HOSTNAME}
@@ -42,52 +33,4 @@ get_hostname_color() {
 		tmux)  printf "%s" "${color##*:}" ;;
 	esac
 }
-pprint_hostname() {
-	declare h="${1:-$HOSTNAME}"
-	printf "%b%s%b\n" "$(get_hostname_color shell "$h")" "$h" "$txtrst"
-}
-
-ask_yesno() {
-	# brief
-	#    return 0 if yes else 1
-	#
-	# usage
-	#    ask_yesno "all good ?" && echo perfect || echo what now !
-
-    local question="$1"
-
-	read -p "$question [y/N] " rc
-	if [ "$rc" = "y" ]; then
-		return 0
-	else
-		return 1
-	fi
-}
-ask_input() {
-    local question="$1"
-	local default="$2"
-
-	if [ -n "$default" ]; then
-		read -p "$question [$default] " rc
-		[ -z "$rc" ] && rc="$default"
-	else
-		read -p "$question " rc
-		[ -z "$rc" ] && exit 1
-	fi
-
-	printf "%s" "$rc"
-}
-
-get_minor() {
-	local filepath=
-	local rev=
-
-	filepath=$(realpath "$1")
-
-	rev=$(git -C "$(dirname "$filepath")" rev-list --all --count -- "$(basename "$filepath")" 2>/dev/null) || rev=X
-	printf "%s" $rev
-}
-
-export -f get_minor
 export -f get_hostname_color
-export -f pprint_hostname
