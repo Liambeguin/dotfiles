@@ -8,11 +8,12 @@ get_hostname_color() {
 	declare mode=${1:-shell}
 	declare hostname=${2:-$HOSTNAME}
 	declare color="${txtrst}:black"
-	declare hash=$(echo " $(hostname | wc -c) % 7" | bc)
+	declare hash=$(echo " $(hostname | wc -c) % 6" | bc)
 
 	case "$hostname" in
 		*atris*) color="${txtblu}:blue"    ;;
 		*mara*)  color="${txtpur}:magenta" ;;
+		*thor*)  color="${txtgrn}:green"   ;;
 		# Add other supported hostnames here
 		*)
 		case "${hash}" in
@@ -22,8 +23,6 @@ get_hostname_color() {
 			3)color="${txtblu}:blue"    ;;
 			4)color="${txtpur}:magenta" ;;
 			5)color="${txtcyn}:cyan"    ;;
-			6)color="${txtwht}:white"   ;;
-			*)color="${txtrst}:black"   ;;
 		esac
 		;;
 	esac
