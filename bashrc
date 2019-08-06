@@ -36,4 +36,7 @@ for local_file in ~/.bash/local/* ; do
 	test -f "$local_file" && source "$local_file"
 done
 
+source ${HOME}/dev/git/contrib/completion/git-completion.bash
+source ${HOME}/.bash_completion.d/*
+
 set_prompt
