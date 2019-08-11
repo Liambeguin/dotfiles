@@ -9,17 +9,13 @@
   become: true
   package: name={{ item }}
   with_items:
+          - automake
           - libevent
           - libevent-devel
           - ncurses
           - ncurses-devel
           - flex
           - bison
-
-- name: 'tmux: clean'
-  command: make clean
-  args:
-          chdir: '{{ ansible_env.HOME }}/dev/tmux'
 
 - name: 'tmux: autogen.sh'
   command: ./autogen.sh
