@@ -1,25 +1,25 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
-import SimpleHTTPServer
-import SocketServer
+import http.server
+import socketserver
 
 PORT = 8000
 
-Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
+Handler = http.server.SimpleHTTPRequestHandler
 
 
-for i in xrange(10):
+for i in range(10):
     try:
-        httpd = SocketServer.TCPServer(("", PORT), Handler)
+        httpd = socketserver.TCPServer(('', PORT), Handler)
         break
     except:
         PORT += 1
 
-print("serving at port {}".format(PORT))
+print(f'serving at port {PORT}')
 
 try:
     httpd.serve_forever()
 except KeyboardInterrupt:
     httpd.shutdown()
     httpd.server_close()
-    print("User interrupt")
+    print('User interrupt')
