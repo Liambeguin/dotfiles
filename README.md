@@ -49,7 +49,7 @@ $ sudo -v
 ```sh
 $ sudo dnf install git ansible
 $ mkdir -p ~/dev/ && cd ~/dev/
-$ git clone https://github.com/Liambeguin/dotfiles.git
+$ git clone git@git.sr.ht:~liambeguin/dotfiles
 $ cd dotfiles
 $ ansible-playbook -K local.yml
 ```

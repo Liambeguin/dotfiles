@@ -1,8 +1,3 @@
-- name: Download Dotfiles
-  git:
-          repo: 'https://github.com/liambeguin/dotfiles.git'
-          dest: '{{ ansible_env.HOME }}/dev/dotfiles'
-
 - name: Link Dotfiles
   file:
           src: '{{ ansible_env.HOME }}/dev/dotfiles/{{ item }}'
