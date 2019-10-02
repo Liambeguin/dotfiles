@@ -69,8 +69,16 @@ alias vdestroy='vagrant destroy'
 
 # VI shortcuts
 alias tvi='vi ~/TODOs'
-alias bvi='vi -p ~/.bashrc ~/.bash/'
-alias vvi='vi -p ~/.vimrc ~/.vim/plugin/'
+config() {
+	case $1 in
+		todo)   vi ~/TODOs ;;
+		vi|vim) vi -p ~/.vimrc ~/.vim/plugin/ ;;
+		bash)   vi -p ~/.bashrc ~/.bash/ ;;
+		ssh)    vi -p ~/.ssh/known_hosts ~/.ssh/config ;;
+		*)      echo "ERROR: unknown configuration" ;;
+	esac
+}
+
 
 # IP stuff
 alias ifconfig="echo \$\* >/dev/null; cheat ip;echo LEARN TO USE IP !!!"
