@@ -13,6 +13,11 @@ taredit() {
 	esac
 }
 
+xsource() {
+	version=$1
+	source /opt/Xilinx/SDK/$version/settings64.sh
+}
+
 # Misc
 alias re='exec bash'
 alias ls='ls --color=always -p'
