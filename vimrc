@@ -57,7 +57,7 @@ set completeopt=menu,longest " Set insert-mode completion options
 
 " Swapfiles
 set updatetime=1000    " Save swapfile to disk every 1000ms
-set dir=~/.vim/swfiles " Save swapfile here instead of besides the original file
+set dir=~/.cache
 set wildignore+=*.o,*.pyc
 
 
