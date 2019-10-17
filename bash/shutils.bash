@@ -11,9 +11,10 @@ get_hostname_color() {
 	declare hash=$(echo " $(hostname | wc -c) % 6" | bc)
 
 	case "$hostname" in
-		*atris*) color="${txtblu}:blue"    ;;
-		*mara*)  color="${txtpur}:magenta" ;;
-		*thor*)  color="${txtgrn}:green"   ;;
+		*atris*)    color="${txtblu}:blue"    ;;
+		*mara*)     color="${txtpur}:magenta" ;;
+		*thor*)     color="${txtgrn}:green"   ;;
+		*haddock*)  color="${txtpur}:magenta" ;;
 		# Add other supported hostnames here
 		*)
 		case "${hash}" in
