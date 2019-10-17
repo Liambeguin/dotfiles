@@ -12,6 +12,7 @@ get_hostname_color() {
 
 	case "$hostname" in
 		*atris*)    color="${txtblu}:blue"    ;;
+		*pepper*)   color="${txtblu}:blue"    ;;
 		*mara*)     color="${txtpur}:magenta" ;;
 		*thor*)     color="${txtgrn}:green"   ;;
 		*haddock*)  color="${txtpur}:magenta" ;;
