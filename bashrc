@@ -36,7 +36,11 @@ for local_file in ~/.bash/local/* ; do
 	test -f "$local_file" && source "$local_file"
 done
 
-source ${HOME}/dev/git/contrib/completion/git-completion.bash
-source ${HOME}/.bash_completion.d/*
+git_completion="${HOME}/dev/git/contrib/completion/git-completion.bash"
+test -f "${git_completion}" && source "${git_completion}"
+
+for file in ~/.bash_completion.d/* ; do
+	test -f "${file}" && source "${file}"
+done
 
 set_prompt
