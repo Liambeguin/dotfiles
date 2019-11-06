@@ -43,6 +43,7 @@ Plugin 'tmatilai/gitolite.vim'   " Gitolite coloring
 Plugin 'kergoth/vim-bitbake'     " BitBake coloring
 Plugin 'liambeguin/vim-bif-syntax'
 Plugin 'seeamkhan/robotframework-vim'
+Plugin 'matze/vim-meson'
 
 filetype plugin indent on " required!
 
