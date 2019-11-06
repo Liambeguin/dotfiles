@@ -1,4 +1,5 @@
 # large repo config
 set commit-order = default
 set main-options = -n 1000
+set mailmap      = yes
 #set show-changes = no
