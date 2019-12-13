@@ -102,14 +102,27 @@
 	# Open git blame in vim (requires vim-fugitive)
 	bl      = "!sh --login -c \"vi +Gblame ${1}\" "
 
-	# Get the most used prefix for a given file
-	short = "!\
+	prefixes = "!\
 		f() { \
-			git log --format=%s --no-merges $@ \
-				| cut -d: -f1 \
+			echo \"Most common prefixes are:\"; \
+			git log --format=%s $@ \
+				| sed 's/\\(^.*:\\).*$/\\1/g' \
 				| sort \
 				| uniq -c \
-				| sort -nr; \
+				| sort -nr \
+				| head -n5; \
+		}; f"
+
+	pp = "!\
+		f() { \
+			files=$(git diff --staged --name-only) \
+			echo \"Most common prefixes for staged files are:\"; \
+			git log --format=%s $files \
+				| sed 's/\\(^.*:\\).*$/\\1/g' \
+				| sort \
+				| uniq -c \
+				| sort -nr \
+				| head -n5; \
 		}; f"
 
 # vim: ft=gitconfig
