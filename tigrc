@@ -1,5 +1,10 @@
 # large repo config
 set commit-order = default
 set main-options = -n 1000
+set line-graphics = utf-8
 set mailmap      = yes
 #set show-changes = no
+set refresh-mode = auto
+
+bind status + !git commit --amend --verbose
+# bind generic 9 !@sh -c "echo foo | xclip -selection c"
