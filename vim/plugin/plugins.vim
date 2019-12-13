@@ -22,7 +22,7 @@ Plugin 'vim-scripts/tComment'           " Powerful comment shortcuts
 Plugin 'vim-scripts/visincr'
 
 Plugin 'vim-scripts/SearchComplete'     " Autocomplete while searching
-Plugin 'ervandew/supertab'              " Autocomplete when using tab
+Plugin 'ycm-core/YouCompleteMe'
 
 Plugin 'xuhdev/vim-latex-live-preview'  " Make it easier to write latex
 Plugin 'christoomey/vim-tmux-navigator' " Navigate using ctrl+[hjkl]
