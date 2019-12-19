@@ -14,9 +14,10 @@ taredit() {
 }
 
 xsource() {
-	version=$1
+	local version=$1
 	source /opt/Xilinx/SDK/$version/settings64.sh
 }
+complete -W $(ls /opt/Xilinx/SDK/) xsource
 
 # Misc
 alias re='exec bash'
@@ -35,16 +36,17 @@ alias tfs="wmctrl -r :ACTIVE: -b toggle,fullscreen"
 alias path="echo \"$PATH\" | tr ':' '\n'"
 
 # VI shortcuts
-alias tvi='vi ~/TODOs'
 config() {
 	case $1 in
 		todo)   vi ~/TODOs ;;
 		vi|vim) vi -p ~/.vimrc ~/.vim/plugin/ ;;
 		bash)   vi -p ~/.bashrc ~/.bash/ ;;
 		ssh)    vi -p ~/.ssh/known_hosts ~/.ssh/config ;;
+		tig)    vi ~/.tigrc ;;
 		*)      echo "ERROR: unknown configuration" ;;
 	esac
 }
+complete -W "todo vi bash ssh tig" config
 
 
 # IP stuff
