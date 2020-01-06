@@ -35,18 +35,21 @@ alias pg="pgrep -la"
 alias tfs="wmctrl -r :ACTIVE: -b toggle,fullscreen"
 alias path="echo \"$PATH\" | tr ':' '\n'"
 
-# VI shortcuts
 config() {
+	_vim() {
+		vim -c 'abbr q qa' -p $*
+	}
+
 	case $1 in
-		todo)   vi ~/TODOs ;;
-		vi|vim) vi -p ~/.vimrc ~/.vim/plugin/ ;;
-		bash)   vi -p ~/.bashrc ~/.bash/ ;;
-		ssh)    vi -p ~/.ssh/known_hosts ~/.ssh/config ;;
-		tig)    vi ~/.tigrc ;;
+		todo)    _vim ~/TODOs ;;
+		vi|vim)  _vim ~/.vimrc ~/.vim/plugin/ ;;
+		bash)    _vim ~/.bashrc ${DOTFILES_HOME}/bash/aliases.bash ;;
+		ssh)     _vim ~/.ssh/config ~/.ssh/known_hosts ;;
+		git|tig) _vim ~/.gitconfig ~/.tigrc ;;
 		*)      echo "ERROR: unknown configuration" ;;
 	esac
 }
-complete -W "todo vi bash ssh tig" config
+complete -W "todo vi vim bash ssh git tig" config
 
 
 # IP stuff
