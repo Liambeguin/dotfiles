@@ -31,6 +31,7 @@ Plugin 'scrooloose/syntastic'                       " Syntax parser
 let g:syntastic_sh_checkers = ['shellcheck']        " ... Set shell parser
 let g:syntastic_c_checkers  = ['checkpatch', 'gcc'] " ... Set C parsers
 let g:syntastic_python_checkers  = ['flake8']       " ... Set py parsers
+let g:syntastic_rst_checkers  = ['sphinx']          " ... Set rst parsers
 
 Plugin 'vivien/vim-linux-coding-style'  " Make it easy to follow kernel style
 let g:linuxsty_patterns = [ "/usr/src/", $HOME.'/dev/linux/' ]
