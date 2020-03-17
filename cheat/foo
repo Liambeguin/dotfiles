@@ -1,6 +1,0 @@
-
-# This is only here so the cheat dir
-# is synced with git ...
-for i in *; do
-	echo $i
-done
