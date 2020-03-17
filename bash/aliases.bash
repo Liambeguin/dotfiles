@@ -17,7 +17,7 @@ xsource() {
 	local version=$1
 	source /opt/Xilinx/SDK/$version/settings64.sh
 }
-complete -W $(ls /opt/Xilinx/SDK/) xsource
+test -d /opt/Xilinx/SDK/ && complete -W $(ls /opt/Xilinx/SDK/) xsource
 
 # Misc
 alias re='exec bash'
