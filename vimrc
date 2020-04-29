@@ -80,6 +80,10 @@ set smartindent   " Smart indent...
 set encoding=utf-8     " The encoding displayed.
 set fileencoding=utf-8 " The encoding written to file.
 
+" Spell check
+set spelllang=en
+set spellfile=~/.vim/spell/en.utf-8.add
+
 " Case Sensitivity
 set ignorecase " Ignore case in search patterns
 set smartcase  " override ignorecase if search pattern contains upper case chars
@@ -104,6 +108,7 @@ autocmd FileType sh,bash setlocal tabstop=4 softtabstop=4 shiftwidth=4 noexpandt
 autocmd FileType c,cpp,h setlocal tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab
 autocmd FileType py,python setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 autocmd FileType rst,yaml,meson     setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab cc=80 tw=80
+autocmd FileType gitcommit setlocal spell
 
 autocmd FileType diff    setlocal ft=gitsendemail
 autocmd BufRead *defconfig setlocal ft=config
