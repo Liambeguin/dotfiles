@@ -51,6 +51,20 @@ config() {
 }
 complete -W "todo vi vim bash ssh git tig" config
 
+_prefix() {
+	local action=${1}
+	local txt=${2}
+	local _escaped
+
+	if [ "${action}" == "add" ]; then
+		export PS1="${txt} ${PS1}"
+	elif [ "${action}" == "rm" ]; then
+		_escaped=$(echo "${txt}" | sed -e 's/[]\/$*.^[]/\\&/g')
+		export PS1=$(echo "$PS1" | sed -e "s/$_escaped //g")
+	else
+		echo ERROR: unknown action \'$action\'
+	fi
+}
 
 # IP stuff
 alias ifconfig="echo \$\* >/dev/null; cheat ip;echo LEARN TO USE IP !!!"
