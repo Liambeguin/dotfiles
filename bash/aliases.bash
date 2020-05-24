@@ -66,6 +66,41 @@ _prefix() {
 	fi
 }
 
+cross() {
+	case $1 in
+	zynq|q7|arm)
+		if [ -n "$_PS1_CROSS_PREFIX" ]; then
+			echo "ERROR: other cross env already setup deactivate before switching"
+			return
+		fi
+		export CROSS_COMPILE=arm-linux-gnu-
+		# export CROSS_COMPILE=arm-linux-gnueabihf-
+		export ARCH=arm
+		export LOADADDR=0x8000
+		_PS1_CROSS_PREFIX="${bldred}(ZYNQ)${txtrst}"
+		_prefix add ${_PS1_CROSS_PREFIX}
+		;;
+	zynqmp|q8|arm64|aarch64)
+		if [ -n "$_PS1_CROSS_PREFIX" ]; then
+			echo "ERROR: other cross env already setup deactivate before switching"
+			return
+		fi
+		export CROSS_COMPILE=aarch64-linux-gnu-
+		export ARCH=arm64
+		_PS1_CROSS_PREFIX="${bldred}(ZYNQMP)${txtrst}"
+		_prefix add ${_PS1_CROSS_PREFIX}
+		;;
+	deactivate)
+		unset CROSS_COMPILE
+		unset ARCH
+		_prefix rm ${_PS1_CROSS_PREFIX}
+		unset _PS1_CROSS_PREFIX
+		;;
+	esac
+}
+complete -W "zynq zynqmp q7 q8 deactivate" cross
+
+
 # IP stuff
 alias ifconfig="echo \$\* >/dev/null; cheat ip;echo LEARN TO USE IP !!!"
 alias ipa="ip -br -c address | column -t"
