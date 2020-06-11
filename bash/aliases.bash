@@ -16,6 +16,7 @@ taredit() {
 xsource() {
 	local version=$1
 	source /opt/Xilinx/SDK/$version/settings64.sh
+	_prefix add "${txtred}($version)${txtrst}"
 }
 test -d /opt/Xilinx/SDK/ && complete -W $(ls /opt/Xilinx/SDK/) xsource
 
