@@ -5,6 +5,17 @@ set line-graphics = utf-8
 set mailmap      = yes
 #set show-changes = no
 set refresh-mode = auto
+set mouse = yes
 
 bind status + !git commit --amend --verbose
 # bind generic 9 !@sh -c "echo foo | xclip -selection c"
+
+bind generic g none
+bind generic l none
+bind generic h none
+bind generic l scroll-right
+bind generic h scroll-left
+bind generic gg move-first-line
+
+bind generic ? none
+bind generic ? view-help
