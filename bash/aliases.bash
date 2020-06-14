@@ -1,5 +1,51 @@
 #!/bin/bash
 
+vipe() {
+	local TMPFILE=$(mktemp /tmp/vipe.bashXXXXXXXX)
+
+	cat > ${TMPFILE}
+	vim "$@" ${TMPFILE} < /dev/tty > /dev/tty
+	cat ${TMPFILE}
+
+	rm ${TMPFILE}
+}
+
+dts-helper() {
+	local action=$1
+	local infile=$2
+
+	local outfile=$(basename $infile).out
+	local vi_opts="-c 'set ft=dts' -c 'abbrev q qa!'"
+
+	if [ $(echo $infile | grep -i xdi) ]; then
+		cmd="tar Oxf $infile devicetree.img | dd "
+	else
+		cmd="dd if=$infile "
+	fi
+
+	case $action in
+		view)
+			$cmd bs=1 skip=$((0x40)) \
+				| dtc -I dtb -O dts \
+				| vi "${vi_opts}" -
+			;;
+		edit)
+			local tmpdtb=$(mktemp /tmp/dtbXXXXXXXX)
+			$cmd bs=1 skip=$((0x40)) \
+				| dtc -I dtb -O dts \
+				| vipe "${vi_opts}" \
+				| dtc -I dts -o $tmpdtb
+
+			mkimage -A arm -O linux -T firmware -C none -n DTB -d $tmpdtb -e 0 -a 0 $outfile
+			echo changes saved to $outfile
+			rm $tmpdtb
+			;;
+		*)
+			echo unknown action: $action
+			;;
+	esac
+}
+
 taredit() {
 	local tar=$1
 	local file=$2
