@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 
 import os
+from pathlib import Path
 import socket
+import argparse
 import http.server
 import socketserver
 
@@ -20,7 +22,19 @@ def config_server(base=8000, count=10):
     return server, port
 
 
+def parse_cmdline():
+    parser = argparse.ArgumentParser(description='Script to serve local directories over http')
+    parser.add_argument('--dir', default='.', type=Path,
+                        help='directory to serve',
+                        )
+
+    options = parser.parse_args()
+    return options
+
+
 if __name__ == '__main__':
+    options = parse_cmdline()
+    os.chdir(options.dir)
     httpd, port = config_server()
     print(f'serving {os.getcwd()} at {socket.gethostname()}:{port}')
 
