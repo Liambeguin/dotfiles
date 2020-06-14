@@ -102,20 +102,13 @@
 	# Open git blame in vim (requires vim-fugitive)
 	bl      = "!sh --login -c \"vi +Gblame ${1}\" "
 
-	prefixes = "!\
+	prefix = "!\
 		f() { \
-			echo \"Most common prefixes are:\"; \
-			git log --format=%s $@ \
-				| sed 's/\\(^.*:\\).*$/\\1/g' \
-				| sort \
-				| uniq -c \
-				| sort -nr \
-				| head -n5; \
-		}; f"
-
-	pp = "!\
-		f() { \
-			files=$(git diff --staged --name-only) \
+			files=$(git diff --staged --name-only); \
+			if test -z \"$files\"; then \
+				echo \"error: No files staged\"; \
+				return; \
+			fi; \
 			echo \"Most common prefixes for staged files are:\"; \
 			git log --format=%s $files \
 				| sed 's/\\(^.*:\\).*$/\\1/g' \
