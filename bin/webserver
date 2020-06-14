@@ -1,25 +1,32 @@
 #!/usr/bin/python3
 
+import os
+import socket
 import http.server
 import socketserver
 
-PORT = 8000
 
-Handler = http.server.SimpleHTTPRequestHandler
+def config_server(base=8000, count=10):
+    port = base
+    for i in range(count):
+        try:
+            server = socketserver.TCPServer(('', port),
+                    http.server.SimpleHTTPRequestHandler,
+                    )
+            break
+        except:
+            port += 1
+
+    return server, port
 
 
-for i in range(10):
+if __name__ == '__main__':
+    httpd, port = config_server()
+    print(f'serving {os.getcwd()} at {socket.gethostname()}:{port}')
+
     try:
-        httpd = socketserver.TCPServer(('', PORT), Handler)
-        break
-    except:
-        PORT += 1
-
-print(f'serving at port {PORT}')
-
-try:
-    httpd.serve_forever()
-except KeyboardInterrupt:
-    httpd.shutdown()
-    httpd.server_close()
-    print('User interrupt')
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        httpd.shutdown()
+        httpd.server_close()
+        print('User interrupt')
