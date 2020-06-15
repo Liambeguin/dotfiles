@@ -104,8 +104,8 @@
 
 	prefix = "!\
 		f() { \
-			files=$(git diff --staged --name-only); \
-			if test -z \"$files\"; then \
+			files=${*:-$(git diff --staged --name-only)}; \
+			if test -z \"$1\" && test -z \"$files\"; then \
 				echo \"error: No files staged\"; \
 				return; \
 			fi; \
