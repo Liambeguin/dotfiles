@@ -62,7 +62,7 @@ taredit() {
 xsource() {
 	local version=$1
 	source /opt/Xilinx/SDK/$version/settings64.sh
-	_prefix add "${txtred}($version)${txtrst}"
+	_prefix add "${txtred}" "($version)"
 }
 test -d /opt/Xilinx/SDK/ && complete -W $(ls /opt/Xilinx/SDK/) xsource
 
@@ -100,14 +100,16 @@ complete -W "todo vi vim bash ssh git tig" config
 
 _prefix() {
 	local action=${1}
-	local txt=${2}
+	local color=${2}
+	local txt=${3}
+	local prefix="\[${color}\]${txt}\[${txtrst}\] "
 	local _escaped
 
 	if [ "${action}" == "add" ]; then
-		export PS1="${txt} ${PS1}"
+		export PS1="${prefix}${PS1}"
 	elif [ "${action}" == "rm" ]; then
-		_escaped=$(echo "${txt}" | sed -e 's/[]\/$*.^[]/\\&/g')
-		export PS1=$(echo "$PS1" | sed -e "s/$_escaped //g")
+		_escaped=$(echo "${prefix}" | sed -e 's/[]\/$*.^[]/\\&/g')
+		export PS1=$(echo "$PS1" | sed -e "s/$_escaped//g")
 	else
 		echo ERROR: unknown action \'$action\'
 	fi
@@ -124,8 +126,8 @@ cross() {
 		# export CROSS_COMPILE=arm-linux-gnueabihf-
 		export ARCH=arm
 		export LOADADDR=0x8000
-		_PS1_CROSS_PREFIX="${bldred}(ZYNQ)${txtrst}"
-		_prefix add ${_PS1_CROSS_PREFIX}
+		_PS1_CROSS_PREFIX="(ZYNQ)"
+		_prefix add "${bldred}" "${_PS1_CROSS_PREFIX}"
 		;;
 	zynqmp|q8|arm64|aarch64)
 		if [ -n "$_PS1_CROSS_PREFIX" ]; then
@@ -134,13 +136,13 @@ cross() {
 		fi
 		export CROSS_COMPILE=aarch64-linux-gnu-
 		export ARCH=arm64
-		_PS1_CROSS_PREFIX="${bldred}(ZYNQMP)${txtrst}"
-		_prefix add ${_PS1_CROSS_PREFIX}
+		_PS1_CROSS_PREFIX="(ZYNQMP)"
+		_prefix add "${bldred}" "${_PS1_CROSS_PREFIX}"
 		;;
 	deactivate)
 		unset CROSS_COMPILE
 		unset ARCH
-		_prefix rm ${_PS1_CROSS_PREFIX}
+		_prefix rm "${bldred}" "${_PS1_CROSS_PREFIX}"
 		unset _PS1_CROSS_PREFIX
 		;;
 	esac
