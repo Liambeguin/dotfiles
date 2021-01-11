@@ -68,10 +68,9 @@ set nowrapscan " Do not wrap arround
 
 " Tab control
 set noexpandtab   " insert tabs rather than spaces for <Tab>
-" set expandtab   " insert spaces rather than tabs for <Tab>
 set smarttab      " tab respects 'tabstop', 'shiftwidth', and 'softtabstop'
 set tabstop=8     " the visible width of tabs
-set softtabstop=8 " edit as if the tabs are 4 characters wide
+set softtabstop=8 " edit as if the tabs are 8 characters wide
 set shiftwidth=8  " number of spaces to use for indent and unindent
 set shiftround    " round indent to a multiple of 'shiftwidth'
 set smartindent   " Smart indent...
