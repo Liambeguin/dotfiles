@@ -74,6 +74,7 @@ set softtabstop=8 " edit as if the tabs are 8 characters wide
 set shiftwidth=8  " number of spaces to use for indent and unindent
 set shiftround    " round indent to a multiple of 'shiftwidth'
 set smartindent   " Smart indent...
+set autoindent    " indent on new lines
 let g:pyindent_open_paren=4
 
 
