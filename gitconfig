@@ -10,6 +10,7 @@
 [pretty]
 	fixes = Fixes: %h (\"%s\")
 	ol = %C(auto)%h %<(50,trunc)%s %d %C(green)%ar%Creset %C(blue)%<(15,trunc)%aN%Creset
+	mywork = %<(20,trunc)%ar %s
 
 [user]
 	email = liambeguin@gmail.com
@@ -90,6 +91,10 @@
 	oneline = log --no-merges --pretty=ol
 	graph   = log --all --oneline --decorate --graph
 	fixup   = "!f() { git commit --fixup=$1; }; f"
+	mywork  = shortlog --format=mywork \
+		--author='Liam Beguin' \
+		--author='liambeguin@gmail.com' \
+		--author='lvb@xiphos.com'
 	# Get the authors with the most commits on a given file
 	authors = shortlog -sn
 	k       = "!f() { gitk    $@ & }; f"
