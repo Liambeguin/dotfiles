@@ -1,5 +1,24 @@
 #!/bin/bash
 
+# Misc
+alias re='exec bash'
+alias ls='ls --color=always -p'
+alias ll='ls -la --color=always -p'
+alias dmesg='dmesg --color=always -T'
+alias grep='grep --color=auto'
+alias du='du -h -d 1'
+alias weather='curl http://wttr.in/montreal'
+alias hist="history | grep -i $1"
+alias pg="pgrep -la"
+alias tfs="wmctrl -r :ACTIVE: -b toggle,fullscreen"
+alias path="echo \"$PATH\" | tr ':' '\n'"
+# Networking
+alias ipa="ip -br -c address | column -t"
+alias ipl="ip -br -c link    | column -t"
+# Tmux
+alias tmux="tmux -2"
+alias tm="tmux attach || tmux new"
+
 vipe() {
 	local TMPFILE=$(mktemp /tmp/vipe.bashXXXXXXXX)
 
@@ -66,22 +85,6 @@ xsource() {
 	_prefix add "${txtred}" "($version)"
 }
 test -d /opt/Xilinx/Vivado/ && complete -W "$(ls -1 /opt/Xilinx/Vivado/)" xsource
-
-# Misc
-alias re='exec bash'
-alias ls='ls --color=always -p'
-alias ll='ls -la --color=always -p'
-alias dmesg='dmesg --color=always -T'
-alias grep='grep --color=auto'
-alias du='du -h -d 1'
-alias listcmds="compgen -c"
-alias weather='curl http://wttr.in/montreal'
-alias hist="history | grep -i $1"
-alias tmux="tmux -2"
-alias tm="tmux attach || tmux new"
-alias pg="pgrep -la"
-alias tfs="wmctrl -r :ACTIVE: -b toggle,fullscreen"
-alias path="echo \"$PATH\" | tr ':' '\n'"
 
 config() {
 	_vim() {
@@ -151,7 +154,3 @@ cross() {
 complete -W "zynq zynqmp q7 q8 deactivate" cross
 
 
-# IP stuff
-alias ifconfig="echo \$\* >/dev/null; cheat ip;echo LEARN TO USE IP !!!"
-alias ipa="ip -br -c address | column -t"
-alias ipl="ip -br -c link    | column -t"
