@@ -62,10 +62,10 @@ taredit() {
 xsource() {
 	local version=${1:-2018.2}
 	test -z "$version" && return
-	source /opt/Xilinx/SDK/$version/settings64.sh
+	source /opt/Xilinx/Vivado/$version/settings64.sh
 	_prefix add "${txtred}" "($version)"
 }
-test -d /opt/Xilinx/SDK/ && complete -W $(ls /opt/Xilinx/SDK/) xsource
+test -d /opt/Xilinx/Vivado/ && complete -W "$(ls -1 /opt/Xilinx/Vivado/)" xsource
 
 # Misc
 alias re='exec bash'
