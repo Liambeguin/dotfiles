@@ -84,7 +84,7 @@ xsource() {
 	source /opt/Xilinx/Vivado/$version/settings64.sh
 	_prefix add "${txtred}" "($version)"
 }
-test -d /opt/Xilinx/Vivado/ && complete -W "$(ls -1 /opt/Xilinx/Vivado/)" xsource
+test -d /opt/Xilinx/Vivado/ && complete -W "$(/usr/bin/ls -1 /opt/Xilinx/Vivado/)" xsource
 
 config() {
 	_vim() {
