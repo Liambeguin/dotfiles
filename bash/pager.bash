@@ -6,7 +6,7 @@ export EDITOR=/usr/bin/vim
 
 alias less="less -R"
 
-export MANPAGER="vimpager -u /dev/null -c 'set bg=light' -c 'set laststatus=0'"
+export MANPAGER=vimpager
 
 if [ "$MANPAGER" == "less" ]; then
     # Without this no colors...

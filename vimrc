@@ -115,3 +115,22 @@ autocmd FileType gitcommit setlocal spell
 autocmd FileType diff    setlocal ft=gitsendemail
 autocmd BufRead *defconfig setlocal ft=config
 
+if exists('vimpager')
+  if !exists('g:vimpager')
+    let g:vimpager = {}
+  endif
+
+  if !exists('g:less')
+    let g:less = {}
+  endif
+
+  let g:less.enabled = 0
+
+  set readonly
+
+  autocmd FileType man set laststatus=0
+  highlight LessStatusLine ctermbg=NONE ctermfg=DarkMagenta guibg=NONE guifg=DarkMagenta
+
+  nnoremap <nowait> <silent> <buffer> q :qa<CR>
+
+endif
