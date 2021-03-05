@@ -6,7 +6,6 @@
           # Misc
           # - include: tasks/ansible.yml
           - include: tasks/packages.yml
-          - include: tasks/fonts.yml
           - include: tasks/dotfiles.yml
 
           # Applications
