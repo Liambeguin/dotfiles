@@ -1,17 +1,17 @@
 - name: Link Dotfiles
   file:
-          src: '{{ ansible_env.HOME }}/dev/dotfiles/{{ item }}'
-          dest: "{{ ansible_env.HOME }}/.{{ item }}"
-          state: link
-          force: yes
+    src: '{{ ansible_env.HOME }}/dev/dotfiles/{{ item }}'
+    dest: "{{ ansible_env.HOME }}/.{{ item }}"
+    state: link
+    force: yes
   with_items:
-          - bashrc
-          - vim
-          - vimrc
-          - Xresources
-          - Xresources.d
-          - tmux
-          - tmux.conf
-          - gitconfig
-          - inputrc
-          - tigrc
+    - bashrc
+    - vim
+    - vimrc
+    - Xresources
+    - Xresources.d
+    - tmux
+    - tmux.conf
+    - gitconfig
+    - inputrc
+    - tigrc
