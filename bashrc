@@ -2,6 +2,8 @@
 # Source global definitions
 [ -f /etc/bashrc ] && source /etc/bashrc
 
+export EDITOR=/usr/bin/vim
+
 export DOTFILES_HOME="${HOME}/dev/dotfiles"
 # Make sure we are using the correct TERM (vim-airline)
 export TERM=xterm-256color
