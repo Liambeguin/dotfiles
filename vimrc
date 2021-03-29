@@ -109,7 +109,8 @@ execute 'runtime!' 'plugin/remap.vim'
 autocmd FileType sh,bash setlocal tabstop=4 softtabstop=4 shiftwidth=4 noexpandtab
 autocmd FileType c,cpp,h setlocal tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab
 autocmd FileType py,python setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
-autocmd FileType rst,yaml,meson     setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab cc=80 tw=80
+autocmd FileType rst,meson setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab cc=80 tw=80
+autocmd FileType yaml      setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab cc=80 tw=80
 autocmd FileType gitcommit setlocal spell
 
 autocmd FileType diff    setlocal ft=gitsendemail
