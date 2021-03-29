@@ -13,5 +13,6 @@
     - { src: tmux, dest: .tmux }
     - { src: tmux.conf, dest: .tmux.conf }
     - { src: gitconfig, dest: .gitconfig }
+    - { src: gitattributes, dest: .config/git/attributes }
     - { src: inputrc, dest: .inputrc }
     - { src: tigrc, dest: .tigrc }

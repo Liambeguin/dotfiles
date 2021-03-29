@@ -44,6 +44,10 @@
 [diff]
 	statGraphWidth = 72
 
+[diff "bin"]
+	binary = true
+	textconv = hexdump -vC
+
 [difftool]
 	tool = meld
 	prompt = false

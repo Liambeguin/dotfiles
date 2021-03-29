@@ -1,0 +1,2 @@
+*.elf diff=bin
+devicetree.img diff=bin
