@@ -4,15 +4,15 @@ baudrate=115200
 timestamp=1
 
 [Xiphos Q7]
-pattern=q7-rev[ab]?-([0-9]{4})
+pattern=q7-rev[ab]?-([a-f0-9]{4})
 tty=/dev/serial/by-id/usb-Xiphos_Systems_Corp._Q7-PIM_%s-if00-port0
 
 [Xiphos Q8]
-pattern=q8-rev[ab]?-([0-9]{4})
+pattern=q8-rev[ab]?-([a-f0-9]{4})
 tty=/dev/serial/by-id/usb-Xiphos_Systems_Corp._Q8-PIM_%s-if00-port0
 
 [Xiphos Q8J]
-pattern=q8j-rev[ab]?-([0-9]{4})
+pattern=q8j-rev[ab]?-([a-f0-9]{4})
 tty=/dev/serial/by-id/usb-Xiphos_Systems_Corp._Q8J-PIM_%s-if00-port0
 
 [ZCU102 1002]
