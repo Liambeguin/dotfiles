@@ -37,10 +37,6 @@
 	decorate = true
 	mailmap = true
 
-[format]
-	coverLetter = true
-	# useAutoBase = True
-
 [diff]
 	statGraphWidth = 72
 
