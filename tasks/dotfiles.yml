@@ -1,4 +1,6 @@
 - name: Link Dotfiles
+  tags:
+    - dotfiles
   file:
     src: '{{ ansible_env.HOME }}/dev/dotfiles/{{ item.src }}'
     dest: "{{ ansible_env.HOME }}/{{ item.dest }}"
