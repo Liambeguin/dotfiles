@@ -113,7 +113,8 @@
 				echo \"error: No files staged\"; \
 				return; \
 			fi; \
-			echo \"Most common prefixes for staged files are:\"; \
+			printf 'Checking prefixes for: \n\t\\033[31m%s\\033[0m\n' \"$files\"; \
+			echo \"Most common prefixes are:\"; \
 			git log --format=%s $files \
 				| sed 's/\\(^.*:\\).*$/\\1/g' \
 				| sort \
