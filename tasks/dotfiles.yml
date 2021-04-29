@@ -16,3 +16,4 @@
     - { src: gitattributes, dest: .config/git/attributes }
     - { src: inputrc, dest: .inputrc }
     - { src: tigrc, dest: .tigrc }
+    - { src: tiorc, dest: .tiorc }

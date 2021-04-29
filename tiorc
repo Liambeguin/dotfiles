@@ -1,0 +1,74 @@
+# vim: ft=cfg
+[default]
+baudrate=115200
+timestamp=1
+
+[Xiphos Q7]
+pattern=q7-rev[ab]?-([0-9]{4})
+tty=/dev/serial/by-id/usb-Xiphos_Systems_Corp._Q7-PIM_%s-if00-port0
+
+[Xiphos Q8]
+pattern=q8-rev[ab]?-([0-9]{4})
+tty=/dev/serial/by-id/usb-Xiphos_Systems_Corp._Q8-PIM_%s-if00-port0
+
+[Xiphos Q8J]
+pattern=q8j-rev[ab]?-([0-9]{4})
+tty=/dev/serial/by-id/usb-Xiphos_Systems_Corp._Q8J-PIM_%s-if00-port0
+
+[ZCU102 1002]
+pattern=zcu102
+tty=/dev/serial/by-id/usb-Silicon_Labs_CP2108_Quad_USB_to_UART_Bridge_Controller_75829DA737290AAF11E8F3F44BB5EE2-if00-port0
+
+[ZCU111 1001]
+pattern=zcu111
+tty=/dev/serial/by-id/usb-Xilinx_JTAG+3Serial_30010-if01-port0
+
+[COM1 Port1]
+pattern=com11
+tty=/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6O4XF4-if00-port0
+[COM1 Port2]
+pattern=com12
+tty=/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6O4XF4-if01-port0
+[COM1 Port3]
+pattern=com13
+tty=/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6O4XFD-if00-port0
+[COM1 Port4]
+pattern=com14
+tty=/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6O4XFD-if01-port0
+[COM1 Port5]
+pattern=com15
+tty=/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6O4XFP-if00-port0
+[COM1 Port6]
+pattern=com16
+tty=/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6O4XFP-if01-port0
+[COM1 Port7]
+pattern=com17
+tty=/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6O4XFZ-if00-port0
+[COM1 Port8]
+pattern=com18
+tty=/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6O4XFZ-if01-port0
+
+[COM2 Port1]
+pattern=com21
+tty=/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6B5ATM-if00-port0
+[COM2 Port2]
+pattern=com22
+tty=/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6B5ATM-if01-port0
+[COM2 Port3]
+pattern=com23
+tty=/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6B5ATV-if00-port0
+[COM2 Port4]
+pattern=com24
+tty=/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6B5ATV-if01-port0
+[COM2 Port5]
+pattern=com25
+tty=/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6B5AU1-if00-port0
+[COM2 Port6]
+pattern=com26
+tty=/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6B5AU1-if01-port0
+[COM2 Port7]
+pattern=com27
+tty=/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6B5AUA-if00-port0
+[COM2 Port8]
+pattern=com28
+tty=/dev/serial/by-id/usb-FTDI_USB_FAST_SERIAL_ADAPTER_FT6B5AUA-if01-port0
