@@ -98,6 +98,7 @@
 	authors = shortlog -sn
 	k       = "!f() { gitk    $@ & }; f"
 	ui      = "!f() { git gui $@ & }; f"
+	bindiff = difftool --extcmd=vbindiff
 	info    = "!\
 		echo; sh -c \"git branch -vv ; \
 		echo; git remote -v\"; echo"
