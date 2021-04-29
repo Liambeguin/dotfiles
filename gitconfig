@@ -89,7 +89,6 @@
 	last    = log -n1
 	mt      = mergetool
 	oneline = log --no-merges --pretty=ol
-	graph   = log --all --oneline --decorate --graph
 	fixup   = "!f() { git commit --fixup=$1; }; f"
 	mywork  = shortlog --format=mywork \
 		--author='Liam Beguin' \
@@ -99,7 +98,6 @@
 	authors = shortlog -sn
 	k       = "!f() { gitk    $@ & }; f"
 	ui      = "!f() { git gui $@ & }; f"
-	find    = "!f() { git ls-files *${1}*; }; f"
 	info    = "!\
 		echo; sh -c \"git branch -vv ; \
 		echo; git remote -v\"; echo"
